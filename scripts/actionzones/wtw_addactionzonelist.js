@@ -46,7 +46,7 @@ WTWJS.prototype.getActionZoneList = function() {
 					if (zactionzonelist[i].helpurl != '') {
 						dGet('wtw_actionzonesbuttonlist').innerHTML += "<a href='" + zactionzonelist[i].helpurl + "' title='Help' alt='Help' class='wtw-helplink' target='_blank'>?</a>";
 					}
-					dGet('wtw_actionzonesbuttonlist').innerHTML += "<div id='wtw_baddzones" + zactionzonevalue + "' name='wtw_baddzones" + zactionzonevalue + "' onclick=\"WTW.openActionZoneForm('" + zactionzonevalue + "');\" class='wtw-menulevel2'>" + zactionzonelist[i].name + "</div>\r\n";
+					dGet('wtw_actionzonesbuttonlist').innerHTML += "<div id='wtw_baddzones" + zactionzonevalue + "' name='wtw_baddzones" + zactionzonevalue + "' onclick=\"WTW.openActionZoneForm('" + zactionzonevalue + "');\" class='wtw-menulevel2'><p>" + zactionzonelist[i].name + "</p></div>\r\n";
 					/* option for drop down list */
 					var zoption = document.createElement('option');
 					zoption.text = zactionzonelist[i].name;
@@ -374,6 +374,7 @@ WTWJS.prototype.setActionZoneFormFields = function(zactionzonetype) {
 				dGet('wtw_tcopyaxletoactionzone').disabled = true;
 				dGet('wtw_actionzoneadvancedoptslink').innerHTML = '-- Hide Advanced Options --';
 				WTW.show('wtw_actionzoneadvancedopts');
+				document.getElementById('wtw_actionzoneadvancedopts').classList.add('active');
 				WTW.show('wtw_azjavascriptdiv');
 				break;
 			case 'unloadzone':
