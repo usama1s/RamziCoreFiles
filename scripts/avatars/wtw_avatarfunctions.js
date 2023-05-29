@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* These functions provide many of the common functions for browse and admin modes */
 /* avatar functions are used to control various animations or interactions betwen avatars and molds */
@@ -576,20 +576,18 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												}
 												break;
 											case 'onrotateup':
-												if (WTW.mouseY == WTW.mouseStartY) {
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
 													WTW.cameraYOffset -= 400/WTW.sizeY * WTW.turnSpeed * zavatar.WTW.animations.running[zevent].weight;
-												} else if (WTW.isMouseDown == 1) {
-													WTW.cameraYOffset += 100/WTW.sizeY * (WTW.mouseY - WTW.mouseStartY) * WTW.turnSpeed * zavatar.WTW.animations.running[zevent].weight;
-													WTW.mouseStartY = WTW.mouseY;
 												}
 												zweight -= zavatar.WTW.animations.running[zevent].weight;
 												break;
 											case 'onrotatedown':
-												if (WTW.mouseY == WTW.mouseStartY) {
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
 													WTW.cameraYOffset += 400/WTW.sizeY * WTW.turnSpeed * zavatar.WTW.animations.running[zevent].weight;
-												} else if (WTW.isMouseDown == 1) {
-													WTW.cameraYOffset -= 100/WTW.sizeY * (WTW.mouseStartY - WTW.mouseY) * WTW.turnSpeed * zavatar.WTW.animations.running[zevent].weight;
-													WTW.mouseStartY = WTW.mouseY;
 												}
 												zweight -= zavatar.WTW.animations.running[zevent].weight;
 												break;
@@ -650,7 +648,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												WTW.checkZones = true;
 												break;
 											case 'onturnleft':
-												zavatar.rotation.y -= WTW.getRadians(70 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
+													zavatar.rotation.y -= WTW.getRadians(70 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												}
 												zavatar.WTW.animations.running[zevent].speedRatio = WTW.turnAnimationSpeed;
 												var zstride = WTW.init.gravity * 15 * zavatar.WTW.animations.running[zevent].weight / WTW.fps;
 												var zmove = WTW.getMoveDownVector(zavatar.name, -zstride);
@@ -661,7 +663,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												}
 												break;
 											case 'onrunturnleft':
-												zavatar.rotation.y -= WTW.getRadians(120 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
+													zavatar.rotation.y -= WTW.getRadians(120 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												}
 												zavatar.WTW.animations.running[zevent].speedRatio = WTW.turnAnimationSpeed * 1.5;
 												var zstride = WTW.init.gravity * 15 * zavatar.WTW.animations.running[zevent].weight / WTW.fps;
 												var zmove = WTW.getMoveDownVector(zavatar.name, -zstride);
@@ -672,7 +678,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												}
 												break;
 											case 'onturnright':
-												zavatar.rotation.y += WTW.getRadians(70 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
+													zavatar.rotation.y += WTW.getRadians(70 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												}
 												zavatar.WTW.animations.running[zevent].speedRatio = WTW.turnAnimationSpeed;
 												var zstride = WTW.init.gravity * 15 * zavatar.WTW.animations.running[zevent].weight / WTW.fps;
 												var zmove = WTW.getMoveDownVector(zavatar.name, -zstride);
@@ -683,7 +693,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												}
 												break;
 											case 'onrunturnright':
-												zavatar.rotation.y += WTW.getRadians(120 * zavatar.WTW.animations.running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												if (WTW.isMouseDown == 1) {
+													WTW.swipeRotateAvatar(zavatar);
+												} else {
+													zavatar.rotation.y += WTW.getRadians(120 * zavatar.WTW.animations.	running[zevent].weight * WTW.turnSpeed / WTW.fps);
+												}
 												zavatar.WTW.animations.running[zevent].speedRatio = WTW.turnAnimationSpeed * 1.5;
 												var zstride = WTW.init.gravity * 15 * zavatar.WTW.animations.running[zevent].weight / WTW.fps;
 												var zmove = WTW.getMoveDownVector(zavatar.name, -zstride);
@@ -725,11 +739,12 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 												zweight = WTW.pluginsSetAvatarMovement(zavatar, zevent, zweight);
 												break;
 										}
+										/* limits the camera rotation for up and down */
 										if (WTW.cameraYOffset < -10) {
 											WTW.cameraYOffset = -10;
 										}
-										if (WTW.cameraYOffset > 20) {
-											WTW.cameraYOffset = 20;
+										if (WTW.cameraYOffset > 10) {
+											WTW.cameraYOffset = 10;
 										}
 										/* sets the camera to properly follow and rotate from the avatar position */
 										WTW.setMovingCameras(zavatar);
@@ -766,7 +781,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 								case 65: //a strafe left
 								case 1065: //mouse strafe left
 								case 2065: //mouse strafe left
-									zavatar.rotation.y -= WTW.getRadians(70 * WTW.turnSpeed / WTW.fps);
+									if (WTW.isMouseDown == 1) {
+										WTW.swipeRotateAvatar(zavatar);
+									} else {
+										zavatar.rotation.y -= WTW.getRadians(70 * WTW.turnSpeed / WTW.fps);
+									}
 									break;
 								case 39: //arrow e rotate right
 								case 69: //e rotate right
@@ -775,7 +794,11 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 								case 68: //d strafe right
 								case 1068: //mouse strafe right
 								case 2068: //mouse strafe right
-									zavatar.rotation.y += WTW.getRadians(70 * WTW.turnSpeed / WTW.fps);
+									if (WTW.isMouseDown == 1) {
+										WTW.swipeRotateAvatar(zavatar);
+									} else {
+										zavatar.rotation.y += WTW.getRadians(70 * WTW.turnSpeed / WTW.fps);
+									}
 									break;
 								case 1082: //mouse rotate up
 									if (WTW.mouseY == WTW.mouseStartY) {
@@ -793,20 +816,6 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 										WTW.mouseStartY = WTW.mouseY;
 									}
 									break;
-								case 82: //r rotate up
-								case 38: //arrow w forward
-								case 87: //w forward
-								case 1038: //arrow w forward
-								case 2038: //arrow w forward
-									WTW.cameraYOffset -= 100/WTW.sizeY * 10 * WTW.turnSpeed;
-									break;
-								case 70: //f rotate down
-								case 40: //arrow s backwards
-								case 83: //s backwards
-								case 1040: //arrow s backwards
-								case 2040: //arrow s backwards
-									WTW.cameraYOffset += 100/WTW.sizeY * 10 * WTW.turnSpeed;
-									break;
 							}
 						}
 					}
@@ -816,6 +825,41 @@ WTWJS.prototype.moveAvatar = function(zavatar, zkeyspressed) {
 		}
 	} catch(ex) {
 		WTW.log('core-scripts-avatars-wtw_avatarfunctions.js-moveAvatar=' + ex.message);
+	}
+}
+
+WTWJS.prototype.swipeRotateAvatar = function(zavatar) {
+	/* swipe rotation avatar */
+	try {
+		/* touch or mouse position based rotation */
+		/* left and right */
+		if (WTW.mouseX < WTW.sizeX/5) {
+			zavatar.rotation.y = WTW.getRadians(WTW.getDegrees(zavatar.rotation.y) - (2 * WTW.turnSpeed));
+		} else if (WTW.mouseX < WTW.sizeX/2 - 100) {
+			zavatar.rotation.y = WTW.getRadians(WTW.getDegrees(zavatar.rotation.y) - WTW.turnSpeed);
+		} else if (WTW.mouseX > WTW.sizeX*4/5) {
+			zavatar.rotation.y = WTW.getRadians(WTW.getDegrees(zavatar.rotation.y) + (2 * WTW.turnSpeed));
+		} else if (WTW.mouseX > WTW.sizeX/2 + 100) {
+			zavatar.rotation.y = WTW.getRadians(WTW.getDegrees(zavatar.rotation.y) + WTW.turnSpeed);
+		}
+		/* up and down */
+		if (WTW.mouseY < WTW.sizeY/6) {
+			WTW.cameraYOffset -= .75;
+		} else if (WTW.mouseY < WTW.sizeY/4) {
+			WTW.cameraYOffset -= .5;
+		} else if (WTW.mouseY > WTW.sizeY*5/6) {
+			WTW.cameraYOffset += .5;
+		} else if (WTW.mouseY > WTW.sizeY*3/4) {
+			WTW.cameraYOffset += .1;
+		} else if (WTW.cameraYOffset < -2.7) {
+			WTW.cameraYOffset += .5;
+		} else if (WTW.cameraYOffset > -2.3) {
+			WTW.cameraYOffset -= .5;
+		} else {
+			WTW.cameraYOffset = -2.5;
+		}
+	} catch(ex) {
+		WTW.log('core-scripts-avatars-wtw_avatarfunctions.js-swipeRotateAvatar=' + ex.message);
 	}
 }
 
@@ -834,7 +878,7 @@ WTWJS.prototype.deleteUserAvatar = function(zglobaluseravatarid, zuseravatarid, 
 					WTW.pluginsDeleteUserAvatar(zglobaluseravatarid, zuseravatarid, zwidth, zheight);
 					if (zglobaluseravatarid == '') {
 						/* only had local user avatar - refresh list */
-						WTW.getMyAvatarList(zwidth, zheight, true);
+						WTW.hudLoginLoadAvatars();
 					}
 				}
 			);

@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions create the various coverings */
 
 /* materials vs coverings - materials are loaded on the meshes in the scene, coverings are the definitions that create the materials to be added the mesh on demand */

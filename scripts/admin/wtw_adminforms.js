@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions are used to administer a website in admin mode only */
 
 /* admin forms are the full page screens that appear when admin menu items are selected. */
@@ -40,7 +42,7 @@ WTWJS.prototype.openFullPageForm = function(zpageid, zsetcategory, zitem, zitemn
 				WTW.show('wtw_showerror');
 				break;
 			case 'dashboard':
-				dGet('wtw_fullpageformtitle').innerHTML = "<div class='wtw-toparrowtext'>" + WTW.__('Roomz Dashboard') + "</div>";
+				dGet('wtw_fullpageformtitle').innerHTML = "<div class='wtw-toparrowtext'>" + WTW.__('roomz Dashboard') + "</div>";
 				WTW.show('wtw_dashboardpage');
 				WTW.openDashboardForm();
 				break;
@@ -174,7 +176,7 @@ WTWJS.prototype.hideFullPages = function() {
 }
 
 
-/* Roomz Feedback and Issues */
+/* roomz Feedback and Issues */
 
 /* check for feedback */
 WTWJS.prototype.checkForFeedback = async function(zfilter) {
@@ -248,7 +250,7 @@ WTWJS.prototype.checkForFeedbackComplete = function(zresponse, zfilter) {
 						zfeedbacklist += "</tr>";
 						zfeedbacklist += "<tr id='wtw_feedback-" + zresponse[i].feedbackid + "' style='display:none;visibility:hidden;'>";
 						if (zresponse[i].snapshoturl != '') {
-							zfeedbacklist += "<td class='wtw-tablecolumns'><img src='" + zresponse[i].snapshoturl + "' style='width:120px;height:auto;float:left;margin:8px 18px 8px 0px;cursor:pointer;' onclick=\"WTW.openIFrame('/core/pages/imageviewer.php?imageurl=" + zresponse[i].snapshoturl + "', .8, .8, 'Roomz Feedback Image');\" /></td>";
+							zfeedbacklist += "<td class='wtw-tablecolumns'><img src='" + zresponse[i].snapshoturl + "' style='width:120px;height:auto;float:left;margin:8px 18px 8px 0px;cursor:pointer;' onclick=\"WTW.openIFrame('/core/pages/imageviewer.php?imageurl=" + zresponse[i].snapshoturl + "', .8, .8, 'roomz Feedback Image');\" /></td>";
 						} else {
 							zfeedbacklist += "<td class='wtw-tablecolumns'>&nbsp;</td>";
 						}
@@ -507,7 +509,7 @@ WTWJS.prototype.deleteArchivedErrorLog = async function() {
 }
 
 
-/* dashboard and Roomz & 3D Plugin updates forms */
+/* dashboard and roomz & 3D Plugin updates forms */
 
 WTWJS.prototype.openDashboardForm = async function(zshow) {
 	/* load dashboard form */
@@ -634,24 +636,24 @@ WTWJS.prototype.openMediaPageForm = async function(zuploadid) {
 		dGet('wtw_mediaoriginal').src = '';
 		WTW.getAsyncJSON('/connect/uploadmedia.php?uploadid=' + zuploadid, 
 			function(zresponse) {
-				var zuploadinfo = JSON.parse(zresponse);
-				if (zuploadinfo != null) {
-					for (var i = 0; i < zuploadinfo.length; i++) {
-						if (zuploadinfo[i] != null) {
+				var zresponse = JSON.parse(zresponse);
+				if (zresponse != null) {
+					for (var i = 0; i < zresponse.length; i++) {
+						if (zresponse[i] != null) {
 							var zfiletitle = 'File Information';
-							if (zuploadinfo[i].uploadinfo != null) {
-								if (zuploadinfo[i].uploadinfo.title != undefined) {
-									zfiletitle = zuploadinfo[i].uploadinfo.title;
-									dGet('wtw_uploadfiletitle').innerHTML = zuploadinfo[i].uploadinfo.title;
+							if (zresponse[i].uploadinfo != null) {
+								if (zresponse[i].uploadinfo.title != undefined) {
+									zfiletitle = zresponse[i].uploadinfo.title;
+									dGet('wtw_uploadfiletitle').innerHTML = zresponse[i].uploadinfo.title;
 								}
-								if (zuploadinfo[i].uploadinfo.name != undefined) {
-									dGet('wtw_uploadfilename').innerHTML = zuploadinfo[i].uploadinfo.name;
+								if (zresponse[i].uploadinfo.name != undefined) {
+									dGet('wtw_uploadfilename').innerHTML = zresponse[i].uploadinfo.name;
 								}
-								if (zuploadinfo[i].uploadinfo.type != undefined) {
-									dGet('wtw_uploadfiletype').innerHTML = zuploadinfo[i].uploadinfo.type;
+								if (zresponse[i].uploadinfo.type != undefined) {
+									dGet('wtw_uploadfiletype').innerHTML = zresponse[i].uploadinfo.type;
 								}
-								if (zuploadinfo[i].uploadinfo.updatedate != undefined) {
-									dGet('wtw_uploadupdatedate').innerHTML = WTW.formatDateLong(zuploadinfo[i].uploadinfo.updatedate);
+								if (zresponse[i].uploadinfo.updatedate != undefined) {
+									dGet('wtw_uploadupdatedate').innerHTML = WTW.formatDateLong(zresponse[i].uploadinfo.updatedate);
 								}
 								dGet('wtw_uploadfiledelete').onclick = function() {
 									WTW.deleteUploadFiles(zuploadid);
@@ -659,53 +661,54 @@ WTWJS.prototype.openMediaPageForm = async function(zuploadid) {
 							}
 							
 							dGet('wtw_fullpageformtitle').innerHTML = "<div class='wtw-toparrowlink' onclick=\"dGet('wtw_modelfilter').value='';dGet('wtw_tgroupuploadobjectid').value='';dGet('wtw_tgroupdiv').value='';WTW.openFullPageForm('medialibrary','" + zcategory + "','');WTW.setImageMenu(4);\">Media Library</div><img id='wtw_arrowicon1' src='/content/system/images/menuarrow32.png' alt='' title='' class='wtw-toparrowicon' /><div class='wtw-toparrowtext'>" + zfiletitle + "</div>";
-							if (dGet('wtw_uploadfiletype').innerHTML.indexOf('image') > -1) {
-								if (zuploadinfo[i].thumbnail != null) {
-									if (zuploadinfo[i].thumbnail.data != undefined) {
-										dGet('wtw_mediathumbnail').src = zuploadinfo[i].thumbnail.data;
+
+							if (dGet('wtw_uploadfiletype').innerHTML.indexOf('image') > -1 && zresponse[i].uploadinfo.extension != 'dds' && zresponse[i].uploadinfo.extension != 'hdr' && zresponse[i].uploadinfo.extension != 'exr') {
+								if (zresponse[i].thumbnail != null) {
+									if (zresponse[i].thumbnail.data != undefined) {
+										dGet('wtw_mediathumbnail').src = zresponse[i].thumbnail.data;
 									}
-									if (zuploadinfo[i].thumbnail.size != undefined) {
-										dGet('wtw_mediathumbnailsize').innerHTML = WTW.formatDataSize(zuploadinfo[i].thumbnail.size);
+									if (zresponse[i].thumbnail.size != undefined) {
+										dGet('wtw_mediathumbnailsize').innerHTML = WTW.formatDataSize(zresponse[i].thumbnail.size);
 									}
-									if (zuploadinfo[i].thumbnail.width != undefined && zuploadinfo[i].thumbnail.height != undefined) {
-										dGet('wtw_mediathumbnaildimensions').innerHTML = WTW.formatNumber(zuploadinfo[i].thumbnail.width,0) + ' x ' + WTW.formatNumber(zuploadinfo[i].thumbnail.height,0);
+									if (zresponse[i].thumbnail.width != undefined && zresponse[i].thumbnail.height != undefined) {
+										dGet('wtw_mediathumbnaildimensions').innerHTML = WTW.formatNumber(zresponse[i].thumbnail.width,0) + ' x ' + WTW.formatNumber(zresponse[i].thumbnail.height,0);
 									}
-									if (zuploadinfo[i].thumbnail.path != undefined) {
-										dGet('wtw_mediathumbnail').src = zuploadinfo[i].thumbnail.path;
-										dGet('wtw_mediathumbnailpath').innerHTML = "<a href='" + zuploadinfo[i].thumbnail.path + "' target='_blank'>" + zuploadinfo[i].thumbnail.path + "</a>";
-										dGet('wtw_mediathumbnaildownload').href = zuploadinfo[i].thumbnail.path;
-									}
-								}
-								if (zuploadinfo[i].original != null) {
-									if (zuploadinfo[i].original.data != undefined) {
-										dGet('wtw_mediaoriginal').src = zuploadinfo[i].original.data;
-									}
-									if (zuploadinfo[i].original.size != undefined) {
-										dGet('wtw_mediaoriginalsize').innerHTML = WTW.formatDataSize(zuploadinfo[i].original.size);
-									}
-									if (zuploadinfo[i].original.width != undefined && zuploadinfo[i].original.height != undefined) {
-										dGet('wtw_mediaoriginaldimensions').innerHTML = WTW.formatNumber(zuploadinfo[i].original.width,0) + ' x ' + WTW.formatNumber(zuploadinfo[i].original.height,0);
-									}
-									if (zuploadinfo[i].original.path != undefined) {
-										dGet('wtw_mediaoriginal').src = zuploadinfo[i].original.path;
-										dGet('wtw_mediaoriginalpath').innerHTML = "<a href='" + zuploadinfo[i].original.path + "' target='_blank'>" + zuploadinfo[i].original.path + "</a>";
-										dGet('wtw_mediaoriginaldownload').href = zuploadinfo[i].original.path;
+									if (zresponse[i].thumbnail.path != undefined) {
+										dGet('wtw_mediathumbnail').src = zresponse[i].thumbnail.path;
+										dGet('wtw_mediathumbnailpath').innerHTML = "<a href='" + zresponse[i].thumbnail.path + "' target='_blank'>" + zresponse[i].thumbnail.path + "</a>";
+										dGet('wtw_mediathumbnaildownload').href = zresponse[i].thumbnail.path;
 									}
 								}
-								if (zuploadinfo[i].websize != null) {
-									if (zuploadinfo[i].websize.data != undefined) {
-										dGet('wtw_mediawebsize').src = zuploadinfo[i].websize.data;
+								if (zresponse[i].original != null) {
+									if (zresponse[i].original.data != undefined) {
+										dGet('wtw_mediaoriginal').src = zresponse[i].original.data;
 									}
-									if (zuploadinfo[i].websize.size != undefined) {
-										dGet('wtw_mediawebsizesize').innerHTML = WTW.formatDataSize(zuploadinfo[i].websize.size);
+									if (zresponse[i].original.size != undefined) {
+										dGet('wtw_mediaoriginalsize').innerHTML = WTW.formatDataSize(zresponse[i].original.size);
 									}
-									if (zuploadinfo[i].websize.width != undefined && zuploadinfo[i].websize.height != undefined) {
-										dGet('wtw_mediawebsizedimensions').innerHTML = WTW.formatNumber(zuploadinfo[i].websize.width,0) + ' x ' + WTW.formatNumber(zuploadinfo[i].websize.height,0);
+									if (zresponse[i].original.width != undefined && zresponse[i].original.height != undefined) {
+										dGet('wtw_mediaoriginaldimensions').innerHTML = WTW.formatNumber(zresponse[i].original.width,0) + ' x ' + WTW.formatNumber(zresponse[i].original.height,0);
 									}
-									if (zuploadinfo[i].websize.path != undefined) {
-										dGet('wtw_mediawebsize').src = zuploadinfo[i].websize.path;
-										dGet('wtw_mediawebsizepath').innerHTML = "<a href='" + zuploadinfo[i].websize.path + "' target='_blank'>" + zuploadinfo[i].websize.path + "</a>";
-										dGet('wtw_mediawebsizedownload').href = zuploadinfo[i].websize.path;
+									if (zresponse[i].original.path != undefined) {
+										dGet('wtw_mediaoriginal').src = zresponse[i].original.path;
+										dGet('wtw_mediaoriginalpath').innerHTML = "<a href='" + zresponse[i].original.path + "' target='_blank'>" + zresponse[i].original.path + "</a>";
+										dGet('wtw_mediaoriginaldownload').href = zresponse[i].original.path;
+									}
+								}
+								if (zresponse[i].websize != null) {
+									if (zresponse[i].websize.data != undefined) {
+										dGet('wtw_mediawebsize').src = zresponse[i].websize.data;
+									}
+									if (zresponse[i].websize.size != undefined) {
+										dGet('wtw_mediawebsizesize').innerHTML = WTW.formatDataSize(zresponse[i].websize.size);
+									}
+									if (zresponse[i].websize.width != undefined && zresponse[i].websize.height != undefined) {
+										dGet('wtw_mediawebsizedimensions').innerHTML = WTW.formatNumber(zresponse[i].websize.width,0) + ' x ' + WTW.formatNumber(zresponse[i].websize.height,0);
+									}
+									if (zresponse[i].websize.path != undefined) {
+										dGet('wtw_mediawebsize').src = zresponse[i].websize.path;
+										dGet('wtw_mediawebsizepath').innerHTML = "<a href='" + zresponse[i].websize.path + "' target='_blank'>" + zresponse[i].websize.path + "</a>";
+										dGet('wtw_mediawebsizedownload').href = zresponse[i].websize.path;
 									}
 								}
 								WTW.show('wtw_imagethumbnailinfo');
@@ -906,7 +909,9 @@ WTWJS.prototype.setSelectFileID = function(zselectedobj, zuploadid, zoriginalid,
 				WTW.setSoundFields();
 				break;
 			case 'image':
-				WTW.setNewMold(1);
+				if (zitem != 'skybox') {
+					WTW.setNewMold(1);
+				}
 				break;
 		}
 		switch (zitem) {
@@ -932,6 +937,11 @@ WTWJS.prototype.setSelectFileID = function(zselectedobj, zuploadid, zoriginalid,
 				zextragroundmaterial.specularColor = new BABYLON.Color3(.1, .1, .1);
 				zextragroundmaterial.emissiveColor = new BABYLON.Color3(WTW.sun.intensity, WTW.sun.intensity, WTW.sun.intensity);
 				WTW.extraGround.material = zextragroundmaterial;
+				break;
+			case "skybox":
+				WTW.closeFullPageForm();
+				WTW.setSkyBox();
+				return true;
 				break;
 		}
 		if (zitemname == 'wtw_taliassiteiconid') {
@@ -1006,9 +1016,13 @@ WTWJS.prototype.loadMyFilesPage = async function(zitem, zcategory, zhide) {
 							var zimagesrc = '';
 							var zthumbnailid = zresponse[i].thumbnailid;
 							var zwebsizeid = zresponse[i].websizeid;
-							if (zresponse[i].filetype.indexOf('image') > -1 && zresponse[i].filepath != '') {
+							var zisimage = false;
+							if (zresponse[i].filetype.indexOf('image') > -1 && zresponse[i].fileextension != 'dds' && zresponse[i].fileextension != 'hdr' && zresponse[i].fileextension != 'exr') {
+								zisimage = true;
+							}
+							if (zisimage && zresponse[i].filepath != '') {
 								zimagesrc = zresponse[i].filepath;
-							} else if (zresponse[i].filetype.indexOf('image') > -1) {
+							} else if (zisimage) {
 								zimagesrc = 'data:' + zresponse[i].filetype + ';base64,' + atob(zresponse[i].filedata);
 							} else if (zresponse[i].filetype.indexOf('audio') > -1) {
 								zimageid = 'wtw_sound' + zresponse[i].uploadid;
@@ -1020,9 +1034,14 @@ WTWJS.prototype.loadMyFilesPage = async function(zitem, zcategory, zhide) {
 								zimagesrc = '/content/system/images/iconvideo.png';
 								zthumbnailid = zresponse[i].uploadid;
 								zwebsizeid = zresponse[i].uploadid;
-							} else {
+							} else if (zresponse[i].filetype.indexOf('doc') > -1 || zresponse[i].filetype.indexOf('text') > -1 || zresponse[i].filetype.indexOf('rtf') > -1 || zresponse[i].filetype.indexOf('pdf') > -1) {
 								zimageid = 'wtw_doc' + zresponse[i].uploadid;
 								zimagesrc = '/content/system/images/icondoc.png';
+								zthumbnailid = zresponse[i].uploadid;
+								zwebsizeid = zresponse[i].uploadid;
+							} else {
+								zimageid = 'wtw_file' + zresponse[i].uploadid;
+								zimagesrc = '/content/system/images/iconfile.png';
 								zthumbnailid = zresponse[i].uploadid;
 								zwebsizeid = zresponse[i].uploadid;
 							}
@@ -1043,6 +1062,9 @@ WTWJS.prototype.loadMyFilesPage = async function(zitem, zcategory, zhide) {
 							break;
 						case 'doc':
 							zerror += "<h1 class='wtw-red'>No Uploaded Document Files Found</h1>Use the <strong>Upload</strong> button on the top right to <strong>Add a Document File</strong>.";
+							break;
+						case 'file':
+							zerror += "<h1 class='wtw-red'>No Uploaded Files of this type Found</h1>Use the <strong>Upload</strong> button on the top right to <strong>Add a File</strong>.";
 							break;
 						case 'object':
 							zerror += "<h1 class='wtw-red'>No 3D Object Files Found</h1>Use the <strong>Upload</strong> button on the top right to <strong>Add a 3D Object File</strong>.";
@@ -1738,9 +1760,8 @@ WTWJS.prototype.loadPreviewScene = async function(zind) {
 	try {
 		var zcanvasid = 'wtw_modelCanvas' + zind;
 		if (dGet(zcanvasid) != null) {
-//WTW.log(zcanvasid);
-//			var zview = engine.registerView(dGet(zcanvasid));
-/*			var scene1 = new BABYLON.Scene(engine);        
+/*			var zview = engine.registerView(dGet(zcanvasid));
+			var scene1 = new BABYLON.Scene(engine);        
 			scene1.name = 'wtw_modelcanvas' + zind;
 			scene1.gravity = new BABYLON.Vector3(0, -WTW.init.gravity, 0);
 			scene1.autoClear = false;
@@ -2628,7 +2649,7 @@ WTWJS.prototype.testEmailServerSettings = async function() {
 	try {
 		var zrequest = {
 			'sendto': dGet('wtw_ttestemail').value,
-			'subject': 'Test Message from Roomz',
+			'subject': 'Test Message from roomz',
 			'message':'This is a test message',
 			'function':'sendadminemail'
 		};
@@ -3233,7 +3254,7 @@ WTWJS.prototype.openWebAliasSettings = async function() {
 								} else if (zsitename == '' && zthingname != '') {
 									zsitename = zthingname;
 								} else if (zsitename == '') {
-									zsitename = 'Roomz 3D Website';
+									zsitename = 'roomz 3D Website';
 								}
 								zwebaliaslist += "<tr><td class='wtw-tablecolumns'>" + zsitesnapshot + "</td>\r\n";
 								zwebaliaslist += "<td class='wtw-tablecolumns'><img src='" + zsiteiconpath + "' class='wtw-tinyimage' /> <a href='" + zurl + "' target='_blank'>" + zurl + "</a></td>\r\n";
@@ -3372,7 +3393,7 @@ WTWJS.prototype.editWebAlias = async function(zwebaliasid) {
 					} 
 				}
 				if (zsitedescription == '') {
-					zsitedescription = 'Roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. Roomz (R), http://3d (TM), https://3d (TM), and HTTP3D (TM).';
+					zsitedescription = 'roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. roomz (R), http://3d (TM), https://3d (TM), and BixmaAB (TM).';
 				}
 				dGet('wtw_aliassitename').value = zsitename;
 				dGet('wtw_aliassitedescription').value = zsitedescription;
@@ -4086,7 +4107,7 @@ WTWJS.prototype.displayAPIKeys = function(zresponse, zdeleted) {
 			var zapikeyslist = "";
 			if (zresponse.apikeys != undefined) {
 				if (zresponse.apikeys.length > 0) {
-					zapikeyslist = "<table class='wtw-table'><tr><td class='wtw-tablecolumnheading'><b>App URL</b></td><td class='wtw-tablecolumnheading'><b>App Name</b></td><td class='wtw-tablecolumnheading'><b>Roomz Key</b></td><td class='wtw-tablecolumnheading'><b>Approved</b></td><td class='wtw-tablecolumnheading'><b>Date</b></td><td class='wtw-tablecolumnheading'><b>&nbsp;</b></td></tr>";
+					zapikeyslist = "<table class='wtw-table'><tr><td class='wtw-tablecolumnheading'><b>App URL</b></td><td class='wtw-tablecolumnheading'><b>App Name</b></td><td class='wtw-tablecolumnheading'><b>roomz Key</b></td><td class='wtw-tablecolumnheading'><b>Approved</b></td><td class='wtw-tablecolumnheading'><b>Date</b></td><td class='wtw-tablecolumnheading'><b>&nbsp;</b></td></tr>";
 					for (var i=0;i<zresponse.apikeys.length;i++) {
 						if (zresponse.apikeys[i] != null) {
 							if (zresponse.apikeys[i].appurl != undefined) {
@@ -4355,10 +4376,10 @@ WTWJS.prototype.openInvoices = async function(zlist) {
 		WTW.show('wtw_invoicespage');
 		WTW.show('wtw_loadinginvoices');
 		dGet('wtw_invoicestitle').innerHTML = 'Invoices';
-		dGet('wtw_invoicesnote').innerHTML = '<b>Invoices or Hosting Invoices</b> provide printable receipts for your Roomz Hosted Users Purchases and Upgrades. Your Roomz Instance can host 3D Websites for your customers!<br />';
+		dGet('wtw_invoicesnote').innerHTML = '<b>Invoices or Hosting Invoices</b> provide printable receipts for your roomz Hosted Users Purchases and Upgrades. Your roomz Instance can host 3D Websites for your customers!<br />';
 		if (zlist == 'my') {
 			dGet('wtw_invoicestitle').innerHTML = 'My Invoices';
-			dGet('wtw_invoicesnote').innerHTML = '<b>My Invoices</b> provide printable receipts for your Roomz Purchases and Upgrades.<br />';
+			dGet('wtw_invoicesnote').innerHTML = '<b>My Invoices</b> provide printable receipts for your roomz Purchases and Upgrades.<br />';
 		}
 		dGet('wtw_invoiceslist').innerHTML = '';
 		var zrequest = {
@@ -4556,6 +4577,16 @@ WTWJS.prototype.openServerSettings = async function() {
 						zchmod = zresponse.chmod;
 					}
 					dGet('wtw_chmod').value = zchmod;
+					if (zresponse.babylonversion != undefined) {
+						WTW.setDDLValue('wtw_babylonversion', zresponse.babylonversion);
+					} else {
+						WTW.setDDLValue('wtw_babylonversion', WTW.babylonVersion);
+					}
+					if (zresponse.physicsengine != undefined) {
+						WTW.setDDLValue('wtw_physicsengine', zresponse.physicsengine);
+					} else {
+						WTW.setDDLValue('wtw_physicsengine', '');
+					}
 					if (zresponse.ftphost != undefined) {
 						dGet('wtw_ftphost').value = zresponse.ftphost;
 					} else {
@@ -4643,6 +4674,8 @@ WTWJS.prototype.saveServerSettings = async function(zreload) {
 			'adminname': dGet('wtw_adminname').value,
 			'umask': dGet('wtw_umask').value,
 			'chmod': dGet('wtw_chmod').value,
+			'babylonversion': WTW.getDDLValue('wtw_babylonversion'),
+			'physicsengine': WTW.getDDLValue('wtw_physicsengine'),
 			'ftphost': dGet('wtw_ftphost').value,
 			'ftpuser': dGet('wtw_ftpuser').value,
 			'ftppassword': btoa(dGet('wtw_ftppassword').value),

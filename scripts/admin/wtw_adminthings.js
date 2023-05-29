@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions are used to administer a website in admin mode only */
 
@@ -46,12 +46,23 @@ WTWJS.prototype.openThingForm = async function(zthingid) {
 					}
 					dGet('wtw_showcommunityname').innerHTML = 'Edit 3D Thing';
 					dGet('wtw_showcommunityname').style.cursor = 'default';
+					dGet('wtw_showcommunitynamemobile').innerHTML = 'Edit 3D Thing';
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					if (dGet('wtw_tthingname').value == '') {
 						dGet('wtw_showbuildingname').innerHTML = '3D Thing';
 						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').innerHTML = '3D Thing';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
 					} else {
 						dGet('wtw_showbuildingname').innerHTML = WTW.decode(dGet('wtw_tthingname').value);
-						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Thing: <b>' + WTW.decode(dGet('wtw_tthingname').value) + '</b>';
+						if (WTW.adminView == 1) {
+							dGet('wtw_showbuildingname').style.cursor = 'pointer';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+						} else {
+							dGet('wtw_showbuildingname').style.cursor = 'default';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+						}
 					}
 					window.setTimeout(function() {
 						WTW.hide('wtw_loadingthingform');
@@ -98,12 +109,23 @@ WTWJS.prototype.loadThingForm = async function(zthingid) {
 					}
 					dGet('wtw_showcommunityname').innerHTML = 'Edit 3D Thing';
 					dGet('wtw_showcommunityname').style.cursor = 'default';
+					dGet('wtw_showcommunitynamemobile').innerHTML = 'Edit 3D Thing';
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					if (dGet('wtw_tthingname').value == '') {
 						dGet('wtw_showbuildingname').innerHTML = '3D Thing';
 						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').innerHTML = '3D Thing';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
 					} else {
 						dGet('wtw_showbuildingname').innerHTML = WTW.decode(dGet('wtw_tthingname').value);
-						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Thing: <b>' + WTW.decode(dGet('wtw_tthingname').value) + '</b>';
+						if (WTW.adminView == 1) {
+							dGet('wtw_showbuildingname').style.cursor = 'pointer';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+						} else {
+							dGet('wtw_showbuildingname').style.cursor = 'default';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+						}
 					}
 				}
 			}
@@ -153,6 +175,7 @@ WTWJS.prototype.submitthingForm = async function(w) {
 								WTW.things[i].thinginfo.versiondesc = WTW.encode(dGet('wtw_tinfothingversiondesc').value);
 								WTW.things[i].thinginfo.analytics = dGet('wtw_tthinganalyticsid').value;
 								dGet('wtw_showbuildingname').innerHTML = dGet('wtw_tthingname').value;
+								dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Thing: <b>' + dGet('wtw_tthingname').value + '</b>';
 							}
 						}
 					}
@@ -324,7 +347,7 @@ WTWJS.prototype.getSelectThingsList = async function(zfilter) {
 			if (zfilter == 'all') {
 				zlistthings += "selected";
 			}
-			zlistthings += " wtw-rightradius' onclick=\"WTW.setThingsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div>\r\n";
+			zlistthings += " wtw-rightradius' onclick=\"WTW.setThingsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div><div class='wtw-mainmenuvalue'>Admins and Developer Roles can edit <b>All</b> 3D Things on this server.</div><hr /><div class='wtw-clear'></div>\r\n";
 		} else {
 			zlistthings = '<br /><br />';
 		}

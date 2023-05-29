@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions set the types of molds to add and define the default values, form fields, and functions to create the molds */
 
@@ -494,17 +494,13 @@ WTWJS.prototype.completeMold = function(zmold, zmoldname, zparentname, zmolddef,
 				zmolddef.checkcollisions = '0';
 				zmold.checkCollisions = false;
 			}
-			if (WTW.adminView == 1 || zmolddef.ispickable == '1') {
-				/* mouse over covers hovers in the 3D Scene - for admin mode */
-				WTW.registerMouseOver(zmold);
-			}
 			/* work in progress - currently disabled, freeze world matrix can speed up the scene with less calculations */
 			if (WTW.AdminView == 0 && zparentname.indexOf('actionzone') == -1 && zparentname != '') {
 				zmold.freezeWorldMatrix();
 			} else {
 				zmold.unfreezeWorldMatrix();
 			}
-			
+			zmold.renderingGroupId = 1;
 			/*
 			 * Possible values : 
 			 * - BABYLON.AbstractMesh.CULLINGSTRATEGY_STANDARD  

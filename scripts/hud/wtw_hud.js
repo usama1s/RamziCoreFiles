@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* These functions provide many of the common functions for browse and admin modes */
 /* The heads up display (hud) provides menu options and user settings */
@@ -165,6 +165,7 @@ WTWJS.prototype.openHUD = function() {
 								zchildmoldname = zchildmoldname.replace(' ','_').toLowerCase();
 								zresults.meshes[i].id = zchildmoldname;
 								zresults.meshes[i].name = zchildmoldname;
+								zresults.meshes[i].renderingGroupId = 3;
 								
 								if (zobjectanimations != null) {
 //									WTW.addMoldAnimation(zmoldname, zmeshname, zresults.meshes[i], zobjectanimations);
@@ -177,11 +178,9 @@ WTWJS.prototype.openHUD = function() {
 								} else if (zmeshname == 'cornertopright') {
 									/* cornertopright is the close button */
 									zresults.meshes[i].isPickable = true;
-									WTW.registerMouseOver(zresults.meshes[i]);
 								} else if (zmeshname.indexOf('background') > -1) {
 									zresults.meshes[i].isPickable = true;
 									zresults.meshes[i].isVisible = true;
-									WTW.registerMouseOver(zresults.meshes[i]);
 								} else {
 									zresults.meshes[i].isPickable = false;
 								}
@@ -191,7 +190,7 @@ WTWJS.prototype.openHUD = function() {
 								}
 								if (WTW.shadows != null) {
 									/* add mesh to world shadow map */
-//									WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
+									//WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
 								}
 //								zresults.meshes[i].receiveShadows = true;
 								/* initiate and preload any event driven animations */
@@ -271,6 +270,7 @@ WTWJS.prototype.hudMenuText = function(zmenu, zselectedid) {
 			zmytext.name = 'hud-menutitle';
 			zmytext.parent = zmold;
 			zmytext.isPickable = false;
+			zmytext.renderingGroupId = 3;
 		}
 		/* clear any menu items already shown - parent box makes it easier to locate menu items to clear */
 		var zmenuitemsparent = WTW.getMeshOrNodeByID('hud-menuitems');
@@ -308,7 +308,7 @@ WTWJS.prototype.hudMenuText = function(zmenu, zselectedid) {
 						zmenuitems.scaling = new BABYLON.Vector3(1,1,1);
 					}
 					zmenuitems.parent = zhud;
-
+					
 					/* create the menu items */
 					for (var i=0;i < zresponse.length;i++) {
 						if (zresponse[i] != null) {
@@ -356,6 +356,7 @@ WTWJS.prototype.hudMenuText = function(zmenu, zselectedid) {
 							zmenuitemtext.name = 'hud-menuitemtext-' + zresponse[i].menuitemid;
 							zmenuitemtext.parent = zmenuitems;
 							zmenuitemtext.isPickable = false;
+							zmenuitemtext.renderingGroupId = 3;
 							
 							/* create button for menu item */
 							WTW.disposeClean('hud-menuitem-' + zresponse[i].menuitemid);
@@ -365,7 +366,6 @@ WTWJS.prototype.hudMenuText = function(zmenu, zselectedid) {
 							zmenuitem.isPickable = true;
 							zmenuitem.isVisible = true;
 							zmenuitem.parent = zmenuitems;
-							WTW.registerMouseOver(zmenuitem);
 							/* check to see if it closed before it finished loading */
 							zhud = WTW.getMeshOrNodeByID('hud-menuleft');
 							if (zhud == null) {
@@ -650,6 +650,7 @@ WTWJS.prototype.hudToggleCompass = function() {
 			zmold.rotation = new BABYLON.Vector3(WTW.getRadians(-30),0,WTW.getRadians(10));
 			zmold.scaling = new BABYLON.Vector3(.75,.75,.75);
 			zmold.parent = zcamerafront;
+			zmold.renderingGroupId = 3;
 			
 			BABYLON.SceneLoader.ImportMeshAsync('', zobjectfolder, zobjectfile, scene).then(
 				function (zresults) {
@@ -668,7 +669,8 @@ WTWJS.prototype.hudToggleCompass = function() {
 								zresults.meshes[i].id = zchildmoldname;
 								zresults.meshes[i].name = zchildmoldname;
 								zresults.meshes[i].isPickable = false;
-
+								zresults.meshes[i].renderingGroupId = 3;
+								
 								/* make sure all object meshes have a parent */
 								if (zresults.meshes[i].parent == null) {
 									zresults.meshes[i].parent = zmold;
@@ -968,6 +970,7 @@ WTWJS.prototype.hudOpenMenuItem = function(zmenuitem, zmenuitemid, zmenualignmen
 				zmytext.name = zmoldname + '-pageformtitle';
 				zmytext.parent = zpageformtitleparent;
 				zmytext.isPickable = false;
+				zmytext.renderingGroupId = 3;
 			}
 
 		}
@@ -1163,7 +1166,7 @@ WTWJS.prototype.setShadowSettings = function() {
 		
 		var zrenderlist = [];
         if (WTW.shadows != null) {
-			zrenderlist = WTW.shadows.getShadowMap().renderList;
+//			zrenderlist = WTW.shadows.getShadowMap().renderList;
             WTW.shadows.dispose();
             WTW.shadows = null;
         }
@@ -1185,7 +1188,7 @@ WTWJS.prototype.setShadowSettings = function() {
 //		} else {
 //			WTW.shadows.useBlurExponentialShadowMap = true;
 //		}
-		WTW.shadows.getShadowMap().renderList = zrenderlist;
+//		WTW.shadows.getShadowMap().renderList = zrenderlist;
         
 		if (WTW.extraGround != null) {
 			if (WTW.shadowSet > 0) {
@@ -1212,6 +1215,9 @@ WTWJS.prototype.toggleMicMute = function() {
 			dGet('wtw_menumic').src = '/content/system/images/menumicon32.png';
 			dGet('wtw_menumic').alt = WTW.__('Turn Mic Off');
 			dGet('wtw_menumic').title = WTW.__('Turn Mic Off');
+			dGet('wtw_menumicmobile').src = '/content/system/images/menumicon32.png';
+			dGet('wtw_menumicmobile').alt = WTW.__('Turn Mic Off');
+			dGet('wtw_menumicmobile').title = WTW.__('Turn Mic Off');
 			dGet('wtw_audio').style.boxShadow = '5px 2px 5px 0px #0a0a0e5e inset, -2px -2px 1px 0px #a7a7a73d inset';
 			dGet('wtw_audio').style.fontSize = '24px';
 			WTW.micMute = false;
@@ -1219,6 +1225,9 @@ WTWJS.prototype.toggleMicMute = function() {
 			dGet('wtw_menumic').src = '/content/system/images/menumicoff32.png';
 			dGet('wtw_menumic').alt = WTW.__('Turn Mic On');
 			dGet('wtw_menumic').title = WTW.__('Turn Mic On');
+			dGet('wtw_menumicmobile').src = '/content/system/images/menumicoff32.png';
+			dGet('wtw_menumicmobile').alt = WTW.__('Turn Mic On');
+			dGet('wtw_menumicmobile').title = WTW.__('Turn Mic On');
 			dGet('wtw_audio').style.boxShadow = '-2px -2px 4px 0px #a7a7a73d, 2px 2px 4px 0px #0a0a0e5e';
 			dGet('wtw_audio').style.fontSize = '25px';
 			WTW.micMute = true;
@@ -1239,6 +1248,9 @@ WTWJS.prototype.toggleSoundMute = function() {
 			dGet('wtw_menumute').src = '/content/system/images/menumuteoff32.png';
 			dGet('wtw_menumute').alt = WTW.__('Turn Sound Off');
 			dGet('wtw_menumute').title = WTW.__('Turn Sound Off');
+			dGet('wtw_menumutemobile').src = '/content/system/images/menumuteoff32.png';
+			dGet('wtw_menumutemobile').alt = WTW.__('Turn Sound Off');
+			dGet('wtw_menumutemobile').title = WTW.__('Turn Sound Off');
 			dGet('wtw_submenumute').src = '/content/system/images/menumuteoff.png';
 			dGet('wtw_submenumute').alt = WTW.__('Turn Sound Off');
 			dGet('wtw_submenumute').title = WTW.__('Turn Sound Off');
@@ -1317,6 +1329,9 @@ WTWJS.prototype.toggleSoundMute = function() {
 			dGet('wtw_menumute').src = '/content/system/images/menumuteon32.png';
 			dGet('wtw_menumute').alt = WTW.__('Turn Sound On');
 			dGet('wtw_menumute').title = WTW.__('Turn Sound On');
+			dGet('wtw_menumutemobile').src = '/content/system/images/menumuteon32.png';
+			dGet('wtw_menumutemobile').alt = WTW.__('Turn Sound On');
+			dGet('wtw_menumutemobile').title = WTW.__('Turn Sound On');
 			dGet('wtw_submenumute').src = '/content/system/images/menumuteon.png';
 			dGet('wtw_submenumute').alt = WTW.__('Turn Sound On');
 			dGet('wtw_submenumute').title = WTW.__('Turn Sound On');
@@ -1472,9 +1487,20 @@ WTWJS.prototype.toggleFPS = function() {
 WTWJS.prototype.showSettingsMenu = function(zmenuitem) {
 	/* show or hide sections of the browse menu (bottom menu bar) */
 	try {
+		WTW.toggleBrowseMenu(0);
 		switch (zmenuitem) {
 			case 'wtw_menuprofile':
-				WTW.openLoginMenu();WTW.closeMenus();
+				var zentervisible = false;
+				var zhudlogin = WTW.getMeshOrNodeByID('hudlogin');
+				var zenter = WTW.getMeshOrNodeByID('hudlogin-button-enter');
+				if (zenter != null) {
+					zentervisible = zenter.isVisible;
+				}
+				if (zhudlogin == null || zentervisible) {
+					WTW.openLoginMenu();WTW.closeMenus();
+				} else {
+					WTW.closeLoginHUD();
+				}
 				return true;
 				break;
 		}
@@ -1557,6 +1583,120 @@ WTWJS.prototype.closeMenus = function(zmenuid) {
 		WTW.pluginsCloseMenus(zmenuid);
 	} catch (ex) {
 		WTW.log('core-scripts-hud-wtw_hud.js-closeMenus=' + ex.message);
+	}
+}
+
+WTWJS.prototype.toggleBrowseMenu = function(zopen) {
+	/* toggles the browse menu */
+	try {
+		if (zopen == undefined) {
+			zopen = 3;
+		}
+		if (WTW.isMobile == 1 || WTW.sizeX < WTW.sizeY) {
+			/* is Mobile or portrait */
+			WTW.hide('wtw_menuexpanded');
+			if (zopen == 1) {
+				WTW.show('wtw_menuexpandedmobile');
+			} else if (dGet('wtw_menuexpandedmobile').style.display == 'block' || zopen == 0) {
+				WTW.hide('wtw_menuexpandedmobile');
+			} else {
+				WTW.show('wtw_menuexpandedmobile');
+			}
+			WTW.hide('wtw_profileimagesmmobile');
+			WTW.hide('wtw_profileimagesmmobiletext');
+			WTW.hide('wtw_modecommunitymobiletext');
+			WTW.hide('wtw_modebuildingmobiletext');
+			if (WTW.placeHolder == 1) {
+				WTW.hide('wtw_menuoptionanimationsmobile');
+				WTW.hide('wtw_menuoptionanimationsmobiletext');
+			} else {
+				WTW.show('wtw_menuoptionanimationsmobile');
+				WTW.show('wtw_menuoptionanimationsmobiletext');
+				if (dGet('wtw_tuserid').value != '') {
+					WTW.show('wtw_profileimagesmmobile');
+					WTW.show('wtw_profileimagesmmobiletext');
+				}
+			}
+			if (dGet('wtw_tuserid').value == '') {
+				WTW.hide('wtw_mainadminmodemobile');
+				WTW.hide('wtw_mainadminmodemobiletext');
+				WTW.show('wtw_mainmenudisplaynamemobile');
+			} else {
+				WTW.show('wtw_mainadminmodemobile');
+				WTW.show('wtw_mainadminmodemobiletext');
+				WTW.hide('wtw_mainmenudisplaynamemobile');
+			}
+		} else {
+			/* is not mobile or portrait */
+			WTW.toggle('wtw_menuexpanded');
+			WTW.hide('wtw_menuexpandedmobile');
+		}
+	} catch (ex) {
+		WTW.log('core-scripts-hud-wtw_hud.js-toggleMobileMenu=' + ex.message);
+	}
+}
+
+
+/* Babylon debug tools */
+
+WTWJS.prototype.toggleDebugLayer = function(zshow) {
+	/* toggles the Babylon debugger */
+	try {
+		if (zshow == undefined) {
+			if (scene.debugLayer.isVisible() == true) {
+				zshow = false;
+			} else {
+				zshow = true;
+			}
+		}
+		if (zshow) {
+			scene.debugLayer.show({
+			  embedMode: true
+			});
+		} else {
+			scene.debugLayer.hide();
+		}
+	} catch (ex) {
+		WTW.log('core-scripts-hud-wtw_hud.js-toggleDebugLayer=' + ex.message);
+	}
+}
+
+WTWJS.prototype.togglePhysicsViewer = function(zshow) {
+	/* toggles the physics debugger with show physics on the meshes */
+	try {
+		if (zshow == undefined) {
+			if (WTW.physicsViewer == null) {
+				zshow = true;
+			} else {
+				zshow = false;
+			}
+		}
+		if (WTW.physicsViewer == null) {
+			WTW.physicsViewer = new BABYLON.Debug.PhysicsViewer();
+		}
+		if (zshow) {
+			for (var zmold of scene.rootNodes) {
+				if (zmold.physicsBody) {
+					var zdebugmold = WTW.physicsViewer.showBody(zmold.physicsBody);
+				}
+				if (zmold.physicsImposter) {
+					var zdebugmold = WTW.physicsViewer.showImpostor(zmold.physicsImpostor);
+				}
+			}
+		} else {
+			for (var zmold of scene.rootNodes) {
+				if (zmold.physicsBody) {
+					var zdebugmold = WTW.physicsViewer.hideBody(zmold.physicsBody);
+				}
+				if (zmold.physicsImpostor) {
+					var zdebugmold = WTW.physicsViewer.hideImpostor(zmold.physicsImpostor);
+				}
+			}
+			WTW.physicsViewer.dispose();
+			WTW.physicsViewer = null;
+		}
+	} catch (ex) {
+		WTW.log('core-scripts-hud-wtw_hud.js-togglePhysicsViewer=' + ex.message);
 	}
 }
 

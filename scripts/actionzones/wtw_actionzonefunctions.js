@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* These functions provide many of the common functions for browse and admin modes */
 /* action zone functions are used to further define what happens when an avatar enters certain action zones */
 
@@ -436,6 +438,50 @@ WTWJS.prototype.teleport = function(zactionzoneindex) {
 								'groundTexturePath':zresponse.communityinfo.texturepath,
 								'skyTextureID':zresponse.communityinfo.skydomeid,
 								'skyTexturePath':zresponse.communityinfo.skydomepath,
+								'sceneAmbientColor':zresponse.communityinfo.sceneambientcolor,
+								'sceneClearColor':zresponse.communityinfo.sceneclearcolor,
+								'sceneUseClonedMeshMap':Number(zresponse.communityinfo.sceneuseclonedmeshmap),
+								'sceneBlockMaterialDirtyMechanism':Number(zresponse.communityinfo.sceneblockmaterialdirtymechanism),
+								'sceneFogEnabled':Number(zresponse.communityinfo.scenefogenabled),
+								'sceneFogMode':zresponse.communityinfo.scenefogmode,
+								'sceneFogDensity':Number(zresponse.communityinfo.scenefogdensity),
+								'sceneFogStart':Number(zresponse.communityinfo.scenefogstart),
+								'sceneFogEnd':Number(zresponse.communityinfo.scenefogend),
+								'sceneFogColor':zresponse.communityinfo.scenefogcolor,
+								'sunDirectionalIntensity':Number(zresponse.communityinfo.sundirectionalintensity),
+								'sunDiffuseColor':zresponse.communityinfo.sundiffusecolor,
+								'sunSpecularColor':zresponse.communityinfo.sunspecularcolor,
+								'sunGroundColor':zresponse.communityinfo.sungroundcolor,
+								'sunDirectionX':Number(zresponse.communityinfo.sundirectionx),
+								'sunDirectionY':Number(zresponse.communityinfo.sundirectiony),
+								'sunDirectionZ':Number(zresponse.communityinfo.sundirectionz),
+								'backLightIntensity':Number(zresponse.communityinfo.backlightintensity),
+								'backLightDirectionX':Number(zresponse.communityinfo.backlightdirectionx),
+								'backLightDirectionY':Number(zresponse.communityinfo.backlightdirectiony),
+								'backLightDirectionZ':Number(zresponse.communityinfo.backlightdirectionz),
+								'backLightDiffuseColor':zresponse.communityinfo.backlightdiffusecolor,
+								'backLightSpecularColor':zresponse.communityinfo.backlightspecularcolor,
+								'skyType':zresponse.communityinfo.skytype,
+								'skySize':Number(zresponse.communityinfo.skysize),
+								'skyBoxFolder':zresponse.communityinfo.skyboxfolder,
+								'skyBoxFile':zresponse.communityinfo.skyboxfile,
+								'skyBoxImageLeft':zresponse.communityinfo.skyboximageleft,
+								'skyBoxImageUp':zresponse.communityinfo.skyboximageup,
+								'skyBoxImageFront':zresponse.communityinfo.skyboximagefront,
+								'skyBoxImageRight':zresponse.communityinfo.skyboximageright,
+								'skyBoxImageDown':zresponse.communityinfo.skyboximagedown,
+								'skyBoxImageBack':zresponse.communityinfo.skyboximageback,
+								'skyPositionOffsetX':Number(zresponse.communityinfo.skypositionoffsetx),
+								'skyPositionOffsetY':Number(zresponse.communityinfo.skypositionoffsety),
+								'skyPositionOffsetZ':Number(zresponse.communityinfo.skypositionoffsetz),
+								'skyBoxMicroSurface':Number(zresponse.communityinfo.skyboxmicrosurface),
+								'skyBoxPBR':Number(zresponse.communityinfo.skyboxpbr),
+								'skyBoxAsEnvironmentTexture':Number(zresponse.communityinfo.skyboxasenvironmenttexture),
+								'skyBoxBlur':Number(zresponse.communityinfo.skyboxblur),
+								'skyBoxDiffuseColor':zresponse.communityinfo.skyboxdiffusecolor,
+								'skyBoxSpecularColor':zresponse.communityinfo.skyboxspecularcolor,
+								'skyBoxAmbientColor':zresponse.communityinfo.skyboxambientcolor,
+								'skyBoxEmissiveColor':zresponse.communityinfo.skyboxemissivecolor,
 								'skyInclination':Number(zresponse.communityinfo.skyinclination),
 								'skyLuminance':Number(zresponse.communityinfo.skyluminance),
 								'skyAzimuth':Number(zresponse.communityinfo.skyazimuth),
@@ -539,7 +585,9 @@ WTWJS.prototype.teleport = function(zactionzoneindex) {
 							/* set community and initial building name */
 							document.title = zresponse.communityinfo.communityname;
 							dGet('wtw_showcommunityname').innerHTML = zresponse.communityinfo.communityname;
+							dGet('wtw_showcommunitynamemobile').innerHTML = '3D Community: <b>' + zresponse.communityinfo.communityname + '</b>';
 							dGet('wtw_showbuildingname').innerHTML = "<span class='wtw-yellow'>Welcome to roomz</span>";
+							dGet('wtw_showbuildingnamemobile').innerHTML = "<span class='wtw-yellow'>Welcome to roomz</span>";
 							/* checking for main parent - adding if needed */
 							WTW.mainParent = 'local-connectinggrids-0---';
 							var zmainparent = WTW.getMeshOrNodeByID(WTW.mainParent);

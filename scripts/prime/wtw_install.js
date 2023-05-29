@@ -1,5 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions are only used on the installation process. Some of these functions are later repeated in other files as needed (and can have modifications) */
 
@@ -385,7 +386,7 @@ WTWJS.prototype.openCart = function() {
 			}
 		}
 		document.body.scrollTop = document.documentElement.scrollTop = 0;
-		WTW.openIFrame('https://3dnet.walktheweb.com/core/pages/cartwalktheweb.php?serverinstanceid=' + btoa(dGet('wtw_serverinstanceid').value) + '&serverip=' + btoa(dGet('wtw_serverip').value) + '&domainname=' + btoa(dGet('wtw_domainname').value) + '&domainurl=' + btoa(dGet('wtw_domainurl').value) + '&websiteurl=' + btoa(dGet('wtw_websiteurl').value) + '&userid=' + btoa(dGet('wtw_userid').value) + '&useremail=' + btoa(dGet('wtw_useremail').value) + '&usertoken=' + btoa(dGet('wtw_usertoken').value) + '&selected=' + btoa(zselected), .8, .8, 'WalkTheWeb Shopping Cart');
+		WTW.openIFrame('https://d3net.bixma.com/core/pages/cartroomz.php?serverinstanceid=' + btoa(dGet('wtw_serverinstanceid').value) + '&serverip=' + btoa(dGet('wtw_serverip').value) + '&domainname=' + btoa(dGet('wtw_domainname').value) + '&domainurl=' + btoa(dGet('wtw_domainurl').value) + '&websiteurl=' + btoa(dGet('wtw_websiteurl').value) + '&userid=' + btoa(dGet('wtw_userid').value) + '&useremail=' + btoa(dGet('wtw_useremail').value) + '&usertoken=' + btoa(dGet('wtw_usertoken').value) + '&selected=' + btoa(zselected), .8, .8, 'roomz Shopping Cart');
 	} catch (ex) { 
 		WTW.log('core-scripts-prime-wtw_install.js-openCart=' + ex.message);
 	}
@@ -422,7 +423,7 @@ WTWJS.prototype.openIFrame = function(zurl, zwidth, zheight, ztitle) {
 		dGet('wtw_ibrowsediv').style.backgroundColor = '#ffffff';
 		if (zurl == '/core/pages/help.php') {
 			ziframe.onload = function() { WTW.setHelp();	};
-			dGet('wtw_browsetitle').innerHTML = 'WalkTheWeb - Help';
+			dGet('wtw_browsetitle').innerHTML = 'roomz - Help';
 		} else {
 			dGet('wtw_browsetitle').innerHTML = ztitle;
 		}
@@ -499,12 +500,12 @@ WTWJS.prototype.setWindowSize = function() {
 }
 
 WTWJS.prototype.onMessage = function (zevent) {
-	/* message listener is enabled and this function can receive predefined messages from an iframe within the WalkTheWeb instance */
+	/* message listener is enabled and this function can receive predefined messages from an iframe within the roomz instance */
 	try {
 		zevent = zevent || window.event;
 		let zsafe = false;
 		// Check sender origin to be trusted
-		if (zevent.origin == 'https://3dnet.walktheweb.com') {
+		if (zevent.origin == 'https://d3net.bixma.com') {
 			zsafe = true;
 		} else if (zevent.origin == wtw_domainurl) {
 			zsafe = true;

@@ -53,22 +53,22 @@ global $wtwhandlers;
 	<h2 class="wtw-login"><?php echo $wtwhandlers->domainname; ?> - Validate Email</h2>
 	<div style="max-width:700px;margin-left:auto;margin-right:auto;">
 <?php if ($zresponse == '1') { ?>
-		<h2 class="wtw-categoryheading">Your email has been validated.<br /><br />Thank you for confirming.<br /><br />You can now return to the 3D Website.<br /><br />Welcome to Roomz 3D Internet!<br /><br />
-		<img src="/content/system/images/HTTP3DLogo-sticker.jpg" style="width:200px;height:auto;" />
+		<h2 class="wtw-categoryheading">Your email has been validated.<br /><br />Thank you for confirming.<br /><br />You can now return to the 3D Website.<br /><br />Welcome to roomz 3D Internet!<br /><br />
+		<img src="/content/system/images/BixmaABLogo-sticker.jpg" style="width:200px;height:auto;" />
 		<br /><br /></h2>
 <?php } else if ($zresponse == '2') { ?>
-		<h2 class="wtw-categoryheading">Your email has already been validated.<br /><br />You can now return to the 3D Website.<br /><br />Welcome to Roomz 3D Internet!<br /><br />
-		<img src="/content/system/images/HTTP3DLogo-sticker.jpg" style="width:200px;height:auto;" />
+		<h2 class="wtw-categoryheading">Your email has already been validated.<br /><br />You can now return to the 3D Website.<br /><br />Welcome to roomz 3D Internet!<br /><br />
+		<img src="/content/system/images/BixmaABLogo-sticker.jpg" style="width:200px;height:auto;" />
 		<br /><br /></h2>
 <?php } else { ?>
 		<h2 class="wtw-categoryheading" style="color:#FDFFCE">Your email could not be validated.<br /><br />Please check for a more recent email confirmation<br />or try your login again on the 3D Website to resend it.<br /><br />
-		<img src="/content/system/images/HTTP3DLogo-sticker.jpg" style="width:200px;height:auto;" />
+		<img src="/content/system/images/BixmaABLogo-sticker.jpg" style="width:200px;height:auto;" />
 		<br /><br /></h2>
 <?php } ?>
 		<div class="wtw-servicelisting-invoice">
 			<div style="clear:both;"></div>
 			<div class="wtw-notice">
-				Notice: Roomz 3D Internet is an experimental new technology. Roomz relies on numerous technologies including some that are still evolving. While we strive for perfection, some things are out of our control and may result in times when services are unavailable. We will adapt to changes as quickly as possible to provide the best service possible. Know that these services are the same services that make our own 3D Websites work. Your success is our success!
+				Notice: roomz 3D Internet is an experimental new technology. roomz relies on numerous technologies including some that are still evolving. While we strive for perfection, some things are out of our control and may result in times when services are unavailable. We will adapt to changes as quickly as possible to provide the best service possible. Know that these services are the same services that make our own 3D Websites work. Your success is our success!
 			</div>
 		</div>
 		<div style="clear:both;"></div>

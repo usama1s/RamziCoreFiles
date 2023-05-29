@@ -1,6 +1,6 @@
 <?php
 class wtwusers {
-	/* wtwusers class for Roomz user database and login functions */
+	/* wtwusers class for roomz user database and login functions */
 	protected static $_instance = null;
 	
 	public static function instance() {
@@ -960,8 +960,8 @@ class wtwusers {
 					where userid like '".$zuserid."';");
 				/* send email */
 				global $wtwtools;
-				$zhtmlmessage = "You have requested to Reset Your Password on your ".$wtwhandlers->domainname." account using this email address.<br /><br />If you did not request to recover your password, ignore this email.<br /><br />Otherwise, to Reset your Password, please click this link:<br /><br /><a href='".$wtwhandlers->domainurl."/core/pages/passwordreset.php?email=".$zuseremail."&confirm=".$zrecoverpassword."'>Reset My Password</a><br /><br /><b>Welcome to Roomz 3D Internet!</b>";
-				$zmessage = "You have requested to Reset Your Password on your ".$wtwhandlers->domainname." account using this email address.\r\n\r\nIf you did not request to recover your password, ignore this email.\r\n\r\nOtherwise, to Reset your Password, please copy and paste this link into your browser:\r\n\r\n".$wtwhandlers->domainurl."/core/pages/passwordreset.php?email=".$zuseremail."&confirm=".$zrecoverpassword."\r\n\r\nWelcome to Roomz 3D Internet!";
+				$zhtmlmessage = "You have requested to Reset Your Password on your ".$wtwhandlers->domainname." account using this email address.<br /><br />If you did not request to recover your password, ignore this email.<br /><br />Otherwise, to Reset your Password, please click this link:<br /><br /><a href='".$wtwhandlers->domainurl."/core/pages/passwordreset.php?email=".$zuseremail."&confirm=".$zrecoverpassword."'>Reset My Password</a><br /><br /><b>Welcome to roomz 3D Internet!</b>";
+				$zmessage = "You have requested to Reset Your Password on your ".$wtwhandlers->domainname." account using this email address.\r\n\r\nIf you did not request to recover your password, ignore this email.\r\n\r\nOtherwise, to Reset your Password, please copy and paste this link into your browser:\r\n\r\n".$wtwhandlers->domainurl."/core/pages/passwordreset.php?email=".$zuseremail."&confirm=".$zrecoverpassword."\r\n\r\nWelcome to roomz 3D Internet!";
 				$zresponse = $wtwtools->sendEmail(array($zuseremail), '', '', $wtwhandlers->domainname.' - Password Recovery', $zhtmlmessage, $zmessage);
 			} else {
 				$zresponse = array(
@@ -1128,6 +1128,45 @@ class wtwusers {
 			}
 		} catch (Exception $e) {
 			$wtwhandlers->serror("core-functions-class_wtwusers.php-saveProfile=".$e->getMessage());
+		}
+		return $zresponse;
+	}
+	
+	public function saveDisplayName($zuserid, $zdisplayname) {
+		/* update the local user displayname */
+		global $wtwhandlers;
+		$zresponse = array(
+			'serror'=> ''
+		);
+		try {
+			if (!empty($wtwhandlers->getSessionUserID())) {
+				$zdisplayname = $wtwhandlers->decode64($zdisplayname);
+				
+				$zfounduserid = '';
+				$zresults = $wtwhandlers->query("
+					select * from ".wtw_tableprefix."users
+					where userid='".$zuserid."'
+						and deleted=0
+					limit 1;");
+				foreach ($zresults as $zrow) {
+					$zfounduserid = $zrow["userid"];
+				}
+				
+				if (!empty($zfounduserid) && $wtwhandlers->userid == $zuserid) {
+					$wtwhandlers->query("
+						update ".wtw_tableprefix."users
+						set displayname='".addslashes($zdisplayname)."',
+							updatedate=now(),
+							updateuserid='".$wtwhandlers->userid."'
+						where userid='".$wtwhandlers->userid."'
+							and deleted=0;");
+				}
+			}
+		} catch (Exception $e) {
+			$wtwhandlers->serror("core-functions-class_wtwusers.php-saveDisplayName=".$e->getMessage());
+			$zresponse = array(
+				'serror'=> $e->getMessage()
+			);
 		}
 		return $zresponse;
 	}

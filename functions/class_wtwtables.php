@@ -1,6 +1,6 @@
 <?php 
 class wtwtables {
-	/* wtwtables class for defining and updating the core Roomz Tables, data upgrades, and initializing data */
+	/* wtwtables class for defining and updating the core roomz Tables, data upgrades, and initializing data */
 	protected static $_instance = null;
 	
 	public static function instance() {
@@ -21,7 +21,7 @@ class wtwtables {
 	}
 
 	public function databaseTableDefinitions() {
-		/* table definitions used for new installs, adding or modifying fields, and updating existing installs of Roomz core */
+		/* table definitions used for new installs, adding or modifying fields, and updating existing installs of roomz core */
 		global $wtw;
 		global $wtwdb;
 		try {
@@ -258,6 +258,22 @@ class wtwtables {
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8;			
 			");
 			$wtwdb->deltaCreateTable("
+				CREATE TABLE `".wtw_tableprefix."avatarsingroups` (
+				  `avatarsingroupid` varchar(16) NOT NULL,
+				  `avatarid` varchar(16) NOT NULL,
+				  `avatargroupid` varchar(416) NOT NULL,
+				  `createdate` datetime DEFAULT NULL,
+				  `createuserid` varchar(16) DEFAULT '',
+				  `updatedate` datetime DEFAULT NULL,
+				  `updateuserid` varchar(16) DEFAULT '',
+				  `deleteddate` datetime DEFAULT NULL,
+				  `deleteduserid` varchar(16) DEFAULT '',
+				  `deleted` int DEFAULT '0',
+				  PRIMARY KEY (`avatarsingroupid`)
+				  UNIQUE KEY `".wtw_tableprefix."avatarsingroupid_UNIQUE` (`avatarsingroupid`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			");
+			$wtwdb->deltaCreateTable("
 				CREATE TABLE `".wtw_tableprefix."buildingmolds` (
 				  `buildingmoldid` varchar(16) NOT NULL,
 				  `pastbuildingmoldid` varchar(16) DEFAULT '',
@@ -416,6 +432,50 @@ class wtwtables {
 				  `textureid` varchar(16) DEFAULT '61pcl0adyqrn016u',
 				  `skydomeid` varchar(16) DEFAULT 'hlgliuml61pg4a1b',
 				  `waterbumpid` varchar(16) DEFAULT '',
+				  `sceneambientcolor` varchar(7) DEFAULT '#ffffff',
+				  `sceneclearcolor` varchar(7) DEFAULT '#000000',
+				  `sceneuseclonedmeshmap` int DEFAULT '1',
+				  `sceneblockmaterialdirtymechanism` int DEFAULT '1',
+				  `scenefogenabled` int DEFAULT '0',
+				  `scenefogmode` varchar(25) DEFAULT '',
+				  `scenefogdensity` decimal(18,2) DEFAULT '0.01',
+				  `scenefogstart` decimal(18,2) DEFAULT '20',
+				  `scenefogend` decimal(18,2) DEFAULT '60',
+				  `scenefogcolor` varchar(7) DEFAULT '#c0c0c0',
+				  `sundirectionalintensity` decimal(18,2) DEFAULT '1',
+				  `sundiffusecolor` varchar(7) DEFAULT '#ffffff',
+				  `sunspecularcolor` varchar(7) DEFAULT '#ffffff',
+				  `sungroundcolor` varchar(7) DEFAULT '#000000',
+				  `sundirectionx` decimal(18,2) DEFAULT '999',
+				  `sundirectiony` decimal(18,2) DEFAULT '-999',
+				  `sundirectionz` decimal(18,2) DEFAULT '999',
+				  `backlightintensity` decimal(18,2) DEFAULT '0.5',
+				  `backlightdirectionx` decimal(18,2) DEFAULT '-999',
+				  `backlightdirectiony` decimal(18,2) DEFAULT '999',
+				  `backlightdirectionz` decimal(18,2) DEFAULT '-999',
+				  `backlightdiffusecolor` varchar(7) DEFAULT '#ffffff',
+				  `backlightspecularcolor` varchar(7) DEFAULT '#ffffff',
+				  `skytype` varchar(45) DEFAULT '',
+				  `skysize` decimal(18,2) DEFAULT '5000.00',
+				  `skyboxfolder` varchar(255) DEFAULT '',
+				  `skyboxfile` varchar(255) DEFAULT '',
+				  `skyboximageleft` varchar(255) DEFAULT '',
+				  `skyboximageup` varchar(255) DEFAULT '',
+				  `skyboximagefront` varchar(255) DEFAULT '',
+				  `skyboximageright` varchar(255) DEFAULT '',
+				  `skyboximagedown` varchar(255) DEFAULT '',
+				  `skyboximageback` varchar(255) DEFAULT '',
+				  `skypositionoffsetx` decimal(18,2) DEFAULT '0',
+				  `skypositionoffsety` decimal(18,2) DEFAULT '0',
+				  `skypositionoffsetz` decimal(18,2) DEFAULT '0',
+				  `skyboxmicrosurface` decimal(18,2) DEFAULT '1',
+				  `skyboxpbr` int DEFAULT '0',
+				  `skyboxasenvironmenttexture` int DEFAULT '0',
+				  `skyboxblur` decimal(18,2) DEFAULT '0',
+				  `skyboxdiffusecolor` varchar(7) DEFAULT '#000000',
+				  `skyboxspecularcolor` varchar(7) DEFAULT '#000000',
+				  `skyboxambientcolor` varchar(7) DEFAULT '#000000',
+				  `skyboxemissivecolor` varchar(7) DEFAULT '#000000',
 				  `skyinclination` decimal(18,2) DEFAULT '0.00',
 				  `skyluminance` decimal(18,2) DEFAULT '1.00',
 				  `skyazimuth` decimal(18,2) DEFAULT '0.25',
@@ -431,8 +491,8 @@ class wtwtables {
 				  `winddirectionz` decimal(18,2) DEFAULT '1',
 				  `waterwaveheight` decimal(18,2) DEFAULT '0.2',
 				  `waterwavelength` decimal(18,2) DEFAULT '0.02',
-				  `watercolorrefraction` varchar(7) DEFAULT '#23749C',
-				  `watercolorreflection` varchar(7) DEFAULT '#52BCF1',
+				  `watercolorrefraction` varchar(7) DEFAULT '#23749c',
+				  `watercolorreflection` varchar(7) DEFAULT '#52bcf1',
 				  `watercolorblendfactor` decimal(18,2) DEFAULT '0.2',
 				  `watercolorblendfactor2` decimal(18,2) DEFAULT '0.2',
 				  `wateralpha` decimal(18,2) DEFAULT '0.9',
@@ -2320,7 +2380,7 @@ class wtwtables {
 				VALUES 
 				(1,'wtw_profileimagesm','Profile','main','right',-970,1,'','/content/system/images/menuprofile32.png','show-hide','wtw_menuprofile',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 				(2,'','Settings','main','right',-990,1,'','/content/system/images/menusettings32.png','show-hide','wtw_menusettings',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-				(3,'','Roomz','main','left',-1000,1,'','/content/system/images/menuwtwlogo32.png','open-tab','https://www.Roomz.com',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+				(3,'','roomz','main','left',-1000,1,'','/content/system/images/menuwtwlogo32.png','open-tab','https://www.roomz.com',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 				(4,'wtw_showcommunityname','[Community]','main','left',-980,1,'','','','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 				(5,'wtw_showbuildingname','[Building]','main','left',-970,1,'','','','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 				(6,'wtw_menumic','Mic On','main','right',-980,1,'','/content/system/images/menumicoff32.png','WTW.toggleMicMute','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
@@ -3416,7 +3476,7 @@ class wtwtables {
 				if (count($zresults) == 0) {
 					$wtwdb->query("INSERT INTO ".wtw_tableprefix."menuitems 
 						(menuitemid, menuitemname, menutext, menuset, menualignment, menuorder, menulevel, menuiconid, menuicon, menuaction, menuproperty, menusecurity, createdate, createuserid, updatedate, updateuserid, deleteddate, deleteduserid, deleted) VALUES 
-							(null, 'wtw_rating', '[Not Rated]', 'main', 'right', -1001, 1, '', '', 'show-hide', 'wtw_menucontentrating', 1, '".$ztimestamp."', '".$zuserid."', '".$ztimestamp."', '".$zuserid."', null, '', 0);
+							(null, 'wtw_rating', '[Not Rated]', 'main', 'right', -1001, 1, '', '/content/system/images/menurating32.png', 'show-hide', 'wtw_menucontentrating', 1, '".$ztimestamp."', '".$zuserid."', '".$ztimestamp."', '".$zuserid."', null, '', 0);
 					");
 				}
 
@@ -3805,19 +3865,19 @@ class wtwtables {
 			} 
 			if (($zoldversion1 == 3 && $zoldversion2 < 6) || $zoldversion1 < 3) {
 				/* updated 3.5.2 - added Menu Items */
-				$zresults = $wtwdb->query("select * from ".wtw_tableprefix."menuitems where menutext='Roomz Help' and menuset='Help Menu';");
+				$zresults = $wtwdb->query("select * from ".wtw_tableprefix."menuitems where menutext='roomz Help' and menuset='Help Menu';");
 				if (count($zresults) == 0) {
 					$wtwdb->query("INSERT INTO ".wtw_tableprefix."menuitems 
 						(menuitemname, menutext, menuset, menualignment, menuorder, menulevel, menuiconid, menuicon, menuaction, menuproperty, menusecurity, createdate, createuserid, updatedate, updateuserid, deleteddate, deleteduserid, deleted) VALUES 
-						('','Roomz Help','Help Menu','left',10,1,'','/content/system/images/menuwtwhelp.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/wiki/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','roomz Help','Help Menu','left',10,1,'','/content/system/images/menuwtwhelp.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/wiki/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 						('','Movement Controls','Help Menu','left',20,1,'','/content/system/images/menumovement.png','WTW.closeMenus();WTW.showSettingsMenu(\'wtw_menucontrols\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','Common Questions','Help Menu','left',30,1,'','/content/system/images/menuquestions.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/knowledgebase_category/3d-browsing/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','Tutorials','Help Menu','left',40,1,'','/content/system/images/menututorials.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/knowledgebase_category/tutorials/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','Admin Help','Help Menu','left',50,1,'','/content/system/images/menutools.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/knowledgebase_category/tutorials/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','End User License Agreement','Help Menu','left',60,1,'','/content/system/images/menueula.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/useragreement/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','Roomz Refund Policy','Help Menu','left',70,1,'','/content/system/images/menurefund.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/refund-policy/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','Common Questions','Help Menu','left',30,1,'','/content/system/images/menuquestions.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/knowledgebase_category/3d-browsing/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','Tutorials','Help Menu','left',40,1,'','/content/system/images/menututorials.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/knowledgebase_category/tutorials/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','Admin Help','Help Menu','left',50,1,'','/content/system/images/menutools.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/knowledgebase_category/tutorials/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','End User License Agreement','Help Menu','left',60,1,'','/content/system/images/menueula.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/useragreement/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
+						('','roomz Refund Policy','Help Menu','left',70,1,'','/content/system/images/menurefund.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/refund-policy/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
 						('','Feedback or Issue','Help Menu','left',80,1,'','/content/system/images/menugraphics.png','WTW.closeMenus();WTW.hide(\'wtw_menusettings\');WTW.showSettingsMenu(\'wtw_menufeedback\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0),
-						('','Contact Roomz','Help Menu','left',500,1,'','/content/system/images/menuinfo.png','WTW.closeMenus();WTW.openWebpage(\'https://www.Roomz.com/contact-us/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
+						('','Contact roomz','Help Menu','left',500,1,'','/content/system/images/menuinfo.png','WTW.closeMenus();WTW.openWebpage(\'https://www.roomz.com/contact-us/\',\'_blank\');','',1,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
 					");
 				}
 				/* updated 3.5.2 - corrected web alias */
@@ -3936,7 +3996,7 @@ class wtwtables {
 						INSERT INTO ".wtw_tableprefix."optionalupgrades 
 						(optionalid, title, instructions, description, serverwide, hostwide, domainwide, subscription, startprice, createdate, createuserid, updatedate, updateuserid, deleteddate, deleteduserid, deleted)
 						VALUES 
-						('0dhcad25ljunojk7','3D Internet Services','Admin Menu -&gt; 3D Plugins -&gt;Activate 3D Internet.','Turn on 3D Internet Services to enable Global Roomz Accounts and find multiplayer options.',1,0,0,0,0.00,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
+						('0dhcad25ljunojk7','3D Internet Services','Admin Menu -&gt; 3D Plugins -&gt;Activate 3D Internet.','Turn on 3D Internet Services to enable Global roomz Accounts and find multiplayer options.',1,0,0,0,0.00,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
 					");			
 				}
 				$zresults = $wtwdb->query("
@@ -3962,7 +4022,7 @@ class wtwtables {
 						INSERT INTO ".wtw_tableprefix."optionalupgrades 
 						(optionalid, title, instructions, description, serverwide, hostwide, domainwide, subscription, startprice, createdate, createuserid, updatedate, updateuserid, deleteddate, deleteduserid, deleted)
 						VALUES 
-						('2gabogb4p4i6c9al','Custom Domain Name','Admin Menu -&gt; 3D Websites -&gt; Web Domains -&gt; Add New.','Add your Custom Domain Name to your 3D Website. (example: http://3d.YourDomain.com).',0,0,1,1,99.99,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
+						('2gabogb4p4i6c9al','Custom Domain Name','Admin Menu -&gt; 3D Websites -&gt; Web Domains -&gt; Add New.','Add your Custom Domain Name to your 3D Website. (example: http://d3.YourDomain.com).',0,0,1,1,99.99,'".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."',NULL,'',0);
 					");			
 				}
 				$zresults = $wtwdb->query("
@@ -4003,6 +4063,8 @@ class wtwtables {
 					where versionid='v6b5lsgd9zze503v'
 						and not thingid='v6b5lsgd9zze503v';
 				");
+			}
+			if (($zoldversion1 == 3 && $zoldversion2 < 7) || $zoldversion1 < 4) {
 				/* updated 3.6.0 - changed login global variables (settings) */
 				$zresults = $wtwdb->query("
 					select * 
@@ -4041,7 +4103,70 @@ class wtwtables {
 						or settingname='wtw3dinternet_enableLocal'
 						or settingname='wtw3dinternet_enableAnonymous';
 				");
-				
+				/* updated 3.6.2 - changed avatar group to one to many using avatarsingroups table */
+				/* get all avatars where the avatar group is not blank or deleted */
+				$zresults = $wtwdb->query("
+					select * 
+					from ".wtw_tableprefix."avatars 
+					where (not avatargroup='')
+						and deleted=0;
+				");
+				foreach ($zresults as $zrow) {
+					/* look up avatar group id */
+					$zresults2 = $wtwdb->query("
+						select avatargroupid 
+						from ".wtw_tableprefix."avatargroups 
+						where LOWER(avatargroup)='".strtolower($zrow["avatargroup"])."'
+						order by createdate desc, deleted
+						limit 1;
+					");
+					foreach ($zresults2 as $zrow2) {
+						/* check for a record of avatar in group to avoid duplicates */
+						$zresults3 = $wtwdb->query("
+							select avatarsingroupid 
+							from ".wtw_tableprefix."avatarsingroups 
+							where avatarid='".$zrow["avatarid"]."'
+								and avatargroupid='".$zrow2["avatargroupid"]."'
+							limit 1;
+						");
+						if (count($zresults3) == 0) {
+							/* only add avatars in groups if it does not exist */
+							$zavatarsingroupid = $wtwdb->getRandomString(16,1);
+							$wtwdb->query("
+								insert into ".wtw_tableprefix."avatarsingroups 
+								   (avatarsingroupid, avatarid, avatargroupid, createdate, createuserid, updatedate, updateuserid)
+								values 
+								   ('".$zavatarsingroupid."','".$zrow["avatarid"]."','".$zrow2["avatargroupid"]."','".$ztimestamp."','".$zuserid."','".$ztimestamp."','".$zuserid."');
+							");
+						}
+						/* clear old avatar group field in avatars table */
+/*						$wtwdb->query("
+							update ".wtw_tableprefix."avatars
+							set avatargroup='',
+								updatedate='".$ztimestamp."',
+								updateuserid='".$zuserid."'
+							where avatarid='".$zrow["avatarid"]."';
+						");
+*/					}
+				}
+
+				/* updated 3.6.3 - added icon to Content Rating on the Browse Menu */
+				$zresults = $wtwdb->query("select * from ".wtw_tableprefix."menuitems where menuitemname='wtw_rating';");
+				if (count($zresults) == 0) {
+					$wtwdb->query("INSERT INTO ".wtw_tableprefix."menuitems 
+						(menuitemid, menuitemname, menutext, menuset, menualignment, menuorder, menulevel, menuiconid, menuicon, menuaction, menuproperty, menusecurity, createdate, createuserid, updatedate, updateuserid, deleteddate, deleteduserid, deleted) VALUES 
+							(null, 'wtw_rating', '[Not Rated]', 'main', 'right', -1001, 1, '', '/content/system/images/menurating32.png', 'show-hide', 'wtw_menucontentrating', 1, '".$ztimestamp."', '".$zuserid."', '".$ztimestamp."', '".$zuserid."', null, '', 0);
+					");
+				} else {
+					/* updated 3.6.3 - added ratings icon */
+					$wtwdb->query("UPDATE ".wtw_tableprefix."menuitems 
+						set menuicon='/content/system/images/menurating32.png',
+							updatedate='".$ztimestamp."',
+							updateuserid='".$zuserid."'
+						where menuitemname='wtw_rating'
+							and menuicon='';
+					");
+				}
 			}
 
 			$wtwdb->saveSetting("wtw_dbversion", $wtw->dbversion);

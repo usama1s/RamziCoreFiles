@@ -1,9 +1,9 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* These functions provide many of the common functions for browse and admin modes */
-/* utility functions that can be used from any Roomz site and 3D Plugins */
+/* utility functions that can be used from any roomz site and 3D Plugins */
 /* includes: 	common functions, shortcuts, logging, and getting information */
 /*				fetch and post data or web pages and iframe handling */
 /*				load or unload script files */
@@ -332,6 +332,67 @@ WTWJS.prototype.isHexColor = function(zhex) {
 	return zisvalid;
 }
 
+WTWJS.prototype.openColorSelector = function(zobj, ztitle) {
+	/* when form uses a color, the color wheel is opened and set to the current color settings */
+	try {
+		if (WTW.guiAdminColors != null) {
+			WTW.guiAdminColors.dispose();
+			WTW.guiAdminColors = null;
+		}
+		WTW.guiAdminColors = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+		var zpanel = new BABYLON.GUI.StackPanel();
+		zpanel.width = '300px';
+		zpanel.isVertical = true;
+		zpanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+		zpanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+		WTW.guiAdminColors.addControl(zpanel);
+
+		var zcolortitle = new BABYLON.GUI.TextBlock();
+		zcolortitle.text = ztitle;
+		zcolortitle.color = '#FFFFFF';
+		zcolortitle.fontSize = 20;
+		zcolortitle.height = '50px';
+		zpanel.addControl(zcolortitle);     
+	
+		var zcolorpicker = new BABYLON.GUI.ColorPicker();
+		var colorvalue = new BABYLON.Color3.FromHexString(zobj.value);
+		zcolorpicker.height = '250px';
+		zcolorpicker.width = '250px';
+		zcolorpicker.value = colorvalue;
+		zcolorpicker.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+		zcolorpicker.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+		zcolorpicker.onValueChangedObservable.add(function(value) {
+			if (value != null) {
+				var zcolor = new BABYLON.Color3(value.r, value.g, value.b);
+				zobj.value = zcolor.toHexString().toLowerCase();
+				if (zobj.id.indexOf('sky') > -1) {
+					WTW.setSkyBox();
+				} else if (zobj.id.indexOf('scene') > -1 || zobj.id.indexOf('sun') > -1 || zobj.id.indexOf('backlight') > -1) {
+					WTW.setCommunityScene();
+				}
+			}
+		});
+		zpanel.addControl(zcolorpicker); 
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_utilities.js-openColorSelector=' + ex.message);
+	}
+}
+
+WTWJS.prototype.closeColorSelector = function(zcloseovercanvas) {
+	/* close and dispose color selector after use */
+	try {
+		if (zcloseovercanvas == undefined) {
+			zcloseovercanvas = true;
+		}
+		if ((zcloseovercanvas == false && WTW.guiAdminColors != null && WTW.canvasFocus == 0) || (zcloseovercanvas && WTW.guiAdminColors != null)) {
+			WTW.guiAdminColors.dispose();
+			WTW.guiAdminColors = null;
+		}
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_utilities.js-closeColorSelector=' + ex.message);
+	}
+}
+
 WTWJS.prototype.setTextColor = function(zbgcolor, zlightcolor, zdarkcolor) {
 	/* when the color is selected, the form updates the color to the background */
 	/* this also sets the text color to an opposite color than the background (default is black or white) */
@@ -374,15 +435,15 @@ WTWJS.prototype.getJSON = function(zurl, zcallback, zaction, zrequest) {
 		if (zrequest == undefined) {
 			zrequest = null;
 		}
-		var Httpreq = new XMLHttpRequest();
-		Httpreq.overrideMimeType('application/json');
-		Httpreq.open(zaction, zurl, true);
-		Httpreq.onreadystatechange = function () {
-			if (Httpreq.readyState == 4 && Httpreq.status == '200') {
-				zcallback(Httpreq.responseText);
+		var zhttpreq = new XMLHttpRequest();
+		zhttpreq.overrideMimeType('application/json');
+		zhttpreq.open(zaction, zurl, true);
+		zhttpreq.onreadystatechange = function () {
+			if (zhttpreq.readyState == 4 && zhttpreq.status == '200') {
+				zcallback(zhttpreq.responseText);
 			}
 		};
-		Httpreq.send(zrequest);  
+		zhttpreq.send(zrequest);  
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_utilities.js-getJSON=' + ex.message);
 	}
@@ -398,15 +459,15 @@ WTWJS.prototype.getAsyncJSON = function(zurl, zcallback, zaction, zrequest) {
 			if (zrequest == undefined) {
 				zrequest = null;
 			}
-			var Httpreq = new XMLHttpRequest();
-			Httpreq.overrideMimeType('application/json');
-			Httpreq.open(zaction, zurl, true);
-			Httpreq.onreadystatechange = function () {
-				if (Httpreq.readyState == 4 && Httpreq.status == '200') {
-					zcallback(Httpreq.responseText);
+			var zhttpreq = new XMLHttpRequest();
+			zhttpreq.overrideMimeType('application/json');
+			zhttpreq.open(zaction, zurl, true);
+			zhttpreq.onreadystatechange = function () {
+				if (zhttpreq.readyState == 4 && zhttpreq.status == '200') {
+					zcallback(zhttpreq.responseText);
 				}
 			};
-			Httpreq.send(zrequest);
+			zhttpreq.send(zrequest);
 		});
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_utilities.js-getAsyncJSON=' + ex.message);
@@ -435,19 +496,19 @@ WTWJS.prototype.postJSON = function(zurl, zrequest, zcallback) {
 	/* performs a form POST based JSON call for data */
 	try {
 		var zform1 = document.createElement('form');
-		var Httpreq = new XMLHttpRequest();
+		var zhttpreq = new XMLHttpRequest();
 		var zformdata = new FormData(zform1);
 		for(var zkey in zrequest) {
 			zformdata.append(zkey, zrequest[zkey]);
 		}
 		zformdata.append('action', 'POST');
-		Httpreq.open('POST', zurl);
-		Httpreq.onreadystatechange = function () {
-			if (Httpreq.readyState == 4 && Httpreq.status == '200') {
-				zcallback(Httpreq.responseText);
+		zhttpreq.open('POST', zurl);
+		zhttpreq.onreadystatechange = function () {
+			if (zhttpreq.readyState == 4 && zhttpreq.status == '200') {
+				zcallback(zhttpreq.responseText);
 			}
 		};
-		Httpreq.send(zformdata);  
+		zhttpreq.send(zformdata);  
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_utilities.js-postJSON=' + ex.message);
 	}
@@ -458,22 +519,35 @@ WTWJS.prototype.postAsyncJSON = function(zurl, zrequest, zcallback) {
 	try {
 		return new Promise(function () {
 			var zform1 = document.createElement('form');
-			var Httpreq = new XMLHttpRequest();
+			var zhttpreq = new XMLHttpRequest();
 			var zformdata = new FormData(zform1);
 			for(var zkey in zrequest) {
 				zformdata.append(zkey, zrequest[zkey]);
 			}
 			zformdata.append('action', 'POST');
-			Httpreq.open('POST', zurl);
-			Httpreq.onreadystatechange = function () {
-				if (Httpreq.readyState == 4 && Httpreq.status == '200') {
-					zcallback(Httpreq.responseText);
+			zhttpreq.open('POST', zurl);
+//			zhttpreq.onprogress = WTW.postAsyncJSONProgress;			
+			zhttpreq.onreadystatechange = function () {
+				if (zhttpreq.readyState == 4 && zhttpreq.status == '200') {
+					zcallback(zhttpreq.responseText);
 				}
 			};
-			Httpreq.send(zformdata);
+			zhttpreq.send(zformdata);
 		});
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_utilities.js-postAsyncJSON=' + ex.message);
+	}
+}
+
+WTWJS.prototype.postAsyncJSONProgress = function(zevent) {
+	/* provides progress from a form POST based JSON call for data in async mode  */
+	try {
+		if (zevent.lengthComputable) {
+			var percentComplete = (zevent.loaded / zevent.total) * 100;  
+//WTW.log("percentComplete=" + percentComplete);
+		} 
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_utilities.js-postAsyncJSONProgress=' + ex.message);
 	}
 }
 
@@ -622,7 +696,7 @@ WTWJS.prototype.openIFrame = function(zurl, zwidth, zheight, ztitle) {
 		dGet('wtw_ibrowsediv').style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
 		if (zurl == '/core/pages/help.php') {
 			ziframe.onload = function() { WTW.setHelp();	};
-			dGet('wtw_browsetitle').innerHTML = 'Roomz - Help';
+			dGet('wtw_browsetitle').innerHTML = 'roomz - Help';
 		} else {
 			dGet('wtw_browsetitle').innerHTML = ztitle;
 		}
@@ -663,7 +737,7 @@ WTWJS.prototype.openAsyncIFrame = async function(zurl, zwidth, zheight, ztitle) 
 			dGet('wtw_ibrowsediv').style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
 			if (zurl == '/core/pages/help.php') {
 				ziframe.onload = function() { WTW.setHelp();	};
-				dGet('wtw_browsetitle').innerHTML = 'Roomz - Help';
+				dGet('wtw_browsetitle').innerHTML = 'roomz - Help';
 			} else {
 				dGet('wtw_browsetitle').innerHTML = ztitle;
 			}
@@ -714,7 +788,7 @@ WTWJS.prototype.closeIFrame = function() {
 }
 
 WTWJS.prototype.redirectParent = function(zurl) {
-	/* used from within an iframe to redirect the main Roomz webpage */
+	/* used from within an iframe to redirect the main roomz webpage */
 	try {
 		if (zurl.length > 0) {
 			window.location.href = zurl;
@@ -1362,6 +1436,18 @@ WTWJS.prototype.changeNumberValue = function(zitem, zdn, zrefresh) {
 					znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
 					dGet(zitem).value = (znvali.toFixed(2));
 					WTW.setGroundWater();
+				} else if (zitem.indexOf('skysize2') > -1) {
+					znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+					dGet(zitem).value = (znvali.toFixed(2));
+					WTW.setSkySize();
+				} else if (zitem.indexOf('sky') > -1) {
+					znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+					dGet(zitem).value = (znvali.toFixed(2));
+					WTW.setSkyBox();
+				} else if (zitem.indexOf('scene') > -1 || zitem.indexOf('sun') > -1 || zitem.indexOf('backlight') > -1) {
+					znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+					dGet(zitem).value = (znvali.toFixed(2));
+					WTW.setCommunityScene();
 				} else if (zitem.indexOf('axis') > -1 || zitem.indexOf('actionzone') > -1) {
 					znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
 					dGet(zitem).value = (znvali.toFixed(2));
@@ -1405,6 +1491,18 @@ WTWJS.prototype.changeNumberValue = function(zitem, zdn, zrefresh) {
 						znval = parseFloat(Math.round(Number(zval) * 100) / 100) + zndn;
 						dGet(zitem).value = (znval.toFixed(2));
 						WTW.setGroundWater();
+					} else if (zitem.indexOf('skysize2') > -1) {
+						znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+						dGet(zitem).value = (znvali.toFixed(2));
+						WTW.setSkySize();
+					} else if (zitem.indexOf('sky') > -1) {
+						znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+						dGet(zitem).value = (znvali.toFixed(2));
+						WTW.setSkyBox();
+					} else if (zitem.indexOf('scene') > -1 || zitem.indexOf('sun') > -1 || zitem.indexOf('backlight') > -1) {
+						znvali = parseFloat(Math.round(Number(zvali) * 100) / 100) + ndni;
+						dGet(zitem).value = (znvali.toFixed(2));
+						WTW.setCommunityScene();
 					} else if (zitem.indexOf('axis') > -1 || zitem.indexOf('actionzone') > -1) {
 						znval = parseFloat(Math.round(Number(zval) * 100) / 100) + zndn;
 						dGet(zitem).value = (znval.toFixed(2));
@@ -1861,28 +1959,28 @@ WTWJS.prototype.getMoveDownVector = function(zsourcename, zstride) {
 			var zhits3 = scene.multiPickWithRay(zray3);
 			var zhits4 = scene.multiPickWithRay(zray4);
 			for (var i=0; i<zhits1.length; i++){
-				if (zhits1[i].pickedMesh.name.indexOf('molds-') > -1 || zhits1[i].pickedMesh.name == 'communityeground') {
+				if (zhits1[i].pickedMesh.name.indexOf('molds-') > -1 || zhits1[i].pickedMesh.name == 'communityeground-') {
 					if (zhits1[i].distance < zdist1) {
 						zdist1 = zhits1[i].distance;
 					}
 				}
 			}
 			for (var i=0; i<zhits2.length; i++){
-				if (zhits2[i].pickedMesh.name.indexOf('molds-') > -1 || zhits2[i].pickedMesh.name == 'communityeground') {
+				if (zhits2[i].pickedMesh.name.indexOf('molds-') > -1 || zhits2[i].pickedMesh.name == 'communityeground-') {
 					if (zhits2[i].distance < zdist2) {
 						zdist2 = zhits2[i].distance;
 					}
 				}
 			}
 			for (var i=0; i<zhits3.length; i++){
-				if (zhits3[i].pickedMesh.name.indexOf('molds-') > -1 || zhits3[i].pickedMesh.name == 'communityeground') {
+				if (zhits3[i].pickedMesh.name.indexOf('molds-') > -1 || zhits3[i].pickedMesh.name == 'communityeground-') {
 					if (zhits3[i].distance < zdist3) {
 						zdist3 = zhits3[i].distance;
 					}
 				}
 			}
 			for (var i=0; i<zhits4.length; i++){
-				if (zhits4[i].pickedMesh.name.indexOf('molds-') > -1 || zhits4[i].pickedMesh.name == 'communityeground') {
+				if (zhits4[i].pickedMesh.name.indexOf('molds-') > -1 || zhits4[i].pickedMesh.name == 'communityeground-') {
 					if (zhits4[i].distance < zdist4) {
 						zdist4 = zhits4[i].distance;
 					}
@@ -2431,7 +2529,7 @@ WTWJS.prototype.setClosestBuilding = function() {
 									} else if (WTW.buildingName != '') {
 										zclosestwebname = WTW.decode(WTW.buildingName);
 									} else {
-										zclosestwebname = 'Roomz!';
+										zclosestwebname = 'roomz!';
 									}
 									zclosestwebid = WTW.connectingGrids[i].buildinginfo.buildingid;
 									zclosestaccess = WTW.connectingGrids[i].buildinginfo.access;
@@ -2452,23 +2550,36 @@ WTWJS.prototype.setClosestBuilding = function() {
 			if (dGet('wtw_showbuildingname') != null) {
 				if (zclosestwebname != '') {
 					dGet('wtw_showbuildingname').innerHTML = zclosestwebname;
-					dGet('wtw_showbuildingname').style.cursor = 'pointer';
 					WTW.showInline('wtw_showbuildingname');
+					dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Web: <b>' + zclosestwebname + '</b>';
+					if (WTW.adminView == 1) {
+						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+					} else {
+						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+					}
+					WTW.showInline('wtw_showbuildingnamemobile');
 				}
 			}
 			if (WTW.editBuildingAccess != undefined) {
 				if (WTW.adminView == 0 && ((WTW.editBuildingAccess.indexOf(dGet('wtw_tuserid').value) > -1 && zclosestwebtype == 'Building') || (zclosestaccess.indexOf(dGet('wtw_tuserid').value) > -1 && zclosestwebtype == 'Thing')) && dGet('wtw_tuserid').value != '') {
 					dGet('wtw_modebuilding').alt = 'Edit ' + zclosestwebtype;
 					dGet('wtw_modebuilding').title = 'Edit ' + zclosestwebtype;
+					dGet('wtw_modebuildingmobile').alt = 'Edit ' + zclosestwebtype;
+					dGet('wtw_modebuildingmobile').title = 'Edit ' + zclosestwebtype;
 					switch (zclosestwebtype) {
 						case 'Thing':
 							dGet('wtw_modebuilding').src = '/content/system/images/menuthings32.png';
+							dGet('wtw_modebuildingmobile').src = '/content/system/images/menuthings32.png';
 							break;
 						case 'Community':
 							dGet('wtw_modebuilding').src = '/content/system/images/menucommunities32.png';
+							dGet('wtw_modebuildingmobile').src = '/content/system/images/menucommunities32.png';
 							break;
 						default:
 							dGet('wtw_modebuilding').src = '/content/system/images/menubuildings32.png';
+							dGet('wtw_modebuildingmobile').src = '/content/system/images/menubuildings32.png';
 							break;
 					}
 					dGet('wtw_modebuilding').onclick = function() {
@@ -2479,9 +2590,19 @@ WTWJS.prototype.setClosestBuilding = function() {
 							window.location.href = '/admin.php';
 						}
 					}
+					dGet('wtw_modebuildingmobile').onclick = function() {
+						var zreturnpath = window.location.href;
+						if (zclosestwebid != '') {
+							window.location.href = '/admin.php?' + zclosestwebtype.toLowerCase() + 'id=' + zclosestwebid + '&returnpath=' + zreturnpath;
+						} else {
+							window.location.href = '/admin.php';
+						}
+					}
 					WTW.showInline('wtw_modebuilding');
+					WTW.showInline('wtw_modebuildingmobile');
 				} else if (WTW.adminView == 1) {
 					dGet('wtw_modebuilding').src = '/content/system/images/menuedit32.png';
+					dGet('wtw_modebuildingmobile').src = '/content/system/images/menuedit32.png';
 					var zreturnpath1 = '';
 					if (dGet('wtw_returnpath') != null) {
 						zreturnpath1 = dGet('wtw_returnpath').value;
@@ -2489,9 +2610,13 @@ WTWJS.prototype.setClosestBuilding = function() {
 					if (zreturnpath1 != '') {
 						dGet('wtw_modebuilding').alt = 'Return to 3D Website';
 						dGet('wtw_modebuilding').title = 'Return to 3D Website';
+						dGet('wtw_modebuildingmobile').alt = 'Return to 3D Website';
+						dGet('wtw_modebuildingmobile').title = 'Return to 3D Website';
 					} else {
 						dGet('wtw_modebuilding').alt = 'View ' + zclosestwebtype;
 						dGet('wtw_modebuilding').title = 'View ' + zclosestwebtype;
+						dGet('wtw_modebuildingmobile').alt = 'View ' + zclosestwebtype;
+						dGet('wtw_modebuildingmobile').title = 'View ' + zclosestwebtype;
 					}
 					dGet('wtw_modebuilding').onclick = function() {
 						var zreturnpath = '';
@@ -2506,9 +2631,24 @@ WTWJS.prototype.setClosestBuilding = function() {
 							window.location.href = '/';
 						}
 					}
+					dGet('wtw_modebuildingmobile').onclick = function() {
+						var zreturnpath = '';
+						if (dGet('wtw_returnpath') != null) {
+							zreturnpath = dGet('wtw_returnpath').value;
+						}
+						if (zreturnpath != '') {
+							window.location.href = zreturnpath;
+						} else if (zclosestwebid != '') {
+							window.location.href = '/' + zclosestwebtype.toLowerCase() + '/' + zclosestwebid;
+						} else {
+							window.location.href = '/';
+						}
+					}
 					WTW.showInline('wtw_modebuilding');
+					WTW.showInline('wtw_modebuildingmobile');
 				} else {
 					WTW.hide('wtw_modebuilding');
+					WTW.hide('wtw_modebuildingmobile');
 				}
 			}
 			if (WTW.editCommunityAccess != undefined) {
@@ -2516,10 +2656,15 @@ WTWJS.prototype.setClosestBuilding = function() {
 					if (dGet('wtw_showcommunityname') != null) {
 						dGet('wtw_showcommunityname').innerHTML = WTW.communityName;
 						dGet('wtw_showcommunityname').style.cursor = 'pointer';
+						dGet('wtw_showcommunitynamemobile').innerHTML = '3D Community: <b>' + WTW.communityName + '</b>';
+						dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					}
 					dGet('wtw_modecommunity').alt = 'Edit Community';
 					dGet('wtw_modecommunity').title = 'Edit Community';
 					dGet('wtw_modecommunity').src = '/content/system/images/menucommunities32.png';
+					dGet('wtw_modecommunitymobile').alt = 'Edit Community';
+					dGet('wtw_modecommunitymobile').title = 'Edit Community';
+					dGet('wtw_modecommunitymobile').src = '/content/system/images/menucommunities32.png';
 					dGet('wtw_modecommunity').onclick = function() {
 						var zreturnpath = window.location.href;
 						if (zclosestwebid != '') {
@@ -2528,13 +2673,25 @@ WTWJS.prototype.setClosestBuilding = function() {
 							window.location.href = '/admin.php';
 						}
 					}
+					dGet('wtw_modecommunitymobile').onclick = function() {
+						var zreturnpath = window.location.href;
+						if (zclosestwebid != '') {
+							window.location.href = '/admin.php?communityid=' + communityid + '&returnpath=' + zreturnpath;
+						} else {
+							window.location.href = '/admin.php';
+						}
+					}
 					WTW.showInline('wtw_modecommunity');		
+					WTW.showInline('wtw_modecommunitymobile');		
 				} else if (WTW.adminView == 1 && communityid != '') {
 					if (dGet('wtw_showcommunityname') != null) {
 						dGet('wtw_showcommunityname').innerHTML = WTW.communityName;
 						dGet('wtw_showcommunityname').style.cursor = 'pointer';
+						dGet('wtw_showcommunitynamemobile').innerHTML = '3D Community: <b>' + WTW.communityName + '</b>';
+						dGet('wtw_showcommunitynamemobile').style.cursor = 'pointer';
 					}
 					dGet('wtw_modecommunity').src = '/content/system/images/menuedit32.png';
+					dGet('wtw_modecommunitymobile').src = '/content/system/images/menuedit32.png';
 					var zreturnpath1 = '';
 					if (dGet('wtw_returnpath') != null) {
 						zreturnpath1 = dGet('wtw_returnpath').value;
@@ -2542,9 +2699,13 @@ WTWJS.prototype.setClosestBuilding = function() {
 					if (zreturnpath1 != '') {
 						dGet('wtw_modecommunity').alt = 'Return to 3D Website';
 						dGet('wtw_modecommunity').title = 'Return to 3D Website';
+						dGet('wtw_modecommunitymobile').alt = 'Return to 3D Website';
+						dGet('wtw_modecommunitymobile').title = 'Return to 3D Website';
 					} else {
 						dGet('wtw_modecommunity').alt = 'View 3D Community';
 						dGet('wtw_modecommunity').title = 'View  3D Community';
+						dGet('wtw_modecommunitymobile').alt = 'View 3D Community';
+						dGet('wtw_modecommunitymobile').title = 'View  3D Community';
 					}
 					dGet('wtw_modecommunity').onclick = function() {
 						var zreturnpath = '';
@@ -2559,9 +2720,24 @@ WTWJS.prototype.setClosestBuilding = function() {
 							window.location.href = '/';
 						}
 					}
+					dGet('wtw_modecommunitymobile').onclick = function() {
+						var zreturnpath = '';
+						if (dGet('wtw_returnpath') != null) {
+							zreturnpath = dGet('wtw_returnpath').value;
+						}
+						if (zreturnpath != '') {
+							window.location.href = zreturnpath;
+						} else if (communityid != '') {
+							window.location.href = '/' + communityid;
+						} else {
+							window.location.href = '/';
+						}
+					}
 					WTW.showInline('wtw_modecommunity');
+					WTW.showInline('wtw_modecommunitymobile');
 				} else {
 					WTW.hide('wtw_modecommunity');
+					WTW.hide('wtw_modecommunitymobile');
 				}
 			}
 			WTW.closestWebID = zclosestwebid;

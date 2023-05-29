@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions create the various avatars and place holders */
 
@@ -464,6 +464,7 @@ WTWJS.prototype.addAvatar3DObject = function(zavatarname, zavatardef) {
 								zresults.meshes[i].isPickable = true;
 								zresults.meshes[i].name = zchildmoldname;
 								zresults.meshes[i].id = zchildmoldname;
+								zresults.meshes[i].renderingGroupId = 1;
 //								zresults.meshes[i].convertToUnIndexedMesh();
 								zresults.meshes[i].isVisible = false;
 								
@@ -506,12 +507,11 @@ WTWJS.prototype.addAvatar3DObject = function(zavatarname, zavatardef) {
 									zresults.meshes[i].material.dispose();
 									zresults.meshes[i].material = zcovering;
 								}
-								WTW.registerMouseOver(zresults.meshes[i]);
 								if (zresults.meshes[i].parent == null) {
 									zresults.meshes[i].parent = zavatarparent;
 								}
 								if (WTW.shadows != null) {
-									WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
+//									WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
 								}
 								if (zresults.meshes[i].material != null) {
 									zresults.meshes[i].material.unfreeze();
@@ -569,7 +569,6 @@ WTWJS.prototype.addAvatar3DObject = function(zavatarname, zavatardef) {
 								var zchildmoldname = zavatarname + '-' + zmeshname;
 								zresults.skeletons[i].name = zchildmoldname;
 								zresults.skeletons[i].id = zchildmoldname;
-								WTW.registerMouseOver(zresults.skeletons[i]);
 								if (zresults.skeletons[i].parent == null) {
 									zresults.skeletons[i].scaling = new BABYLON.Vector3(zscalingx,zscalingy,zscalingz);
 								}
@@ -925,6 +924,7 @@ WTWJS.prototype.addAvatarForEdit = function(zavatarname, zavatardef) {
 								zresults.meshes[i].isPickable = true;
 								zresults.meshes[i].name = zchildmoldname;
 								zresults.meshes[i].id = zchildmoldname;
+								zresults.meshes[i].renderingGroupId = 1;
 //								zresults.meshes[i].convertToUnIndexedMesh();
 								zresults.meshes[i].isVisible = true;
 								
@@ -996,12 +996,11 @@ WTWJS.prototype.addAvatarForEdit = function(zavatarname, zavatardef) {
 									zresults.meshes[i].material.dispose();
 									zresults.meshes[i].material = zcovering;
 								}
-								WTW.registerMouseOver(zresults.meshes[i]);
 								if (zresults.meshes[i].parent == null) {
 									zresults.meshes[i].parent = zavatarparent;
 								}
 								if (WTW.shadows != null) {
-									WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
+//									WTW.shadows.getShadowMap().renderList.push(zresults.meshes[i]);
 								}
 								if (zresults.meshes[i].material != null) {
 									zresults.meshes[i].material.unfreeze();
@@ -1058,7 +1057,6 @@ WTWJS.prototype.addAvatarForEdit = function(zavatarname, zavatardef) {
 								var zchildmoldname = zavatarname + '-' + zmeshname;
 								zresults.skeletons[i].name = zchildmoldname;
 								zresults.skeletons[i].id = zchildmoldname;
-								WTW.registerMouseOver(zresults.skeletons[i]);
 								if (zresults.skeletons[i].parent == null) {
 									zresults.skeletons[i].scaling = new BABYLON.Vector3(zscalingx,zscalingy,zscalingz);
 								}

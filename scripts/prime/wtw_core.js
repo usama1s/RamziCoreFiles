@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions are the core startup sequence, fetching of data, and render loop related functions */
 
 WTWJS.prototype.initLoadSequence = function() {
@@ -10,7 +12,7 @@ WTWJS.prototype.initLoadSequence = function() {
 			WTW.loadSequence();
 		} else {
 			/* if no, redirects to help and information webpage */
-			window.location.href = 'https://www.bixma.com/wiki/trouble-viewing-3d-websites/';
+			window.location.href = 'https://www.roomz.com/wiki/trouble-viewing-3d-websites/';
 		}
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_core.js-initLoadSequence=' + ex.message);
@@ -19,6 +21,7 @@ WTWJS.prototype.initLoadSequence = function() {
 
 WTWJS.prototype.loadSequence = function() {
 	/* when babylon engine is supported, this is the load sequence of functions */
+	/* this will load through the Babylon engine */
 	/* each function can be found in order after this function */
 	try {
 		if (typeof WTW.adminInit == 'function') {
@@ -27,12 +30,21 @@ WTWJS.prototype.loadSequence = function() {
 		}
 		/* load the content rating */
 		WTW.setContentRating();
-		/* sets up the environment with babylon engine */
-		WTW.initEnvironment();
-		/* see if user is logged in and set the associated settings */
-		WTW.loadLoginSettings();
 		/* load the 3D Community or default setings to the 3D Scene */
 		WTW.loadInitSettings();
+		/* sets up the environment with babylon engine */
+		WTW.initEnvironment();
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_core.js-loadSequence=' + ex.message);
+	} 
+}
+
+WTWJS.prototype.continueLoadSequence = function() {
+	/* when babylon engine is supported, this is the load sequence of functions */
+	/* this will load after the babylon engine */
+	/* each function can be found in order after this function */
+	try {
+		WTW.loadLoginSettings();
 		/* get user settings that were saved by cookies - implemented before the load scene function */
 		WTW.loadUserSettings();
 		/* load rest of scene starting with connecting grids, which trigger loading action zones, molds, and then automations */
@@ -74,6 +86,28 @@ WTWJS.prototype.setContentRating = function() {
 					dGet('wtw_rating').onmouseout = function() {WTW.hideToolTip();};
 					
 					dGet('wtw_contentrating').innerHTML = atob(zresponse.contentrating);
+					if (dGet('wtw_ratingmobile') != null) {
+						if (zresponse.unratedcontent == '1') {
+							dGet('wtw_ratingmobile').innerHTML = zresponse.rating + '*';
+						} else {
+							dGet('wtw_ratingmobile').innerHTML = zresponse.rating;
+						}
+						dGet('wtw_ratingmobile').onmouseover = function() {WTW.showToolTip('Content Rating - Click for more');};
+						dGet('wtw_ratingmobile').onmouseout = function() {WTW.hideToolTip();};
+						
+						dGet('wtw_ratingmobile').title = 'Content Rating - Click for more';
+						dGet('wtw_ratingmobile').alt = 'Content Rating - Click for more';
+					}
+					if (dGet('wtw_ratingmobiletext') != null) {
+						if (zresponse.unratedcontent == '1') {
+							dGet('wtw_ratingmobiletext').innerHTML = zresponse.rating + '*';
+						} else {
+							dGet('wtw_ratingmobiletext').innerHTML = zresponse.rating;
+						}
+						dGet('wtw_ratingmobiletext').onmouseover = function() {WTW.showToolTip('Content Rating - Click for more');};
+						dGet('wtw_ratingmobiletext').onmouseout = function() {WTW.hideToolTip();};
+					}
+					
 				}
 			}
 		);
@@ -82,7 +116,192 @@ WTWJS.prototype.setContentRating = function() {
 	} 
 }
 
-WTWJS.prototype.initEnvironment = function() {
+WTWJS.prototype.loadInitSettings = function() {
+	/* load the init settings - the default settings for any scene */
+	try {
+		var zsitename = wtw_defaultsitename;
+		if (wtw_domain != null) {
+			/* wtw_domain values are passed from the php class function in class_initsession.php */
+			wtw_domain = JSON.parse(wtw_domain);
+			if (wtw_domain.domaininfo != null) {
+				zsitename = wtw_domain.domaininfo.communityname;				
+				WTW.buildingName = wtw_domain.buildinginfo.buildingname;
+				WTW.communityName = WTW.decode(wtw_domain.communityinfo.communityname);
+				if (dGet('wtw_communitysummary') != null) {
+					dGet('wtw_communitysummary').innerHTML = WTW.decode(wtw_domain.communityinfo.communityname) + ' Community Summary';
+				}
+				WTW.init.groundTextureID = wtw_domain.domaininfo.textureid;
+				WTW.init.groundTexturePath = wtw_domain.domaininfo.texturepath;
+				WTW.init.skyTextureID = wtw_domain.domaininfo.skydomeid;
+				WTW.init.skyTexturePath = wtw_domain.domaininfo.skydomepath;
+				WTW.init.skyInclination = wtw_domain.domaininfo.skyinclination;
+				WTW.init.skyLuminance = wtw_domain.domaininfo.skyluminance;
+				WTW.init.skyAzimuth = wtw_domain.domaininfo.skyazimuth;
+				WTW.init.skyRayleigh = wtw_domain.domaininfo.skyrayleigh;
+				WTW.init.skyTurbidity = wtw_domain.domaininfo.skyturbidity;
+				WTW.init.skyMieDirectionalG = wtw_domain.domaininfo.skymiedirectionalg;
+				WTW.init.skyMieCoefficient = wtw_domain.domaininfo.skymiecoefficient;
+				WTW.init.groundPositionY = Number(wtw_domain.startlocation.position.groundpositiony);
+				WTW.init.waterPositionY = Number(wtw_domain.startlocation.position.waterpositiony);				
+				WTW.init.startPositionX = Number(wtw_domain.startlocation.position.x);
+				WTW.init.startPositionY = Number(wtw_domain.startlocation.position.y);
+				WTW.init.startPositionZ = Number(wtw_domain.startlocation.position.z);
+				WTW.init.startScalingX = Number(wtw_domain.startlocation.scaling.x);
+				WTW.init.startScalingY = Number(wtw_domain.startlocation.scaling.y);
+				WTW.init.startScalingZ = Number(wtw_domain.startlocation.scaling.z);
+				WTW.init.startRotationX = Number(wtw_domain.startlocation.rotation.x);
+				WTW.init.startRotationY = Number(wtw_domain.startlocation.rotation.y);
+				WTW.init.startRotationZ = Number(wtw_domain.startlocation.rotation.z);
+				WTW.init.waterBumpID = wtw_domain.communityinfo.waterbumpid;
+				if (wtw_domain.communityinfo.waterbumppath != '') {
+					WTW.init.waterBumpPath = wtw_domain.communityinfo.waterbumppath;
+				}
+				WTW.init.waterBumpHeight = Number(wtw_domain.communityinfo.waterbumpheight);
+				WTW.init.waterSubdivisions = Number(wtw_domain.communityinfo.watersubdivisions);
+				WTW.init.windForce = Number(wtw_domain.communityinfo.windforce);
+				WTW.init.windDirectionX = Number(wtw_domain.communityinfo.winddirectionx);
+				WTW.init.windDirectionY = Number(wtw_domain.communityinfo.winddirectiony);
+				WTW.init.windDirectionZ = Number(wtw_domain.communityinfo.winddirectionz);
+				WTW.init.waterWaveHeight = Number(wtw_domain.communityinfo.waterwaveheight);
+				WTW.init.waterWaveLength = Number(wtw_domain.communityinfo.waterwavelength);
+				if (WTW.isHexColor(wtw_domain.communityinfo.watercolorrefraction)) {
+					WTW.init.waterColorRefraction = wtw_domain.communityinfo.watercolorrefraction;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.watercolorreflection)) {
+					WTW.init.waterColorReflection = wtw_domain.communityinfo.watercolorreflection;
+				}
+				WTW.init.waterColorBlendFactor = Number(wtw_domain.communityinfo.watercolorblendfactor);
+				WTW.init.waterColorBlendFactor2 = Number(wtw_domain.communityinfo.watercolorblendfactor2);
+				WTW.init.waterAlpha = Number(wtw_domain.communityinfo.wateralpha);
+				WTW.editCommunityAccess = wtw_domain.communityinfo.access;
+				if (WTW.isHexColor(wtw_domain.communityinfo.sceneambientcolor)) {
+					WTW.init.sceneAmbientColor = wtw_domain.communityinfo.sceneambientcolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.sceneclearcolor)) {
+					WTW.init.sceneClearColor = wtw_domain.communityinfo.sceneclearcolor;
+				}
+				if (Number(wtw_domain.communityinfo.sceneuseclonedmeshmap) == 1) {
+					WTW.init.sceneUseClonedMeshMap = true;
+				}
+				if (Number(wtw_domain.communityinfo.sceneblockmaterialdirtymechanism) == 1) {
+					WTW.init.sceneBlockMaterialDirtyMechanism = true;
+				}
+				if (Number(wtw_domain.communityinfo.scenefogenabled) == 1) {
+					WTW.init.sceneFogEnabled = true;
+				}
+				WTW.init.sceneFogMode = wtw_domain.communityinfo.scenefogmode;
+				WTW.init.sceneFogDensity = Number(wtw_domain.communityinfo.scenefogdensity);
+				WTW.init.sceneFogStart = Number(wtw_domain.communityinfo.scenefogstart);
+				WTW.init.sceneFogEnd = Number(wtw_domain.communityinfo.scenefogend);
+				if (WTW.isHexColor(wtw_domain.communityinfo.scenefogcolor)) {
+					WTW.init.sceneFogColor = wtw_domain.communityinfo.scenefogcolor;
+				}
+				WTW.init.sunDirectionalIntensity = Number(wtw_domain.communityinfo.sundirectionalintensity);
+				if (WTW.isHexColor(wtw_domain.communityinfo.sundiffusecolor)) {
+					WTW.init.sunDiffuseColor = wtw_domain.communityinfo.sundiffusecolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.sunspecularcolor)) {
+					WTW.init.sunSpecularColor = wtw_domain.communityinfo.sunspecularcolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.sungroundcolor)) {
+					WTW.init.sunGroundColor = wtw_domain.communityinfo.sungroundcolor;
+				}
+				WTW.init.sunDirectionX = Number(wtw_domain.communityinfo.sundirectionx);
+				WTW.init.sunDirectionY = Number(wtw_domain.communityinfo.sundirectiony);
+				WTW.init.sunDirectionZ = Number(wtw_domain.communityinfo.sundirectionz);
+				WTW.init.backLightIntensity = Number(wtw_domain.communityinfo.backlightintensity);
+				WTW.init.backLightDirectionX = Number(wtw_domain.communityinfo.backlightdirectionx);
+				WTW.init.backLightDirectionY = Number(wtw_domain.communityinfo.backlightdirectiony);
+				WTW.init.backLightDirectionZ = Number(wtw_domain.communityinfo.backlightdirectionz);
+				if (WTW.isHexColor(wtw_domain.communityinfo.backlightdiffusecolor)) {
+					WTW.init.backLightDiffuseColor = wtw_domain.communityinfo.backlightdiffusecolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.backlightspecularcolor)) {
+					WTW.init.backLightSpecularColor = wtw_domain.communityinfo.backlightspecularcolor;
+				}
+				WTW.init.skyType = wtw_domain.communityinfo.skytype;
+				WTW.init.skySize = Number(wtw_domain.communityinfo.skysize);
+				WTW.init.skyBoxFolder = wtw_domain.communityinfo.skyboxfolder;
+				WTW.init.skyBoxFile = wtw_domain.communityinfo.skyboxfile;
+				WTW.init.skyBoxImageLeft = wtw_domain.communityinfo.skyboximageleft;
+				WTW.init.skyBoxImageUp = wtw_domain.communityinfo.skyboximageup;
+				WTW.init.skyBoxImageFront = wtw_domain.communityinfo.skyboximagefront;
+				WTW.init.skyBoxImageRight = wtw_domain.communityinfo.skyboximageright;
+				WTW.init.skyBoxImageDown = wtw_domain.communityinfo.skyboximagedown;
+				WTW.init.skyBoxImageBack = wtw_domain.communityinfo.skyboximageback;
+				WTW.init.skyPositionOffsetX = Number(wtw_domain.communityinfo.skypositionoffsetx);
+				WTW.init.skyPositionOffsetY = Number(wtw_domain.communityinfo.skypositionoffsety);
+				WTW.init.skyPositionOffsetZ = Number(wtw_domain.communityinfo.skypositionoffsetz);
+				WTW.init.skyBoxMicroSurface = Number(wtw_domain.communityinfo.skyboxmicrosurface);
+				if (Number(wtw_domain.communityinfo.skyboxpbr) == 1) {
+					WTW.init.skyBoxPBR = true;
+				}
+				if (Number(wtw_domain.communityinfo.skyboxasenvironmenttexture) == 1) {
+					WTW.init.skyBoxAsEnvironmentTexture = true;
+				}
+				WTW.init.skyBoxBlur = Number(wtw_domain.communityinfo.skyboxblur);
+				if (WTW.isHexColor(wtw_domain.communityinfo.skyboxdiffusecolor)) {
+					WTW.init.skyBoxDiffuseColor = wtw_domain.communityinfo.skyboxdiffusecolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.skyboxspecularcolor)) {
+					WTW.init.skyBoxSpecularColor = wtw_domain.communityinfo.skyboxspecularcolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.skyboxambientcolor)) {
+					WTW.init.skyBoxAmbientColor = wtw_domain.communityinfo.skyboxambientcolor;
+				}
+				if (WTW.isHexColor(wtw_domain.communityinfo.skyboxemissivecolor)) {
+					WTW.init.skyBoxEmissiveColor = wtw_domain.communityinfo.skyboxemissivecolor;
+				}
+				WTW.editBuildingAccess = wtw_domain.buildinginfo.access;
+				if (WTW.isNumeric(wtw_domain.enableemailvalidation)) {
+					WTW.enableEmailValidation = Number(wtw_domain.enableemailvalidation);
+				}
+				try {
+					WTW.init.gravity = wtw_domain.domaininfo.gravity;
+				} catch (ex) {}
+				if (WTW.init.startRotationX > 180) {
+					WTW.init.startRotationX -= 360;
+				}
+				if (wtw_domain.domaininfo.spawnactionzoneid != null) {
+					WTW.spawnZoneID = wtw_domain.domaininfo.spawnactionzoneid;
+				}
+				WTW.init.loaded = 1;
+			}
+			if (wtw_domain.spawnzones != null) {
+				WTW.spawnZones = wtw_domain.spawnzones;
+			}
+			if (wtw_domain.roles != null) {
+				WTW.roles = wtw_domain.roles;
+			}
+		}
+		if (communityid == null) {
+			communityid = '';
+		}
+		if (buildingid == null) {
+			buildingid = '';
+		}
+		if (thingid == null) {
+			thingid = '';
+		}
+		if (buildingid != '') {
+			communityid = '';
+		}
+		if (thingid != '') {
+			communityid = '';
+			buildingid = '';
+		}
+		if (dGet('wtw_tbabylonversion') != null) {
+			WTW.babylonVersion = dGet('wtw_tbabylonversion').value;
+		}
+		if (dGet('wtw_tphysicsengine') != null) {
+			WTW.physicsEngine = dGet('wtw_tphysicsengine').value;
+		}
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_core.js-loadInitSettings=' + ex.message);
+	} 
+}
+
+WTWJS.prototype.initEnvironment = async function() {
 	/* Initialize canvas, scene, and default settings for scene */
 	try {
 		/* every user has an instance assigned */
@@ -103,45 +322,78 @@ WTWJS.prototype.initEnvironment = function() {
 		/* add mouse over for canvas */
 		/* sets WTW.canvasFocus variable to allow avatar movement only when canvas has focus */
 		/* also prevents animations an movement to keep going when mouse leaves the window */
-		dGet('wtw_renderCanvas').onmouseover = function() {WTW.canvasFocus = 1;};
-		dGet('wtw_renderCanvas').onmouseout = function() {WTW.canvasFocus = 0;WTW.keysPressed=[];};
+		dGet('wtw_renderCanvas').onmouseover = function() {WTW.canvasFocus = 1;WTW.mouseOverByRenderingGroup();};
+		dGet('wtw_renderCanvas').onmouseout = function() {WTW.canvasFocus = 0;WTW.keysPressed=[];WTW.mouseOutByRenderingGroup();};
 		
 		/* set up canvas for babylon */
 		canvas = dGet('wtw_renderCanvas');
 		/* event listener allows screen shots of the canvas */
 		canvas.addEventListener('webglcontextrestored', function (event) {/*initializeResources();*/}, false);
-		
 		/* initialize babylon game engine */
-		engine = new BABYLON.Engine(canvas, true, {deterministicLockstep: false, lockstepMaxSteps: 4, doNotHandleContextLost: WTW.doNotHandleContextLost, stencil: true});
-		/* add Roomz version to the console.log */
-		console.log('%c\r\n\r\nRoomz Open-Source 3D Internet\r\n' + wtw_versiontext + '\r\n', 'color:green;font-weight:bold;');
+		
+		/* sky boxes need this setting to false or they show a darkened side */
+		if (WTW.init.skyType == '') {
+			WTW.doNotHandleContextLost = true;
+		} else {
+			WTW.doNotHandleContextLost = false;
+		}
+		
+//		engine = new BABYLON.Engine(canvas, true, {deterministicLockstep: false, lockstepMaxSteps: 4, doNotHandleContextLost: WTW.doNotHandleContextLost, stencil: true});
+		engine = new BABYLON.Engine(canvas, true);
+
+		/* add roomz version to the console.log */
+		console.log('%c\r\n\r\nroomz Open-Source 3D Internet\r\n' + wtw_versiontext + '\r\n', 'color:green;font-weight:bold;');
 		
 		/* optional optimization settings */
 		if (WTW.adminView == 1) {
-			engine.enableOfflineSupport = WTW.enableOfflineSupportAdmin;
+//			engine.enableOfflineSupport = WTW.enableOfflineSupportAdmin;
 		} else {
-			engine.enableOfflineSupport = WTW.enableOfflineSupport;
+//			engine.enableOfflineSupport = WTW.enableOfflineSupport;
 		}
 		
 		/* initialize scene */
 		scene = new BABYLON.Scene(engine);        
-		scene.name = 'Roomz';
+		scene.name = 'roomz';
 		scene.gravity = new BABYLON.Vector3(0, -WTW.init.gravity, 0);
 		
-		/* initialize cannon physics engine */
-		var zphysicsplugin = new BABYLON.CannonJSPlugin();
-		scene.enablePhysics(scene.gravity, zphysicsplugin);
+		/* initialize physics engine if it is enabled */
+		switch (WTW.physicsEngine) {
+			case 'havok':
+				/* initialize Havok physics engine */
+				const zhavokinstance = await HavokPhysics();
+				// pass the engine to the plugin
+				const hk = new BABYLON.HavokPlugin(true, zhavokinstance);
+				// enable physics in the scene with a gravity
+				scene.enablePhysics(scene.gravity, hk);
+				break;
+			case 'cannon':
+				var zphysicsplugin = new BABYLON.CannonJSPlugin();
+				scene.enablePhysics(scene.gravity, zphysicsplugin);
+				break;
+			case 'oimo':
+				var zoimo = new BABYLON.OimoJSPlugin(undefined, OIMO);
+				scene.enablePhysics(scene.gravity, zoimo);
+				break;
+		}
+		
 		scene.autoClear = false;
 		scene.autoClearDepthAndStencil = false;
 		scene.collisionsEnabled = true;
-		
-		/* tested some caching options */
+		scene.doNotHandleCursors = true;
+//		scene.skipPointerMovePicking = true;
+//		scene.constantlyUpdateMeshUnderPointer = false;
+//		scene.getAnimationRatio();
 //		scene.useGeometryIdsMap = true;
 //		scene.useMaterialMeshMap = true;
-//		scene.useClonedMeshMap = true;
+		
+//		scene.useClonedMeshMap = WTW.init.sceneUseClonedMeshMap;
+		/* set scene to be clearer */
+//		scene.blockMaterialDirtyMechanism = WTW.init.sceneBlockMaterialDirtyMechanism;
+		
+//		scene.performancePriority = BABYLON.ScenePerformancePriority.Intermediate;
 		
 		/* Add Scene Optimizer */
-		var zoptions = new BABYLON.SceneOptimizerOptions(30, 2000);
+/*		var zoptions = new BABYLON.SceneOptimizerOptions(30, 2000);
 		zoptions.addOptimization(new BABYLON.ShadowsOptimization(0));
 		zoptions.addOptimization(new BABYLON.LensFlaresOptimization(0));
 		zoptions.addOptimization(new BABYLON.PostProcessesOptimization(1));
@@ -151,77 +403,33 @@ WTWJS.prototype.initEnvironment = function() {
 		zoptions.addOptimization(new BABYLON.HardwareScalingOptimization(4, 4));
 		var zoptimizer = new BABYLON.SceneOptimizer(scene, zoptions);
 		//zoptimizer.start();
+*/		
+		scene.ambientColor = new BABYLON.Color3.FromHexString(WTW.init.sceneAmbientColor);
+		scene.clearColor = new BABYLON.Color3.FromHexString(WTW.init.sceneClearColor); //optional light setting  */
 		
-		scene.ambientColor = new BABYLON.Color3(.3, .3, .3);
-		/* scene.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1); //optional light setting  */
-		scene.fogEnabled = true;
-		scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-		scene.useClonedMeshMap = true;
-		if (WTW.adminView == 1) {
-			/* set scene to be clearer when in admin mode */
-			scene.blockMaterialDirtyMechanism = true;
-		}
-	
 		/* initialize an action manager for the scene */
 		scene.actionManager = new BABYLON.ActionManager(scene);
-		
-		/* set mouse over and mouse out functions for meshes in scene */
-		WTW.mouseOver = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, WTW.mouseOverMold);
-		WTW.mouseOut = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, WTW.mouseOutMold);
 		
 		if (WTW.highlightLayer == null) {
 			/* initialize highlight layer for scene - used when selecting objects as needed */
 			WTW.highlightLayer = new BABYLON.HighlightLayer('highlightlayer', scene);
 		}
 		
-		/* set 2 light sources so that the front and backs of 3D Objects have at least a minimum light */
-		/* direct light immitating the sun */
-		WTW.sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, -200, -300), scene);
-		WTW.sun.position = new BABYLON.Vector3(0, WTW.sunPositionY, 0);
-		WTW.sun.intensity = WTW.getSunIntensity(WTW.init.skyInclination, WTW.init.skyAzimuth);
-		WTW.sun.shadowMinZ = 1;
-		WTW.sun.shadowMaxZ = 4000;
-		/* WTW.sun.ambient = new BABYLON.Color3(.4, .4, .4); //optional light setting */
-		/* WTW.sun.diffuse = new BABYLON.Color3(.4, .4, .4); //optional light setting */
-		WTW.sun.specular = new BABYLON.Color3(.2, .2, .2);
-		WTW.sun.groundColor = new BABYLON.Color3(.1, .1, .1);
+		/* load the main parent box, avatar placeholder, and camera */
+		WTW.loadParentAndCamera();
+		
+		/* set fog if enabled */
+		WTW.setFog();
+				
+		/* set the sun and back light the 3D Scene */
+		WTW.setSunLight();
+		
+		/* initialize sky - scaling and material settings */
+		WTW.createSky();
+		
+		/* create the extended ground that never ends while the avatar walks */
+		WTW.setExtendedGround();
 
-		/* lesser light for back sides of 3D Objects */
-		WTW.backLight = new BABYLON.DirectionalLight('backlight', new BABYLON.Vector3(1, -200, 300), scene);
-		WTW.backLight.intensity = WTW.sun.intensity / 1.2;
-		
-		/* initialize sky sphere - scaling and material settings */
-		WTW.sky = BABYLON.MeshBuilder.CreateSphere('sky', {segments: 40, diameter:1, updatable: true, sideOrientation: BABYLON.Mesh.BACKSIDE}, scene);
-		WTW.sky.scaling.x = 5000;
-		WTW.sky.scaling.y = 4800;
-		WTW.sky.scaling.z = 5000;
-		WTW.sky.position.x = 0;
-		WTW.sky.position.y = -100;
-		WTW.sky.position.z = 0;
-		WTW.sky.isPickable = false;
-		WTW.sky.disableLighting = true;
-		var zskyboxmat = new BABYLON.SkyMaterial('skyMaterial', scene);
-		zskyboxmat.backFaceCulling = false;
-		WTW.sky.material = zskyboxmat;
-		window.setTimeout(function() {
-			WTW.loadSkyScene(WTW.init.skyInclination, WTW.init.skyLuminance, WTW.init.skyAzimuth, WTW.init.skyRayleigh, WTW.init.skyTurbidity, WTW.init.skyMieDirectionalG, WTW.init.skyMieCoefficient, .25);
-		}, 1000);
-		
-		/* initialize extra ground (extended ground that never ends while the avatar walks) */
-		WTW.extraGround = BABYLON.MeshBuilder.CreateGround('communityeground', {width: 5000, height: 5000, subdivisions: 2, updatable: false}, scene);
-		WTW.extraGround.position.x = 0;
-		WTW.extraGround.position.y = 0;
-		WTW.extraGround.position.z = 0;
-		WTW.extraGround.isPickable = false;
-		WTW.extraGround.checkCollisions = true;
-		WTW.extraGround.material = new BABYLON.StandardMaterial('mat-communityeground', scene);
-		WTW.extraGround.material.emissiveColor = new BABYLON.Color3(WTW.sun.intensity, WTW.sun.intensity, WTW.sun.intensity);
-		WTW.extraGround.material.diffuseTexture = new BABYLON.Texture(WTW.init.groundTexturePath, scene);
-		WTW.extraGround.material.diffuseTexture.uScale = 500;
-		WTW.extraGround.material.diffuseTexture.vScale = 500;
-		/* set physics on ground */
-		WTW.extraGround.physicsImpostor = new BABYLON.PhysicsImpostor(WTW.extraGround, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5 }, scene);
-		
 		/* start render cycle */
 		WTW.startRender();
 		
@@ -234,20 +442,51 @@ WTWJS.prototype.initEnvironment = function() {
 
 		/* set initial menubar names for community and building */
 		if (dGet('wtw_showcommunityname') != null) {
-			dGet('wtw_showcommunityname').innerHTML = 'Bixma AB.';
+			dGet('wtw_showcommunityname').innerHTML = 'Bixma AB';
+			dGet('wtw_showcommunitynamemobile').innerHTML = 'Bixma AB';
 		}
 		if (dGet('wtw_showbuildingname') != null) {
-			dGet('wtw_showbuildingname').innerHTML = "<span class='wtw-yellow'>Welcome to Roomz</span>";
+			dGet('wtw_showbuildingname').innerHTML = "<span class='wtw-yellow'>Welcome to roomz</span>";
+			dGet('wtw_showbuildingnamemobile').innerHTML = "<span class='wtw-yellow'>Welcome to roomz</span>";
 		}
 		WTW.showInline('wtw_showcommunityname');
+		WTW.showInline('wtw_showcommunitynamemobile');
 		WTW.showInline('wtw_showbuildingname');
+		WTW.showInline('wtw_showbuildingnamemobile');
 		if (dGet('wtw_tuserid').value == '') {
 			if (dGet('wtw_mainmenudisplayname') != null) {
 				dGet('wtw_mainmenudisplayname').innerHTML = "<span class='wtw-yellow'>Login</span>";
+				dGet('wtw_mainmenudisplaynamemobile').innerHTML = "<span class='wtw-yellow'>Login</span>";
+				WTW.show('wtw_mainmenudisplaynamemobile');
 			}
 		}
+		/* continue the load sequence for after the babylon engine */
+		WTW.continueLoadSequence();
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_core.js-initEnvironment=' + ex.message);
+	} 
+}
+
+WTWJS.prototype.loadParentAndCamera = function() {
+	/* load the main parent box, avatar placeholder, and camera */
+	try {
+		/* create the parent most connecting grid box */
+		/* everything else parents to this reference point */
+		var zparent = new BABYLON.TransformNode(WTW.mainParent);
+		zparent.position = new BABYLON.Vector3(0,0,0);
+		zparent.rotation = new BABYLON.Vector3(0,0,0);
+		zparent.scaling = new BABYLON.Vector3(1,1,1);
+		zparent.name = WTW.mainParent;
+		zparent.id = WTW.mainParent;
+		/* main parent name is WTW.mainParent */
+		/* set global main parent mold WTW.mainParentMold */
+		WTW.mainParentMold= zparent;
+		/* load place holder for where my avatar will be loaded (allows camera to set in place) */
+		WTW.loadAvatarPlaceholder();
+		/* load primary camera */
+		WTW.loadPrimaryCamera();
+	} catch (ex) {
+		WTW.log('core-scripts-prime-wtw_core.js-loadParentAndCamera=' + ex.message);
 	} 
 }
 
@@ -319,8 +558,12 @@ WTWJS.prototype.loadLoginAvatarSelect = function() {
 			/* check cookie and load Avatar OR open select Avatar list */
 			WTW.hide('wtw_menulogin');
 			WTW.hide('wtw_menuloggedin');
+			var zavatarid = WTW.getCookie('avatarid');
 			var zuseravatarid = WTW.getCookie('useravatarid');
-			if (zuseravatarid != null) {
+			if (zavatarid == '' || zavatarid == null) {
+				zavatarid = '3b9bt5c70igtmqux';
+			}
+			if (zuseravatarid != '' && zuseravatarid != null) {
 				var zglobaluseravatarid = '';
 				if (WTW.getCookie('globaluseravatarid') != null) {
 					zglobaluseravatarid = WTW.getCookie('globaluseravatarid');
@@ -329,124 +572,12 @@ WTWJS.prototype.loadLoginAvatarSelect = function() {
 				/* if avatar saved, load avatar */
 				WTW.getSavedAvatar('myavatar-' + dGet('wtw_tinstanceid').value, zglobaluseravatarid, zuseravatarid, '', false);
 			} else {
-				/* avatar not saved, open avatar select window */
-				WTW.openLocalLogin('Select Avatar',.4,.9);
+				/* avatar not saved, select random avatar */
+				WTW.hudLoginEnter();
 			}
 		}
 	} catch (ex) {
 		WTW.log('core-scripts-prime-wtw_core.js-loadLoginAvatarSelect=' + ex.message);
-	} 
-}
-
-WTWJS.prototype.loadInitSettings = function() {
-	/* load the init settings - the default settings for any scene */
-	try {
-		var zsitename = wtw_defaultsitename;
-		if (wtw_domain != null) {
-			/* wtw_domain values are passed from the php class function in class_initsession.php */
-			wtw_domain = JSON.parse(wtw_domain);
-			if (wtw_domain.domaininfo != null) {
-				zsitename = wtw_domain.domaininfo.communityname;				
-				WTW.buildingName = wtw_domain.buildinginfo.buildingname;
-				WTW.communityName = WTW.decode(wtw_domain.communityinfo.communityname);
-				if (dGet('wtw_communitysummary') != null) {
-					dGet('wtw_communitysummary').innerHTML = WTW.decode(wtw_domain.communityinfo.communityname) + ' Community Summary';
-				}
-				WTW.init.groundTextureID = wtw_domain.domaininfo.textureid;
-				WTW.init.groundTexturePath = wtw_domain.domaininfo.texturepath;
-				WTW.init.skyTextureID = wtw_domain.domaininfo.skydomeid;
-				WTW.init.skyTexturePath = wtw_domain.domaininfo.skydomepath;
-				WTW.init.skyInclination = wtw_domain.domaininfo.skyinclination;
-				WTW.init.skyLuminance = wtw_domain.domaininfo.skyluminance;
-				WTW.init.skyAzimuth = wtw_domain.domaininfo.skyazimuth;
-				WTW.init.skyRayleigh = wtw_domain.domaininfo.skyrayleigh;
-				WTW.init.skyTurbidity = wtw_domain.domaininfo.skyturbidity;
-				WTW.init.skyMieDirectionalG = wtw_domain.domaininfo.skymiedirectionalg;
-				WTW.init.skyMieCoefficient = wtw_domain.domaininfo.skymiecoefficient;
-				WTW.init.groundPositionY = Number(wtw_domain.startlocation.position.groundpositiony);
-				WTW.init.waterPositionY = Number(wtw_domain.startlocation.position.waterpositiony);				
-				WTW.init.startPositionX = Number(wtw_domain.startlocation.position.x);
-				WTW.init.startPositionY = Number(wtw_domain.startlocation.position.y);
-				WTW.init.startPositionZ = Number(wtw_domain.startlocation.position.z);
-				WTW.init.startScalingX = Number(wtw_domain.startlocation.scaling.x);
-				WTW.init.startScalingY = Number(wtw_domain.startlocation.scaling.y);
-				WTW.init.startScalingZ = Number(wtw_domain.startlocation.scaling.z);
-				WTW.init.startRotationX = Number(wtw_domain.startlocation.rotation.x);
-				WTW.init.startRotationY = Number(wtw_domain.startlocation.rotation.y);
-				WTW.init.startRotationZ = Number(wtw_domain.startlocation.rotation.z);
-				WTW.init.waterBumpID = wtw_domain.communityinfo.waterbumpid;
-				if (wtw_domain.communityinfo.waterbumppath != '') {
-					WTW.init.waterBumpPath = wtw_domain.communityinfo.waterbumppath;
-				}
-				WTW.init.waterBumpHeight = Number(wtw_domain.communityinfo.waterbumpheight);
-				WTW.init.waterSubdivisions = Number(wtw_domain.communityinfo.watersubdivisions);
-				WTW.init.windForce = Number(wtw_domain.communityinfo.windforce);
-				WTW.init.windDirectionX = Number(wtw_domain.communityinfo.winddirectionx);
-				WTW.init.windDirectionY = Number(wtw_domain.communityinfo.winddirectiony);
-				WTW.init.windDirectionZ = Number(wtw_domain.communityinfo.winddirectionz);
-				WTW.init.waterWaveHeight = Number(wtw_domain.communityinfo.waterwaveheight);
-				WTW.init.waterWaveLength = Number(wtw_domain.communityinfo.waterwavelength);
-				WTW.init.waterColorRefraction = wtw_domain.communityinfo.watercolorrefraction;
-				WTW.init.waterColorReflection = wtw_domain.communityinfo.watercolorreflection;
-				WTW.init.waterColorBlendFactor = Number(wtw_domain.communityinfo.watercolorblendfactor);
-				WTW.init.waterColorBlendFactor2 = Number(wtw_domain.communityinfo.watercolorblendfactor2);
-				WTW.init.waterAlpha = Number(wtw_domain.communityinfo.wateralpha);
-				WTW.editCommunityAccess = wtw_domain.communityinfo.access;
-				WTW.editBuildingAccess = wtw_domain.buildinginfo.access;
-				if (WTW.isNumeric(wtw_domain.enableemailvalidation)) {
-					WTW.enableEmailValidation = Number(wtw_domain.enableemailvalidation);
-				}
-				try {
-					WTW.init.gravity = wtw_domain.domaininfo.gravity;
-				} catch (ex) {}
-				if (WTW.init.startRotationX > 180) {
-					WTW.init.startRotationX -= 360;
-				}
-				if (wtw_domain.domaininfo.spawnactionzoneid != null) {
-					WTW.spawnZoneID = wtw_domain.domaininfo.spawnactionzoneid;
-				}
-				WTW.init.loaded = 1;
-			}
-			if (wtw_domain.spawnzones != null) {
-				WTW.spawnZones = wtw_domain.spawnzones;
-			}
-			if (wtw_domain.roles != null) {
-				WTW.roles = wtw_domain.roles;
-			}
-		}
-		if (communityid == null) {
-			communityid = '';
-		}
-		if (buildingid == null) {
-			buildingid = '';
-		}
-		if (thingid == null) {
-			thingid = '';
-		}
-		if (buildingid != '') {
-			communityid = '';
-		}
-		if (thingid != '') {
-			communityid = '';
-			buildingid = '';
-		}
-		/* create the parent most connecting grid box */
-		/* everything else parents to this reference point */
-		var zparent = new BABYLON.TransformNode(WTW.mainParent);
-		zparent.position = new BABYLON.Vector3(0,0,0);
-		zparent.rotation = new BABYLON.Vector3(0,0,0);
-		zparent.scaling = new BABYLON.Vector3(1,1,1);
-		zparent.name = WTW.mainParent;
-		zparent.id = WTW.mainParent;
-		/* main parent name is WTW.mainParent */
-		/* set global main parent mold WTW.mainParentMold */
-		WTW.mainParentMold= zparent;
-		/* load place holder for where my avatar will be loaded (allows camera to set in place) */
-		WTW.loadAvatarPlaceholder();
-		/* load primary camera */
-		WTW.loadPrimaryCamera();
-	} catch (ex) {
-		WTW.log('core-scripts-prime-wtw_core.js-loadInitSettings=' + ex.message);
 	} 
 }
 
@@ -660,21 +791,29 @@ WTWJS.prototype.loadCommunity = function(zaddcommunities) {
 					WTW.editCommunityAccess = WTW.communities[0].communityinfo.access;
 				}
 			}
-			if (WTW.communityName == 'Roomz' || WTW.communityName == 'Roomz') {
-				dGet('wtw_showcommunityname').innerHTML = 'Roomz';
+			if (WTW.communityName == 'roomz' || WTW.communityName == 'roomz') {
+				dGet('wtw_showcommunityname').innerHTML = 'roomz';
 				dGet('wtw_showcommunityname').style.cursor = 'default';
+				dGet('wtw_showcommunitynamemobile').innerHTML = 'roomz';
+				dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 			} else {
 				dGet('wtw_showcommunityname').innerHTML = WTW.decode(WTW.communityName);
 				dGet('wtw_showcommunityname').style.cursor = 'pointer';
+				dGet('wtw_showcommunitynamemobile').innerHTML = '3D Community: <b>' + WTW.decode(WTW.communityName) + '</b>';
+				if (WTW.adminView == 1 && communityid != '') {
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'pointer';
+				}
 			}
 		} else {
 			if (window.location.href.indexOf('/building/') > -1 || window.location.href.indexOf('/buildings/') > -1) {
 				dGet('wtw_showcommunityname').innerHTML = 'View Building';
-				dGet('wtw_showcommunityname').style.cursor = 'default';
+				dGet('wtw_showcommunitynamemobile').innerHTML = 'View Building';
 			} else if (window.location.href.indexOf('/thing/') > -1 || window.location.href.indexOf('/things/') > -1) {
 				dGet('wtw_showcommunityname').innerHTML = 'View Thing';
-				dGet('wtw_showcommunityname').style.cursor = 'default';
+				dGet('wtw_showcommunitynamemobile').innerHTML = 'View Thing';
 			}
+			dGet('wtw_showcommunityname').style.cursor = 'default';
+			dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 		}
 		/* only a 3D Community has environment settings (sky, ground, water level), building and things use a default environment */
 		if (WTW.communities != null) {
@@ -753,9 +892,6 @@ WTWJS.prototype.loadCommunity = function(zaddcommunities) {
 		}
 		/* set sky scene */
 		WTW.loadSkyScene(WTW.init.skyInclination, WTW.init.skyLuminance, WTW.init.skyAzimuth, WTW.init.skyRayleigh, WTW.init.skyTurbidity, WTW.init.skyMieDirectionalG, WTW.init.skyMieCoefficient, .25);
-		/* set sun intensity */
-		WTW.sun.intensity = WTW.getSunIntensity(WTW.init.skyInclination, WTW.init.skyAzimuth);
-		WTW.backLight.intensity = WTW.sun.intensity / 1.2;
 		
 		/* extended ground */
 		/* set ground emissive color based on scene lighting - day or night degrees of hue */
@@ -808,16 +944,17 @@ WTWJS.prototype.loadCommunity = function(zaddcommunities) {
 			WTW.water.checkCollisions = false;
 			WTW.water.material = WTW.waterMat;
 			WTW.water.position.y = WTW.init.waterPositionY;
-			WTW.waterMat.addToRenderList(WTW.sky);
+//			WTW.waterMat.addToRenderList(WTW.sky);
 			WTW.waterMat.addToRenderList(WTW.extraGround);
-//			WTW.water.physicsImpostor = new BABYLON.PhysicsImpostor(WTW.water, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5 }, scene);
 		}
 		
-		if (WTW.sky.position.x != WTW.init.startPositionX || WTW.sky.position.y != WTW.init.startPositionY - 100 || WTW.sky.position.z != WTW.init.startPositionZ) {
-			/* set initial sky position */
-			WTW.sky.position.x = WTW.init.startPositionX;
-			WTW.sky.position.y = WTW.init.startPositionY - 100;
-			WTW.sky.position.z = WTW.init.startPositionZ;
+		if (WTW.init.skyType == '') {
+			if (WTW.sky.position.x != WTW.init.startPositionX + WTW.init.skyPositionOffsetX || WTW.sky.position.y != WTW.init.startPositionY + WTW.init.skyPositionOffsetY || WTW.sky.position.z != WTW.init.startPositionZ + WTW.init.skyPositionOffsetZ) {
+				/* set initial sky position */
+				WTW.sky.position.x = WTW.init.startPositionX + WTW.init.skyPositionOffsetX;
+				WTW.sky.position.y = WTW.init.startPositionY + WTW.init.skyPositionOffsetY;
+				WTW.sky.position.z = WTW.init.startPositionZ + WTW.init.skyPositionOffsetZ;
+			}
 		}
 		if (WTW.init.groundPositionY != 0) {
 			/* set ground position for 3D Community */
@@ -1598,10 +1735,12 @@ WTWJS.prototype.startRender = function() {
 						WTW.myAvatar.computeWorldMatrix(true);
 						var zabspos = WTW.myAvatar.getAbsolutePosition();
 						
-						/* set sky sphere position */
-						WTW.sky.position.x = zabspos.x;
-						WTW.sky.position.y = zabspos.y - 100;
-						WTW.sky.position.z = zabspos.z;			
+						if (WTW.init.skyType == '') {
+							/* set sky sphere position */
+							WTW.sky.position.x = zabspos.x +  + WTW.init.skyPositionOffsetX;
+							WTW.sky.position.y = zabspos.y +  + WTW.init.skyPositionOffsetY;
+							WTW.sky.position.z = zabspos.z +  + WTW.init.skyPositionOffsetZ;
+						}
 						/* set extended ground position */
 						WTW.extraGround.position.x = zabspos.x;
 						WTW.extraGround.position.z = zabspos.z;
@@ -1615,25 +1754,32 @@ WTWJS.prototype.startRender = function() {
 						}
 						if (WTW.water != null && zabspos.y < -16) {
 							/* sky sphere size when avatar is near the ground */
-							WTW.sky.scaling.x = 2500;
-							WTW.sky.scaling.y = 2500;
-							WTW.sky.scaling.z = 2500;
+//							WTW.sky.scaling.x = WTW.init.skySize/2;
+//							WTW.sky.scaling.y = WTW.init.skySize/2;
+//							WTW.sky.scaling.z = WTW.init.skySize/2;
+							scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
 							scene.fogDensity = 0.01;
 							scene.fogColor = new BABYLON.Color3(0.0, 0.3, 0.4);
 						} else {
 							/* dynamically change the sky sphere size as my avatar rises higher off ground */
-							var zskysize = 1000 + (zabspos.y * 2);
+/*							var zskysize = 1000 + (zabspos.y * 2);
 							if (zskysize < 3500) {
 								zskysize = 3500;
 							}
-							scene.fogDensity = 0.0005;
-							scene.fogColor = new BABYLON.Color3(0.4, 0.5, 0.6);
+*/
+							WTW.setFog();
 							/* transparent fog allows the meshes to go to transparent in the distance */
-							WTW.setMeshTransparentFog(WTW.sky,30);
-							
-							WTW.sky.scaling.x = zskysize;
-							WTW.sky.scaling.y = zskysize-200;
-							WTW.sky.scaling.z = zskysize;
+							if (WTW.init.sceneFogEnabled && WTW.init.sceneFogMode != '') {
+								WTW.setMeshTransparentFog(WTW.sky,30);
+								if (WTW.init.sceneFogMode == 'linear') {
+									WTW.setMeshTransparentFog(WTW.extraGround,WTW.init.sceneFogStart);
+								} else {
+									WTW.setMeshTransparentFog(WTW.extraGround,100);
+								}
+							}
+//							WTW.sky.scaling.x = WTW.init.skySize;
+//							WTW.sky.scaling.y = WTW.init.skySize;
+//							WTW.sky.scaling.z = WTW.init.skySize;
 						}
 					} 
 					if (WTW.checkShownMolds == 0) {

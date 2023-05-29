@@ -39,7 +39,7 @@ try {
 			$wtwpluginloader->setPluginActive($zpluginname, $zactive);
 			break;
 		case "getupdate":
-			$zsuccess = $wtwpluginloader->Roomz($zpluginname, $zversion, $zupdateurl);
+			$zsuccess = $wtwpluginloader->updateroomz($zpluginname, $zversion, $zupdateurl);
 			$zresponse = array(
 				'success'=> $zsuccess
 			);

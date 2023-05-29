@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* These functions provide many of the common functions for browse and admin modes */
 /* google analytics support for 3D Browsing of 3D Communities, 3D Buildings, and 3D Things at multiple load zone levels */
 

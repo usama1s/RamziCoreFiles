@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions load and unload placeholders and avatars with their colors and animations */
 
@@ -93,7 +93,7 @@ WTWJS.prototype.getSavedAvatar = async function(zavatarname, zglobaluseravatarid
 			}
 			WTW.pluginsGetSavedAvatar(zglobaluseravatarid, zinstanceid, zavatarname, zsendrefresh);
 		} else {
-			WTW.openLocalLogin('Select Avatar', .4, .9);
+			WTW.openLoginHUD('Select My Avatar');
 		}
     } catch (ex) {
 		WTW.log('core-scripts-avatars-wtw_loadavatar.js-getSavedAvatar=' + ex.message);
@@ -839,8 +839,10 @@ WTWJS.prototype.showAvatarDisplayName = function(zopen) {
 			dGet('wtw_tavatardisplayname').readOnly = false;
 			WTW.show('wtw_displaybannote');
 			dGet('wtw_mainmenudisplayname').innerHTML = dGet('wtw_tavatardisplayname').value;
+			dGet('wtw_profileimagesmmobiletext').innerHTML = 'Profile: ' + dGet('wtw_tavatardisplayname').value;
 			dGet('wtw_menudisplayname').innerHTML = dGet('wtw_tavatardisplayname').value;
 			dGet('wtw_tdisplayname').value = dGet('wtw_tavatardisplayname').value;
+			WTW.hide('wtw_mainmenudisplaynamemobile');
 		}
 		if (zopen) {
 			WTW.toggle('wtw_menuavatardisplaynamediv');

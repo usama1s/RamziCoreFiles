@@ -1,5 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions are used to administer a website in admin mode only */
 /* avatars can be created to be Controlled by the user or as an AI */
@@ -46,7 +47,7 @@ WTWJS.prototype.openSelectAvatar = function(zfilter) {
 			if (zfilter == 'all') {
 				zlistavatars += "selected";
 			}
-			zlistavatars += " wtw-rightradius' onclick=\"WTW.setAvatarsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div>\r\n";
+			zlistavatars += " wtw-rightradius' onclick=\"WTW.setAvatarsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div><div class='wtw-mainmenuvalue'>Admins and Developer Roles can edit <b>All</b> 3D Avatars on this server.</div><hr /><div class='wtw-clear'></div>\r\n";
 		} else {
 			zlistavatars = '<br /><br />';
 		}
@@ -187,12 +188,23 @@ WTWJS.prototype.loadAvatarForEdit = function() {
 					var zdisplayname = zresponse.avatar.displayname;
 					dGet('wtw_showcommunityname').innerHTML = 'Edit 3D Avatar';
 					dGet('wtw_showcommunityname').style.cursor = 'default';
+					dGet('wtw_showcommunitynamemobile').innerHTML = 'Edit 3D Avatar';
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					if (zdisplayname == '') {
 						dGet('wtw_showbuildingname').innerHTML = '3D Avatar';
 						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').innerHTML = '3D Avatar';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
 					} else {
 						dGet('wtw_showbuildingname').innerHTML = zdisplayname;
-						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').innerHTML = zdisplayname;
+						if (WTW.adminView == 1) {
+							dGet('wtw_showbuildingname').style.cursor = 'pointer';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+						} else {
+							dGet('wtw_showbuildingname').style.cursor = 'default';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+						}
 					}
 					WTW.addAvatarForEdit(zavatardef.name, zavatardef);
 				}
@@ -518,6 +530,20 @@ WTWJS.prototype.openEditAvatar = function() {
 					dGet('wtw_tinfoavatardescription').value = zresponse.avatar.avatardescription;
 					dGet('wtw_tinfoavatargender').value = zresponse.avatar.gender;
 					WTW.loadAvatarGroupDDL('wtw_tinfoavatargroup', zresponse.avatar.avatargroup);
+					var zavatargroupslist = "<div style='text-align:left;margin-left:15px;color:gray;'>";
+					if (zresponse.avatar.avatargroupsall != undefined) {
+						for (var i=0;i<zresponse.avatar.avatargroupsall.length;i++) {
+							if (zresponse.avatar.avatargroupsall[i] != null) {
+								var zchecked = '';
+								if (zresponse.avatar.avatargroupsall[i].avatarsingroupid != '') {
+									zchecked = 'checked';
+								}
+								zavatargroupslist += "<div><input type='checkbox' id='wtw_tinfoavatargroups-" + zresponse.avatar.avatargroupsall[i].avatargroupid + "-" + zresponse.avatar.avatargroupsall[i].avatarsingroupid + "' " + zchecked + " value='1' class='wtw-avatargroups' /> " + zresponse.avatar.avatargroupsall[i].avatargroup + "</div><div class='wtw-clear'></div>";
+							}
+						}
+					}
+					zavatargroupslist += "</div>";
+					dGet('wtw_tinfoavatargroups').innerHTML = zavatargroupslist;
 					dGet('wtw_tinfoavatarversion').disabled = true;
 					WTW.show('wtw_adminEditAvatarInformationDiv');
 				}
@@ -531,9 +557,10 @@ WTWJS.prototype.openEditAvatar = function() {
 WTWJS.prototype.saveEditAvatar = function() {
 	/* save the 3D Avatar information */
 	try {
+		var zavatarid = dGet('wtw_teditavatarid').value;
 		dGet('wtw_tinfoavatarerror').innerHTML = '';
 		var zrequest = {
-			'avatarid':dGet('wtw_teditavatarid').value,
+			'avatarid':zavatarid,
 			'displayname':dGet('wtw_tinfoavatarname').value,
 			'avatardescription':dGet('wtw_tinfoavatardescription').value,
 			'gender':dGet('wtw_tinfoavatargender').value,
@@ -550,7 +577,40 @@ WTWJS.prototype.saveEditAvatar = function() {
 					WTW.adminMenuItemSelected(dGet('wtw_bbackwtw_adminEditAvatarInformationDiv'));
 				}
 			}
-		);		
+		);
+		/* process additional avatar groups checkboxes */
+		var zobjs = document.getElementsByClassName('wtw-avatargroups');
+		for (var i=0;i<zobjs.length;i++) {
+			if (zobjs[i] != null) {
+				var zavatargroupid = '';
+				var zavatarsingroupid = '';
+				var zfunction = '';
+				if (zobjs[i].id.indexOf('-') > -1) {
+					var znameparts = zobjs[i].id.split('-');
+					zavatargroupid = znameparts[1];
+					zavatarsingroupid = znameparts[2];
+				}
+				if (zobjs[i].checked) {
+					zfunction = 'saveavatarsingroup';
+				} else if (zobjs[i].checked == false && zavatarsingroupid != '') {
+					zfunction = 'deleteavatarsingroup';
+				}
+				if (zfunction != '') {
+					var zrequest = {
+						'avatarid':zavatarid,
+						'avatargroupid':zavatargroupid,
+						'avatarsingroupid':zavatarsingroupid,
+						'function':zfunction
+					};
+					WTW.postAsyncJSON('/core/handlers/avatars.php', zrequest, 
+						function(zresponse) {
+							zresponse = JSON.parse(zresponse);
+							/* note serror would contain errors */
+						}
+					);
+				}
+			}
+		}
 	} catch (ex) {
 		WTW.log('core-scripts-admin-wtw_adminavatars.js-saveEditAvatar=' + ex.message);
 	} 
@@ -1357,12 +1417,12 @@ WTWJS.prototype.testAnimation = function(zanimationid, zanimationevent) {
 	try {
 		var zeditavatar = WTW.getMeshOrNodeByID('editavatar-0');
 		if (zeditavatar != null) {
-			if (WTW.testTimer == null) {
+			if (WTW.avatarTimer == null) {
 				if (zanimationevent == 'onoption') {
 					zanimationevent += zanimationid;
 				}
 				var zincrement = .1;
-				WTW.testTimer = window.setInterval(function() {
+				WTW.avatarTimer = window.setInterval(function() {
 					if (zeditavatar.WTW.animations.running[zanimationevent] != undefined && zeditavatar.WTW.animations.running['onwait'] != undefined) {
 						if (zeditavatar.WTW.animations.running[zanimationevent].weight < 1) {
 							zeditavatar.WTW.animations.running[zanimationevent].weight += zincrement;
@@ -1370,8 +1430,8 @@ WTWJS.prototype.testAnimation = function(zanimationid, zanimationevent) {
 						} else {
 							zeditavatar.WTW.animations.running[zanimationevent].weight = 1;
 							zeditavatar.WTW.animations.running['onwait'].weight = 0;
-							window.clearInterval(WTW.testTimer);
-							WTW.testTimer = null;
+							window.clearInterval(WTW.avatarTimer);
+							WTW.avatarTimer = null;
 						}
 					}
 				},20);
@@ -1387,21 +1447,21 @@ WTWJS.prototype.testAnimationStop = function(zanimationid, zanimationevent) {
 	try {
 		var zeditavatar = WTW.getMeshOrNodeByID('editavatar-0');
 		if (zeditavatar != null) {
-			if (WTW.testTimer != null) {
-				window.clearInterval(WTW.testTimer);
-				WTW.testTimer = null;
+			if (WTW.avatarTimer != null) {
+				window.clearInterval(WTW.avatarTimer);
+				WTW.avatarTimer = null;
 			}
 			if (zanimationevent == 'onoption') {
 				zanimationevent += zanimationid;
 			}
 			var zincrement = .1;
-			WTW.testTimer = window.setInterval(function() {
+			WTW.avatarTimer = window.setInterval(function() {
 				if (zeditavatar.WTW.animations.running[zanimationevent] != undefined && zeditavatar.WTW.animations.running['onwait'] != undefined) {
 					if (zeditavatar.WTW.animations.running[zanimationevent].weight > 0) {
 						zeditavatar.WTW.animations.running[zanimationevent].weight -= zincrement;
 						zeditavatar.WTW.animations.running['onwait'].weight = 1 - zeditavatar.WTW.animations.running[zanimationevent].weight;
 					} else {
-						window.clearInterval(WTW.testTimer);
+						window.clearInterval(WTW.avatarTimer);
 						for(var zevent in zeditavatar.WTW.animations.running) {
 							if (zeditavatar.WTW.animations.running[zevent] != undefined) {
 								if (zevent == 'onwait') {
@@ -1411,7 +1471,7 @@ WTWJS.prototype.testAnimationStop = function(zanimationid, zanimationevent) {
 								}
 							}
 						}
-						WTW.testTimer = null;
+						WTW.avatarTimer = null;
 					}
 				}
 			},20);

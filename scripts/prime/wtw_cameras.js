@@ -1,5 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* these functions pertain to the various cameras and camera tracking with avatars */
 
@@ -145,7 +146,7 @@ WTWJS.prototype.initCamera = function(zviewport, zcameraid, zsettings) {
 				WTW.cameraOne = zcamera;
 				WTW.cameraOne.inertia = .10;
 				WTW.cameraOne.cameraAcceleration = 0.7;
-				WTW.cameraOne.maxZ = 5000;
+				WTW.cameraOne.maxZ = WTW.init.skySize + 5000;
 //				WTW.cameraOne.angularSensibility = 1800;
 //				WTW.cameraOne.maxCameraSpeed = 1000;
 				WTW.cameraDistance = zsettings.distance;
@@ -153,7 +154,7 @@ WTWJS.prototype.initCamera = function(zviewport, zcameraid, zsettings) {
 				WTW.cameraTwo = zcamera;
 				WTW.cameraTwo.inertia = .10;
 				WTW.cameraTwo.cameraAcceleration = 0.7;
-				WTW.cameraTwo.maxZ = 5000;
+				WTW.cameraTwo.maxZ = WTW.init.skySize + 5000;
 //				WTW.cameraTwo.angularSensibility = 1800;
 //				WTW.cameraTwo.maxCameraSpeed = 1000;
 				WTW.cameraTwo.viewport = new BABYLON.Viewport(0.7, 0.7, 0.3, 0.3);
@@ -273,7 +274,11 @@ WTWJS.prototype.setMovingCameras = function(zavatar) {
 					/* switch case is set up to allow custom support for specific cameras */
 					switch (scene.activeCameras[0].id) {
 						default:
-							var zray = scene.activeCameras[0].getForwardRay(20);
+							var zdist = 20;
+							if (WTW.sizeX < WTW.sizeY) {
+								zdist = 36;
+							}
+							var zray = scene.activeCameras[0].getForwardRay(zdist);
 							zcamerafront.position = zray.direction.scale(zray.length);
 							break;
 					}

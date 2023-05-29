@@ -1,7 +1,8 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
-/* these functions are used to initialize a new instance of WalkTheWeb and listeners for inputs */
+/* these functions are used to initialize a new instance of roomz and listeners for inputs */
 
 WTWJS.prototype.initEvents = function() {
 	/* initialize all event listeners for input controls */
@@ -47,7 +48,7 @@ WTWJS.prototype.initEvents = function() {
 }
 
 window.onload = function() {
-	/* windows onload includes analytics reporting (if set), set window size, and initialize WalkTheWeb */
+	/* windows onload includes analytics reporting (if set), set window size, and initialize roomz */
 	try {
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

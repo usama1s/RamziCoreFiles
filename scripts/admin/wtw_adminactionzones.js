@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions are used to administer a website in admin mode only */
 /* action zones are used to run functions based on avatar movement (execute scripts, animations, sounds, lighting changes, triggers, etc...) */
 /* core action zones include load zones (fetch and load molds when the avatar enters a region), doors, and dynamically loading scripts */

@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions are used to administer a website in admin mode only */
 
 /* admin plugins includes the functions to administer plugins, check for updates, add, edit, remove, and share */
@@ -170,7 +172,7 @@ WTWJS.prototype.updatePluginComplete = function(zpluginname, zversion, zupdateda
 	}
 }
 
-WTWJS.prototype.updateRoomz = async function(zpluginname, zversion, zupdatedate, zupdateurl) {
+WTWJS.prototype.updateroomz = async function(zpluginname, zversion, zupdatedate, zupdateurl) {
 	try {
 		var zupdatesloading = "<div class='wtw-dashboardboxleft'>";
 		zupdatesloading += "<div class='wtw-dashboardboxtitle'>roomz is up to date!</div><div class='wtw-dashboardbox'><b>Your Version:</b><hr />";
@@ -189,25 +191,25 @@ WTWJS.prototype.updateRoomz = async function(zpluginname, zversion, zupdatedate,
 			function(zresponse) {
 				zresponse = JSON.parse(zresponse);
 				/* note serror would contain errors */
-				WTW.updateRoomzComplete(zpluginname, zversion, zupdatedate, zupdateurl, zresponse.success);
+				WTW.updateroomzComplete(zpluginname, zversion, zupdatedate, zupdateurl, zresponse.success);
 			}
 		);
 	} catch (ex) {
-		WTW.log('core-scripts-admin-wtw_adminplugins.js-updateRoomz=' + ex.message);
+		WTW.log('core-scripts-admin-wtw_adminplugins.js-updateroomz=' + ex.message);
 	}
 }
 
-WTWJS.prototype.updateRoomzComplete = function(zpluginname, zversion, zupdatedate, zupdateurl, zsuccess) {
+WTWJS.prototype.updateroomzComplete = function(zpluginname, zversion, zupdatedate, zupdateurl, zsuccess) {
 	try {
 		var zupdatelist = "<div class='wtw-dashboardboxleft'>";
 		if (zsuccess == '1' || zsuccess == true) {
 			window.location.href = '/admin.php?showupdates=1';
 		} else {
-			zupdatelist += "<div class='wtw-dashboardboxtitle'>Roomz could not Update!</div><div class='wtw-dashboardbox'>Use the following steps:<hr />";
+			zupdatelist += "<div class='wtw-dashboardboxtitle'>roomz could not Update!</div><div class='wtw-dashboardbox'>Use the following steps:<hr />";
 			zupdatelist += "1. Download the file.<br />";
 			zupdatelist += "2. Unzip the files.<br />";
-			if (zpluginname.toLowerCase() == 'Roomz') {
-				zupdatelist += "3. Copy the files into the <b>Root</b> of your site for Roomz Core Updates.<br />";
+			if (zpluginname.toLowerCase() == 'roomz') {
+				zupdatelist += "3. Copy the files into the <b>Root</b> of your site for roomz Core Updates.<br />";
 			} else {
 				zupdatelist += "3. Copy the files into the <b>Content/Plugins</b> folder of your site.<br />";
 			}
@@ -218,7 +220,7 @@ WTWJS.prototype.updateRoomzComplete = function(zpluginname, zversion, zupdatedat
 		}
 		WTW.show('wtw_updatelist');
 	} catch (ex) {
-		WTW.log('core-scripts-admin-wtw_adminplugins.js-updateRoomzComplete=' + ex.message);
+		WTW.log('core-scripts-admin-wtw_adminplugins.js-updateroomzComplete=' + ex.message);
 	}
 }
 

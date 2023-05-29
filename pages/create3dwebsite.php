@@ -24,7 +24,7 @@ try {
 	<div id='wtw_wizardcomplete' style='display:none;visibility:hidden;'>
 		<div id="wtw_newwebsitedev" class="wtw-dashboardpage">
 			<h2 class="wtw-dashboardheading">Your New 3D Website</h2>
-			<div class="wtw-bold">Welcome to <span style="color:blue">Roomz<sup>®</sup></span> 3D Internet!<br /><br /></div><div style="clear:both;"></div>
+			<div class="wtw-bold">Welcome to <span style="color:blue">roomz<sup>®</sup></span> 3D Internet!<br /><br /></div><div style="clear:both;"></div>
 			<a id="wtw_visitwebsite" href="" class="wtw-createbutton" target="_blank">Visit your New 3D Website!</a>
 			<div style="clear:both;"></div>
 			<div style="text-align:center;max-width:900px;margin: 10px auto 10px auto;">
@@ -74,7 +74,7 @@ try {
 					<img id='wtw_downloadscol4' src='/content/system/images/col4.png' alt='4 Columns' title='4 Columns' class='wtw-tinyimg' onclick='WTW.updateCols(this, 4);' />
 				</div>
 			</div>
-			<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Step 1 - Select a 3D Building</h2>
+			<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Step 1 - Select a 3D Building</h2>
 			<div class="wtw-searchlabel">Search:</div> <input id='wtw_tbuildingsearch' name='wtw_tbuildingsearch' type='text' value='' size='20' maxlength='255' class="wtw-textbox" autocomplete="" /> 
 			<input name='wtw_bbuildingsearch' type='button' value='Search' onclick="WTW.buildingSearch();" class="wtw-searchbutton" /><div style='min-height:20px;clear:both;'></div><hr />
 			<div id="wtw_buildtempsearchresults"></div>
@@ -120,15 +120,15 @@ try {
 					<div style="display:inline;margin:0px 0px 20px 0px;">3D Websites use names under the 3D Host. You can change the name and select the <b>Check Availability</b> button.<br /><div style="color:green;">Outline in Green means available.</div></div>
 					<div style="clear:both;"></div>
 					<div style="text-align:center;">
-						<div><div id="wtw_hosturl" class="wtw-hosturl">https://3d.Roomz.com/</div><input type="text" id="wtw_webname" name="wtw_webname" class="wtw-textbox" maxlength="255" value="" onkeyup="WTW.resetWebname();" /></div><div style="clear:both;"></div>
+						<div><div id="wtw_hosturl" class="wtw-hosturl">https://d3.bixma.com/</div><input type="text" id="wtw_webname" name="wtw_webname" class="wtw-textbox" maxlength="255" value="" onkeyup="WTW.resetWebname();" /></div><div style="clear:both;"></div>
 						<div id="wtw_availability_error" style="color:red;font-weight:bold;margin-left:auto;margin-right:auto;"></div>
-						<div id="wtw_availability" class="wtw-loginbutton" onclick="WTW.checkWebname();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Check Availability</div></div>
+						<div id="wtw_availability" class="wtw-loginbutton" onclick="WTW.checkWebname();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Check Availability</div></div>
 
 						<div style="clear:both;"></div>
 					</div>
 					<div class="wtw-loginlabel">3D Website Name</div><div style="display:inline;margin:0px 0px 20px 0px;"><input type="text" id="wtw_tstorename" class="wtw-textbox" maxlength="255" value="" style="width:350px;"/><br />The 3D Website Name will be displayed on the 3D Building where applicable.</div><div style="clear:both;"></div><br /><br />
 					
-					<div id="wtw_savewebsite" class="wtw-loginbutton" onclick="WTW.saveWebsiteSettings();WTW.startWizard(4);" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Save and Continue</div></div>
+					<div id="wtw_savewebsite" class="wtw-loginbutton" onclick="WTW.saveWebsiteSettings();WTW.startWizard(4);" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Save and Continue</div></div>
 				</div>
 			</div>
 
@@ -147,16 +147,16 @@ try {
 				<h2 class="wtw-dashboardheading">3D Host Login</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
-						This is your Roomz Hosted 3D Website Login.<br /><br />
+						This is your roomz Hosted 3D Website Login.<br /><br />
 					</div><div style="clear:both;"></div>
 					<div class="wtw-loginlabel">Email</div><div><input type="text" id="wtw_thostemail" autocomplete="email" class="wtw-textbox" maxlength="255" /></div><div style="clear:both;"></div>
 					<div class="wtw-loginlabel">Password</div><div><input type="password" id="wtw_thostpassword" autocomplete="current-password" class="wtw-textbox" maxlength="255" /></div><div style="clear:both;"></div>
 					<div id="wtw_hostloginerrortext" class="wtw-errortext">&nbsp;</div><br />
-					<div class="wtw-loginbutton" onclick="WTW.hostLogin();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Login</div></div>
+					<div class="wtw-loginbutton" onclick="WTW.hostLogin();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Login</div></div>
 				</div>
 			</div>
 			<div id="wtw_logindiv" class="wtw-login" style="display:none;visibility:hidden;">
-				<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Login</h2>
+				<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Login</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
 						This is your 3D Website Login.<br />Login or click Create Login<br /><br />
@@ -164,13 +164,13 @@ try {
 					<div class="wtw-loginlabel">Email</div><div><input type="text" id="wtw_temail" autocomplete="email" class="wtw-textbox" maxlength="255" /></div><div style="clear:both;"></div>
 					<div class="wtw-loginlabel">Password</div><div><input type="password" id="wtw_tpassword" autocomplete="current-password" class="wtw-textbox" maxlength="255" /></div><div style="clear:both;"></div>
 					<div id="wtw_loginerrortext" class="wtw-errortext">&nbsp;</div><br />
-					<div class="wtw-loginbutton" onclick="WTW.login();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Login</div></div>
+					<div class="wtw-loginbutton" onclick="WTW.login();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Login</div></div>
 					<div class="wtw-loginwide" onclick="WTW.createLogin();" style="margin-left:auto;margin-right:auto;">Create Login</div>
 					<div class="wtw-loginwide" onclick="WTW.showRecoverPassword();" style="width:220px;">Forgot Password?</div>
 				</div>
 			</div>
 			<div id="wtw_registerdiv" class="wtw-login" style="display:none;visibility:hidden;">
-				<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Create Login</h2>
+				<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Create Login</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
 						This is your 3D Website Login.<br /><br />
@@ -192,32 +192,32 @@ try {
 						<div class="wtw-loginlabel">Date of Birth (mm/dd/yyyy)</div><div><input type="text" id="wtw_tnewdob" autocomplete="bday" class="wtw-textbox" maxlength="64" /></div><div style="clear:both;"></div>
 					</div>
 					<div id="wtw_registererrortext" class="wtw-errortext">&nbsp;</div><br />
-					<div class="wtw-loginbutton" onclick="WTW.createAccount();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Create Login</div></div>
+					<div class="wtw-loginbutton" onclick="WTW.createAccount();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Create Login</div></div>
 					<div class="wtw-logincancel" onclick="WTW.showLogin();" style="margin-left:auto;margin-right:auto;">Cancel</div>
 
 				</div>
 			</div>
 			<div id="wtw_resetpassworddiv" class="wtw-login" style="display:none;visibility:hidden;">
-				<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Reset Password</h2>
+				<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Reset Password</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
 						This is your 3D Website Login.<br /><br />
 					</div><div style="clear:both;"></div>
 					<div class="wtw-loginlabel">Email</div><div><input type="text" id="wtw_temailrecover" class="wtw-textbox" value="" autocomplete="email" /></div><div style="clear:both;"></div>
 					<div id="wtw_reseterrortext" class="wtw-errortext">&nbsp;</div><br />
-					<div class="wtw-loginbutton" onclick="WTW.passwordReset();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Reset My Password</div></div>						
+					<div class="wtw-loginbutton" onclick="WTW.passwordReset();" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Reset My Password</div></div>						
 					<div class="wtw-logincancel" onclick="WTW.showLogin();" style="margin-left:auto;margin-right:auto;">Cancel</div>
 				</div>
 			</div>
 			<div id="wtw_loggedindiv" class="wtw-login" style="display:none;visibility:hidden;">
-				<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Logged In Account</h2>
+				<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Logged In Account</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
 						This is your 3D Website Login.<br /><br />
 					</div><div style="clear:both;"></div>
 					<div class="wtw-loginlabel">Email</div><div><input type="text" id="wtw_temailloggedin" class="wtw-textbox" value="<?php echo $zuseremail; ?>" disabled="true" /></div><div style="clear:both;"></div>
 					<div class="wtw-logincancel" onclick="WTW.logout();" style="float:left;margin-left:50px;">Log Out</div>
-					<div class="wtw-loginbutton" onclick="WTW.startWizard(5);" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="Roomz" title="Roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Save and Continue</div></div>
+					<div class="wtw-loginbutton" onclick="WTW.startWizard(5);" style="margin-left:auto;margin-right:auto;"><img src="/content/system/images/menuwtw.png" alt="roomz" title="roomz" class="wtw-loginlogo"/><div style="margin-top:10px;">Save and Continue</div></div>
 				</div>
 			</div>
 
@@ -240,7 +240,7 @@ try {
 				<div style="max-width:1000px;min-width:650px;margin-left:auto;margin-right:auto;">
 					<div class="wtw-hostingbox" style="width:600px;text-align:center;float:right;">
 						<div class="wtw-createbutton" onclick="WTW.createIt();">Create It!</div><br /><br />
-						<h2 class="wtw-dashboardheading"><span style="color:blue">Roomz<sup>®</sup></span> Settings</h2>
+						<h2 class="wtw-dashboardheading"><span style="color:blue">roomz<sup>®</sup></span> Settings</h2>
 						<div class="wtw-loginlabel">3D Hosting</div><div><input type="text" id="wtw_thosting" name="wtw_thosting" class="wtw-textboxwider" /></div><div style="clear:both;"></div>
 						<div class="wtw-loginlabel">3D Website URL</div><div><input type="text" id="wtw_wtwurl" name="wtw_wtwurl" class="wtw-textboxwider" /></div><div style="clear:both;"></div>
 						<div class="wtw-loginlabel">3D Website Name</div><div><input type="text" id="wtw_wtwstorename" name="wtw_wtwstorename" class="wtw-textboxwider" /></div><div style="clear:both;"></div>
@@ -288,7 +288,7 @@ try {
 				<h2 class="wtw-dashboardheading">Your New 3D Website</h2>
 				<div style="text-align:center;">
 					<div class="wtw-bold">
-						Welcome to Roomz 3D Internet!<br /><br />
+						Welcome to roomz 3D Internet!<br /><br />
 					</div><div style="clear:both;"></div>
 					<a id="wtw_visitwebsite" class="wtw-createbutton" target="_blank">Visit your New 3D Website!</a><br /><br />
 					<div style="clear:both;"></div>

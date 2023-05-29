@@ -79,7 +79,7 @@ global $wtwhandlers;
 				} ?>		
 				&nbsp;</div><br />
 			
-				<div class="wtw-loginbutton" onclick="WTW.resetPassword();"><img src="/content/system/images/wtwlogo.png" alt="Bixma AB." title="Bixma AB." class="wtw-image40"/><div style="margin-top:10px;">Save New Password</div></div>
+				<div class="wtw-loginbutton" onclick="WTW.resetPassword();"><img src="/content/system/images/wtwlogo.png" alt="Bixma AB" title="Bixma AB" class="wtw-image40"/><div style="margin-top:10px;">Save New Password</div></div>
 <?php 		} else { ?>		
 				Your password has been reset.<br /><br />You can now return to the 3D Website to login.<br /><br />Welcome to roomz 3D Internet!<br /><br />
 				<div style="clear:both;"></div>
@@ -88,7 +88,7 @@ global $wtwhandlers;
 <?php	} else { ?>
 			<div style="color:#FDFFCE">Your password could not be reset.<br /><br />The link in your email is only good for a short time.<br /><br />Please try to reset your login again on the 3D Website.<br /><br /></div>
 <?php 	} ?>
-			<img src="/content/system/images/HTTP3DLogo-sticker.jpg" style="width:200px;height:auto;" />
+			<img src="/content/system/images/BixmaABLogo-sticker.jpg" style="width:200px;height:auto;" />
 			<br /><br /></h2>
 			<div class="wtw-servicelisting-invoice">
 				<div style="clear:both;"></div>

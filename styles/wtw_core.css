@@ -6,11 +6,14 @@ html, body {
 	height:100%;
 	margin:0px;
 	padding:0px;
+	position: fixed;
 	overflow:hidden;
 	scroll:no;
 	-webkit-user-select:none;
 	-ms-user-select:none;
 	user-select:none;
+	overscroll-behavior-y: contain;
+	overscroll-behavior-x: contain;
 }
 
 /* form and fields */
@@ -145,8 +148,19 @@ input:checked + .wtw-slider:before {
 	width:240px;
 	direction:ltr;
 }
+.wtw-formfieldsdiv {
+	position:absolute;
+	z-index:2;
+	top:-30px;
+	left:0;
+	width:100%;
+	height:20px;
+	text-align:center;
+	pointer-events:auto;
+	touch-action:auto;
+}
 #wtw_renderCanvas {
-	cursor:default;
+/*	cursor: auto; */
 	position:absolute;
 	z-index:1;
 	top:0;
@@ -176,36 +190,6 @@ input:checked + .wtw-slider:before {
 	filter:alpha(opacity=50);
 	-moz-opacity:0.5;
 	opacity:0.5;
-	pointer-events:none;
-	touch-action:none;
-}
-#wtw_itouchleft {
-	position:absolute;
-	z-index:5002;
-	top:50px;
-	left:50px;
-	display:none;
-	visibility:hidden;
-	border:3px solid #009900;
-	border-radius:25px;
-	width:50px;
-	height:50px;
-	padding:0px;
-	pointer-events:none;
-	touch-action:none;
-}
-#wtw_itouchright {
-	position:absolute;
-	z-index:5002;
-	top:50px;
-	left:500px;
-	display:none;
-	visibility:hidden;
-	border:3px solid #000099;
-	border-radius:25px;
-	width:50px;
-	height:50px;
-	padding:0px;
 	pointer-events:none;
 	touch-action:none;
 }
@@ -372,6 +356,10 @@ h4 {
 	background-color:#555555;
 	margin-bottom:2px;
 }
+.wtw-avatargroups {
+	/* note class is used to select input boxes */
+	color:gray;
+}
 .wtw-smallfilename {
 	font-size:10px;
 	text-align:center;
@@ -441,6 +429,25 @@ h4 {
 	vertical-align:middle;
 	line-height:32px;
 	margin:auto 10px auto 10px;
+}
+.wtw-menumobiletext {
+	float:left;
+	font-size:1em;
+	color:#ffffff;
+	vertical-align:middle;
+	line-height:32px;
+	margin:auto 5px auto 10px;
+}
+.wtw-menumobiletext:hover {
+	color:#FFF7DA;
+}
+.wtw-menumobileicon {
+	float:left;
+	font-size:1em;
+	color:#ffffff;
+	vertical-align:middle;
+	line-height:32px;
+	margin:auto 5px auto 10px;
 }
 .wtw-loginnote {
 	font-size:1em;
@@ -1833,6 +1840,26 @@ hr.wtw-menuhr {
 	background-color:#111111;
 	width:100%;
 	min-height:32px;
+	pointer-events:auto;
+	touch-action:auto; 
+}
+.wtw-menuexpandedmobile {
+	position:absolute;
+	z-index:9000;
+	bottom:34px;
+	left:0px;
+	padding-left:10px;
+	margin-left:3%;
+	margin-right:auto;
+	display:none;
+	visibility:hidden;
+	color:#ffffff;
+	background-color:#111111;
+	width:92%;
+	max-width:400px;
+	min-height:400px;
+	overflow-y:auto;
+	overflow-x:hidden;
 	pointer-events:auto;
 	touch-action:auto; 
 }

@@ -1,6 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
-
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* These functions provide many of the common functions for browse and admin modes */
 /* 3d blog components, 3d scrolling, 3D text, and wrap text  */
@@ -601,7 +601,6 @@ WTWJS.prototype.addMold3DText = function(zmoldname, zmolddef, zlenx, zleny, zlen
 		zmytext.id = zmoldname + '-text';
 		zmytext.parent = zmold;
 		zmytext.isPickable = true;
-		WTW.registerMouseOver(zmytext);
 	} catch (ex) {
 		WTW.log('core-scripts-molds-wtw_3dblog.js-addMold3DText=' + ex.message);
 	}
@@ -1281,7 +1280,6 @@ WTWJS.prototype.scrollBoxRepaint = function(zmoldname, zscrollmove) {
 								zbasicmold9.checkcollisions = '1';
 								zbasicmold9.ispickable = '1';
 								zscrollboxtab = WTW.addMold(zmoldname + '-scrollboxtab', zbasicmold9, zbasicmold9.parentname, zbasicmold9.covering);
-								WTW.registerMouseOver(zscrollboxtab);
 								zscrollboxtab.WTW = zbasicmold9;
 
 								var zbasicmold9b = WTW.newMold();
@@ -1315,7 +1313,6 @@ WTWJS.prototype.scrollBoxRepaint = function(zmoldname, zscrollmove) {
 								zbasicmold5.checkcollisions = '1';
 								zbasicmold5.ispickable = '1';
 								var zscrollboxup = WTW.addMold(zmoldname + '-scrollboxup', zbasicmold5, zbasicmold5.parentname, zbasicmold5.covering);
-								WTW.registerMouseOver(zscrollboxup);
 								zscrollboxup.WTW = zbasicmold5;
 
 								var zbasicmold5b = WTW.newMold();
@@ -1354,7 +1351,6 @@ WTWJS.prototype.scrollBoxRepaint = function(zmoldname, zscrollmove) {
 								zbasicmold7.checkcollisions = '1';
 								zbasicmold7.ispickable = '1';
 								var zscrollboxdown = WTW.addMold(zmoldname + '-scrollboxdown', zbasicmold7, zbasicmold7.parentname, zbasicmold7.covering);
-								WTW.registerMouseOver(zscrollboxdown);
 								zscrollboxdown.WTW = zbasicmold7;
 
 								var zbasicmold7b = WTW.newMold();

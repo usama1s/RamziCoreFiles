@@ -64,9 +64,9 @@ try {
 <div id="wtw_div" style="text-align:center;">
 	<div style="max-width:1000px;margin-left:auto;margin-right:auto;margin-top:20px;padding:20px;background-color:#ffffff;border:1px solid gray;color:#000000;">
 		<form id="form1" method="POST" action="invoice.php?invoiceid=<?php echo $zinvoiceid; ?>">
-			<img src="/content/system/images/HTTP3DLogo-sticker.jpg" style="width:120px;height:auto;float:left;margin:10px;" />
+			<img src="/content/system/images/BixmaABLogo-sticker.jpg" style="width:120px;height:auto;float:left;margin:10px;" />
 			<div style="text-align:left;margin-left:20px;"><br />
-				<b>Bixma AB. - Bixma </b><br />
+				<b>Bixma AB - roomz</b><br />
 				PO Box 6547<br />
 				San Diego, CA 92166<br />
 				(WAL)KTH-EWEB - (925)584-3932<br /><br />
@@ -108,7 +108,7 @@ try {
 			<div class="wtw-servicelisting-invoice">
 				<div style="clear:both;"></div>
 				<div class="wtw-notice">
-					Notice: Roomz 3D Internet is an experimental new technology. Roomz relies on numerous technologies including some that are still evolving. While we strive for perfection, some things are out of our control and may result in times when services are unavailable. We will adapt to changes as quickly as possible to provide the best service possible. Know that these services are the same services that make our own 3D Websites work. Your success is our success!
+					Notice: roomz 3D Internet is an experimental new technology. roomz relies on numerous technologies including some that are still evolving. While we strive for perfection, some things are out of our control and may result in times when services are unavailable. We will adapt to changes as quickly as possible to provide the best service possible. Know that these services are the same services that make our own 3D Websites work. Your success is our success!
 				</div>
 			</div>
 			<div style="clear:both;"></div>

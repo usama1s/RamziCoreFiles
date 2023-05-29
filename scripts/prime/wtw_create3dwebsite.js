@@ -1,7 +1,9 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* These functions are used to automate a new 3D Website creation by downloading a select 3D Community and 3D Building */
-/* downloads are hosted by 3dnet.Roomz.com 3D Internet (Roomz Downloads) */
+/* downloads are hosted by d3net.bixma.com 3D Internet (roomz Downloads) */
 
 WTWJS.prototype.startWizard = function(zstep) {
 	try {
@@ -58,14 +60,14 @@ WTWJS.prototype.startWizard = function(zstep) {
 				WTW.communitySearch('');
 				break;
 			case 3:
-				WTW.selectRoomzHosting('https://3d.Roomz.com','');
+				WTW.selectroomzHosting('https://d3.bixma.com','');
 				WTW.show('wtw_sitediv');
 				break;
 			case 4:
 				if (dGet('wtw_userid') != '') {
 					WTW.showLoggedin();
 					if (dGet('wtw_usertoken').value != '') {
-						dGet('wtw_loginlabel').innerHTML = 'Roomz Login';
+						dGet('wtw_loginlabel').innerHTML = 'roomz Login';
 					} else {
 						dGet('wtw_loginlabel').innerHTML = 'Login';
 					}
@@ -134,7 +136,7 @@ WTWJS.prototype.buildingSearch = function(zsearch) {
 		}
 		dGet('wtw_tbuildingsearch').value = zsearch;
 		zsearch = WTW.encode(zsearch);
-		WTW.getJSON("https://3dnet.Roomz.com/connect/sharesearch.php?search=" + zsearch + "&webtype=building&buildingtype=2", 
+		WTW.getJSON("https://d3net.bixma.com/connect/sharesearch.php?search=" + zsearch + "&webtype=building&buildingtype=2", 
 			function(zresponse) {
 				WTW.buildingSearchReply(JSON.parse(zresponse));
 			}
@@ -218,7 +220,7 @@ WTWJS.prototype.communitySearch = function(zsearch) {
 			zsearch = dGet('wtw_tcommunitysearch').value;
 		}
 		zsearch = WTW.encode(zsearch);
-		WTW.getJSON("https://3dnet.Roomz.com/connect/sharesearch.php?search=" + zsearch + "&webtype=community", 
+		WTW.getJSON("https://d3net.bixma.com/connect/sharesearch.php?search=" + zsearch + "&webtype=community", 
 			function(zresponse) {
 				WTW.communitySearchReply(JSON.parse(zresponse));
 			}
@@ -295,7 +297,7 @@ WTWJS.prototype.selectCommunity = function(zwebid, ztemplatename, zimageurl) {
 	}
 }
 
-WTWJS.prototype.selectRoomzHosting = function(zhost, zwtwkeytext) {
+WTWJS.prototype.selectroomzHosting = function(zhost, zwtwkeytext) {
 	try {
 		WTW.hide('wtw_registerdiv');
 		WTW.hide('wtw_resetpassworddiv');
@@ -309,7 +311,7 @@ WTWJS.prototype.selectRoomzHosting = function(zhost, zwtwkeytext) {
 		
 		WTW.checkWebname();
 	} catch (ex) {
-		WTW.log("core-scripts-prime-wtw_create3dwebsite.js-selectRoomzHosting=" + ex.message);
+		WTW.log("core-scripts-prime-wtw_create3dwebsite.js-selectroomzHosting=" + ex.message);
 	}
 }
 
@@ -646,7 +648,7 @@ WTWJS.prototype.login = function() {
 			'serverip':btoa(zserverip),
 			'function':'login'
 		};
-		WTW.postJSON("https://3dnet.Roomz.com/connect/authenticate.php", zrequest, 
+		WTW.postJSON("https://d3net.bixma.com/connect/authenticate.php", zrequest, 
 			function(zresponse) {
 				zresponse = JSON.parse(zresponse);
 				var zuserid = '';
@@ -662,7 +664,7 @@ WTWJS.prototype.login = function() {
 					zwtwusertoken = zresponse.wtwusertoken;
 				}
 				if (zusertoken.length > 100 || zuserid != '') {
-					dGet('wtw_loginlabel').innerHTML = 'Roomz Login';
+					dGet('wtw_loginlabel').innerHTML = 'roomz Login';
 					WTW.hide('wtw_hostlogindiv');
 					WTW.hide('wtw_logindiv');
 					WTW.hide('wtw_registerdiv');
@@ -717,7 +719,7 @@ WTWJS.prototype.createAccount = function() {
 			'serverip':btoa(zserverip),
 			'function':'register'
 		};
-		WTW.postJSON("https://3dnet.Roomz.com/connect/authenticate.php", zrequest,
+		WTW.postJSON("https://d3net.bixma.com/connect/authenticate.php", zrequest,
 			function(zresponse) {
 				zresponse = JSON.parse(zresponse);
 				var zuserid = '';
@@ -733,7 +735,7 @@ WTWJS.prototype.createAccount = function() {
 					zwtwusertoken = zresponse.wtwusertoken;
 				}
 				if (zusertoken.length > 100 || zuserid != '') {
-					dGet('wtw_loginlabel').innerHTML = 'Roomz Login';
+					dGet('wtw_loginlabel').innerHTML = 'roomz Login';
 					WTW.hide('wtw_hostlogindiv');
 					WTW.hide('wtw_logindiv');
 					WTW.hide('wtw_registerdiv');

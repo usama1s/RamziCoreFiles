@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Roomz (TM) - Help</title>
+	<title>roomz (TM) - Help</title>
 	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" />
@@ -58,7 +58,7 @@
 	</script>
 </head>
 <body>
-	<div class="wtw-center"><h1>Roomz - Help</h1></div>
+	<div class="wtw-center"><h1>roomz - Help</h1></div>
 	
 	<div id="wtw_helpmenu">
 		<h2 onclick="sethelp('wtw_helpmenudiv');" class="wtw-right">Help Menu - Index</h2>
@@ -98,7 +98,7 @@
 			<div style="text-align:center;width:100%;"><b>Main Browsing Page</b></div>
 			<img src="/content/system/images/homescreen.jpg" class="wtw-imgfull" style="width:80%;height:auto;" />
 			<div style="text-align:center;width:100%;">
-				<b>HTTP3D Logo</b> and current 3D Community
+				<b>BixmaAB Logo</b> and current 3D Community
 				<div style="margin-left:10%;margin-right:20%;display:inline;">Movement Direction</div>
 				Closest 3D Building
 			</div>
@@ -121,7 +121,7 @@
 	</div>
 	<div id="wtw_adminhome" class="wtw-helpdiv">
 		<h2>My 3D Websites - Home Page</h2>
-		This is the Bixma Editor main page.<br /><br />
+		This is the BixmaAB Editor main page.<br /><br />
 		<div style="float:left;min-width:8%;margin-top:30px;">
 			<b>Sub Menu</b><br />
 			Items change based<br /> 
@@ -136,7 +136,7 @@
 			<div style="text-align:center;width:100%;"><b>Main Menu Options</b></div>
 			<img src="/content/system/images/adminscreen.jpg" class="wtw-imgfull" style="width:80%;height:auto;" />
 			<div style="text-align:center;width:100%;">
-				<b>HTTP3D Logo</b>
+				<b>BixmaAB Logo</b>
 				<div style="margin-left:25%;margin-right:15%;display:inline;">Movement Direction</div>
 				Current Loaded Scene Information
 			</div>

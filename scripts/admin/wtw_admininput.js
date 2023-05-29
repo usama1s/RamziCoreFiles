@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* These functions are for input (touch, mouse, or keyboard) during admin mode only (input events extend to these functions) */
 
 WTWJS.prototype.mouseDownAdmin = function(e) {
@@ -113,21 +115,21 @@ WTWJS.prototype.mouseOverMoldAdmin = function(ztagmesh, zcurrentid) {
 				var znamepart = WTW.getMoldnameParts(zcurrentid);
 				var zmold = null;
 				if (znamepart.webset.indexOf('buildingmolds') > -1 && buildingid == '') {
-					if (ztagmesh.meshUnderPointer.parent != null) {
-						zmold = ztagmesh.meshUnderPointer.parent;
+					if (ztagmesh.parent != null) {
+						zmold = ztagmesh.parent;
 						while (zmold.name.indexOf('connectinggrids') == -1 && zmold.parent != null) {
 							zmold = zmold.parent;
 						}
 					}
 				} else if (znamepart.webset.indexOf('thingmolds') > -1 && thingid == '') {
-					if (ztagmesh.meshUnderPointer.parent != null) {
-						zmold = ztagmesh.meshUnderPointer.parent;
+					if (ztagmesh.parent != null) {
+						zmold = ztagmesh.parent;
 						while (zmold.name.indexOf('connectinggrids') == -1 && zmold.parent != null) {
 							zmold = zmold.parent;
 						}
 					}
 				} else if (znamepart.webset.indexOf('molds') > -1) {
-					zmold = ztagmesh.meshUnderPointer;
+					zmold = ztagmesh;
 				}
 				if (zmold != null) {
 					//add code to get parent mold (connecting grid) from moldname part
@@ -139,7 +141,7 @@ WTWJS.prototype.mouseOverMoldAdmin = function(ztagmesh, zcurrentid) {
     }
 }
 
-WTWJS.prototype.selectPick = function(e) {
+WTWJS.prototype.selectPick = function(zevent) {
 	/* when WTW.pick global variable is set, mouse can click (and mouse down) on and select a mold in the 3D Scene */
 	/* this is used to merge molds, add molds to action zones (swinging door parts) */
 	try {
@@ -148,16 +150,11 @@ WTWJS.prototype.selectPick = function(e) {
 			/* nothing picked or no mold clicked on in 3D Scene */
 		} else if (WTW.pick == 2) {
 			/* mold selected */
-			var zpickedresult = scene.pick(WTW.mouseX, WTW.mouseY);
-			if (zpickedresult.pickedMesh == null) {
-				zpickedresult.pickedMesh = WTW.getMeshOrNodeByID(WTW.currentID);
+			var zpickedname = WTW.pickMoldNameByRenderingGroup(zevent);
+			if (zpickedname.indexOf('molds-') > -1) {
+				zmold = WTW.getMeshOrNodeByID(zpickedname);
 			}
-			var zmold = null;
-			if (zpickedresult.pickedMesh != null) {
-				if (zpickedresult.pickedMesh.name.indexOf('molds-') > -1) {
-					zmold = zpickedresult.pickedMesh;
-				}
-			}
+			
 			if (zmold != null && zmold != undefined) {
 				if (dGet('wtw_baddactionzonepart').innerHTML == 'Cancel Pick Shape') {
 					/* pick came from action zone form */

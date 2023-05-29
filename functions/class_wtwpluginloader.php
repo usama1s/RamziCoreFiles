@@ -1,6 +1,6 @@
 <?php
 class wtwpluginloader {
-	/* wtwpluginloader class for Roomz functions for loading the various 3d plugins */
+	/* wtwpluginloader class for roomz functions for loading the various 3d plugins */
 	/* this is used by the engine to determine if a plugin is found, active, and to implement plugin code as necessary */
 	/* if you are creating a plugin, use the /core/functions/class_plugins.php for functions and global values */
 	protected static $_instance = null;
@@ -372,8 +372,8 @@ class wtwpluginloader {
 		return $zsuccess;
 	}	
 
-	public function updateRoomz($zpluginname, $zversion, $zupdateurl) {
-		/* download and update Roomz core product */
+	public function updateroomz($zpluginname, $zversion, $zupdateurl) {
+		/* download and update roomz core product */
 		global $wtwhandlers;
 		$zsuccess = false;
 		try {
@@ -413,7 +413,7 @@ class wtwpluginloader {
 				$zip = new ZipArchive;
 				$res = $zip->open($ztempfilepath.$ztempfilename);
 				if ($res === true) {
-					if ($zpluginname == "Roomz") {
+					if ($zpluginname == "roomz") {
 						$zip->extractTo($wtwhandlers->rootpath);
 					} else {
 						$zip->extractTo($wtwhandlers->contentpath."/plugins");
@@ -423,7 +423,7 @@ class wtwpluginloader {
 				}
 			}
 		} catch (Exception $e) {
-			$wtwhandlers->serror("core-functions-class_wtwpluginloader.php-updateRoomz=".$e->getMessage());
+			$wtwhandlers->serror("core-functions-class_wtwpluginloader.php-updateroomz=".$e->getMessage());
 		}
 		return $zsuccess;
 	}

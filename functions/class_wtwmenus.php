@@ -1,6 +1,6 @@
 <?php
 class wtwmenus {
-	/* wtwmenus class for main Roomz browsing menu functions */
+	/* wtwmenus class for main roomz browsing menu functions */
 	protected static $_instance = null;
 	
 	public static function instance() {
@@ -34,7 +34,10 @@ class wtwmenus {
 		/* gets the dynamically created browsing menu (bottom of the screen) */
 		global $wtw;
 		global $wtwdb;
-		$mainmenu = "<div id='wtw_wtwmessage' class='wtw-wtwmessage'></div><div id='wtw_menubase' class='wtw-menubase'><div id='wtw_menucollapsed' class='wtw-menucollapsed' onclick=\"WTW.toggle('wtw_menuexpanded');WTW.hudLoginShowEnter();\"><img id='wtw_menucollapseimg' src='/content/system/images/menumobile32.png' title='Browse Menu' alt='Toggle Menu' onmouseover=\"dGet('wtw_menucollapsed').style.backgroundColor='yellow';\" onmouseout=\"dGet('wtw_menucollapsed').style.backgroundColor='#ffffff';\" /></div><div id='wtw_menuexpanded' class='wtw-menuexpanded'><div class='wtw-indentright'>&nbsp;</div>";
+		$zbrowsemenu = "";
+		$zmobilemenu = "";
+		$zmobilemenucenter = "";
+		$zmobilemenuright = "";
 		try {
 			$zuserid = "";
 			if ($wtwdb->hasValue($_SESSION["wtw_userid"])) {
@@ -44,71 +47,114 @@ class wtwmenus {
 			
 			if (count($zresults) > 0) {
 				foreach($zresults as $zrow) {
-					$menutext = $zrow["menutext"];
-					$menuitemname = $zrow["menuitemname"];
-					$menuaction = $zrow["menuaction"];
-					$menuproperty = $zrow["menuproperty"];
-					$menusecurity = $zrow["menusecurity"];
-					$onclick = "";
-					$onmouseover = "";
-					$onmouseout = "";
-					$style = "";
-					$menualign = "left";
+					$zmenutext = $zrow["menutext"];
+					$zmenuitemname = $zrow["menuitemname"];
+					$zmenuitemnamemobile = $zrow["menuitemname"].'mobile';
+					$zmenuaction = $zrow["menuaction"];
+					$zmenuproperty = $zrow["menuproperty"];
+					$zmenusecurity = $zrow["menusecurity"];
+					$zonclick = "";
+					$zonmouseover = "";
+					$zonmouseout = "";
+					$zstyle = "cursor:pointer;";
+					$zmenualign = "left";
 					if ($zrow["menualignment"] == 'right') {
-						$menualign = "right";
+						$zmenualign = "right";
 					} elseif ($zrow["menualignment"] == 'center') {
-						$menualign = "center";
+						$zmenualign = "center";
 					}
-					if ((empty($zuserid) && $menusecurity == 2) || ($menuitemname == "wtw_modecommunity" || $menuitemname == "wtw_modebuilding")) {
-						$style = "display:none;visibility:hidden;";
+					if (empty($zmenuitemname)) {
+						$zmenuitemname = 'wtw_'.$wtwdb->getRandomString(16,1);
+						$zmenuitemnamemobile = $zmenuitemname.'mobile';
 					}
-					if ($wtw->pagename == "admin.php" && $menusecurity == 3) {
-						$style = "display:inline-block;visibility:visible;";
-					} else if ($menusecurity == 3) {
-						$style = "display:none;visibility:hidden;";
+					if ($zmenuitemname == "wtw_modecommunity" || $zmenuitemname == "wtw_modebuilding") {
+//						$zstyle = "display:none;visibility:hidden;";
 					}
-					if (!empty($menuitemname)) {
-						$menuitemname = " id='".$menuitemname."'";
-						if ($menuitemname == 'wtw_menuarrowicon') {
-							$style .= "cursor:default;";
+					if ($wtw->pagename == "admin.php" && $zmenusecurity == 3) {
+//						$zstyle = "display:inline-block;visibility:visible;";
+					} else if ($zmenusecurity == 3) {
+//						$zstyle = "display:none;visibility:hidden;";
+					}
+					if (!empty($zmenuitemname)) {
+						if ($zmenuitemname == 'wtw_menuarrowicon') {
+							$zstyle .= "cursor:default;";
 						}
+						$zmenuitemname = " id='".$zmenuitemname."'";
 					}
-					switch ($menuaction) {
+					switch ($zmenuaction) {
 						case "show-hide":
-							$style .= "cursor:pointer;";
-							$onclick = "onclick=\"WTW.closeMenus();WTW.showSettingsMenu('".$menuproperty."');\" ";
-							//$onmouseover = "onmouseover=\"WTW.closeMenus();WTW.showSettingsMenu('".$menuproperty."');\" ";;
-							//$onmouseout = "onmouseout=\"WTW.closeMenus();WTW.hide('".$menuproperty."');\" ";;
+							$zonclick = "onclick=\"WTW.closeMenus();WTW.showSettingsMenu('".$zmenuproperty."');\" ";
 							break;
 						case "open-tab":
-							$style .= "cursor:pointer;";
-							$onclick = "onclick=\"WTW.openWebpage('".$menuproperty."','_blank');\"";
+							$zonclick = "onclick=\"WTW.openWebpage('".$zmenuproperty."','_blank');\"";
 							break;
 						case "navigate":
-							$style .= "cursor:pointer;";
-							$onclick = "onclick=\"window.location.href='".$menuproperty."';\"";
+							$zonclick = "onclick=\"window.location.href='".$zmenuproperty."';\"";
 							break;
 						case "image":
-							$onclick = "\"\"";
+							$zonclick = "\"\"";
+							break;
+						case "":
+							$zstyle = "cursor:default;";
 							break;
 						default:
-							$style .= "cursor:pointer;";
-							$onclick = "onclick=\"WTW.setFunctionAndExecute('".$menuaction."','".$menuproperty."');\" ";
+							$zonclick = "onclick=\"WTW.setFunctionAndExecute('".$zmenuaction."','".$zmenuproperty."');\" ";
 							break;
 					}
-					$style = "style=\"".$style."\"";
+					$zstyle = "style=\"".$zstyle."\"";
 					if ($zrow["menuicon"] != '') {
-						$mainmenu .= "<img ".$menuitemname." src='".$zrow["menuicon"]."' alt='".$this->__($menutext)."' title='".$this->__($menutext)."' class='wtw-menu".$menualign."icon' ".$onclick.$onmouseover.$onmouseout." ".$style." />";
+						if ($zrow["menuitemname"] == 'wtw_rating') {
+							$zbrowsemenu .= "<div id='wtw_rating' class='wtw-menurighttext' ".$zonclick." ".$zstyle.">".$this->__($zmenutext)."</div>";
+						} else {
+							$zbrowsemenu .= "<img ".$zmenuitemname." src='".$zrow["menuicon"]."' alt='".$this->__($zmenutext)."' title='".$this->__($zmenutext)."' class='wtw-menu".$zmenualign."icon' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." />";
+						}
+						if ($zmenuitemnamemobile == 'wtw_menuarrowiconmobile') {
+							/* skip on mobile */
+						} else {
+							switch ($zmenualign) {
+								case 'center':
+									/* mobile center items will be added after all of the left and right align */
+									$zmobilemenucenter .= "<img id='".$zmenuitemnamemobile."' src='".$zrow["menuicon"]."' alt='".$this->__($zmenutext)."' title='".$this->__($zmenutext)."' class='wtw-menumobileicon' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." /><div id='".$zmenuitemnamemobile."text' class='wtw-menumobiletext' ".$zonclick." ".$zstyle.">".$this->__($zmenutext)."</div><div class='wtw-clear'></div>";
+									break;
+								case 'right':
+									/* mobile uses reverse order for right align items */
+									$zmobilemenuright = "<img id='".$zmenuitemnamemobile."' src='".$zrow["menuicon"]."' alt='".$this->__($zmenutext)."' title='".$this->__($zmenutext)."' class='wtw-menumobileicon' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." /><div id='".$zmenuitemnamemobile."text' class='wtw-menumobiletext' ".$zonclick." ".$zstyle.">".$this->__($zmenutext)."</div><div class='wtw-clear'></div>".$zmobilemenuright;
+									break;
+								default:
+									/* mobile has left align items first */
+									$zmobilemenu .= "<img id='".$zmenuitemnamemobile."' src='".$zrow["menuicon"]."' alt='".$this->__($zmenutext)."' title='".$this->__($zmenutext)."' class='wtw-menumobileicon' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." /><div id='".$zmenuitemnamemobile."text' class='wtw-menumobiletext' ".$zonclick." ".$zstyle.">".$this->__($zmenutext)."</div>";
+									if ($zmenuitemnamemobile != 'wtw_modecommunitymobile' && $zmenuitemnamemobile != 'wtw_modebuildingmobile') {
+										$zmobilemenu .= "<div class='wtw-clear'></div>";
+									}
+									break;
+							}
+						}
 					} else {
-						$mainmenu .= "<div ".$menuitemname." class='wtw-menu".$menualign."text' ".$onclick.$onmouseover.$onmouseout." ".$style." >".$this->__($menutext)."</div>";
+						$zbrowsemenu .= "<div ".$zmenuitemname." class='wtw-menu".$zmenualign."text' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." >".$this->__($zmenutext)."</div>";
+
+						switch ($zmenualign) {
+							case 'center':
+								/* mobile center items will be added after all of the left and right align */
+								$zmobilemenucenter .= "<div id='".$zmenuitemnamemobile."' class='wtw-menumobiletext' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." >".$this->__($zmenutext)."</div><div class='wtw-clear'></div>";
+								break;
+							case 'right':
+								/* mobile uses reverse order for right align items */
+								$zmobilemenuright = "<div id='".$zmenuitemnamemobile."' class='wtw-menumobiletext' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." >".$this->__($zmenutext)."</div><div class='wtw-clear'></div>".$zmobilemenuright;
+								break;
+							default:
+								/* mobile has left align items first */
+								$zmobilemenu .= "<div id='".$zmenuitemnamemobile."' class='wtw-menumobiletext' ".$zonclick.$zonmouseover.$zonmouseout." ".$zstyle." >".$this->__($zmenutext)."</div><div class='wtw-clear'></div>";
+								break;
+						}
 					}
 				}
 			}			
 		} catch (Exception $e) {
 			$wtwdb->serror("core-functions-class_wtwmenus.php-getMainMenu=".$e->getMessage());
 		}
-		$mainmenu .= "</div></div>";
-		return $mainmenu;
+		/* create mobile menu display */
+		$zmainmenu = "<div id='wtw_wtwmessage' class='wtw-wtwmessage'></div><div id='wtw_menubase' class='wtw-menubase'><div id='wtw_menucollapsed' class='wtw-menucollapsed' onclick=\"WTW.toggleBrowseMenu();WTW.hudLoginShowEnter();\"><img id='wtw_menucollapseimg' src='/content/system/images/menumobile32.png' title='Browse Menu' alt='Toggle Menu' onmouseover=\"dGet('wtw_menucollapsed').style.backgroundColor='yellow';\" onmouseout=\"dGet('wtw_menucollapsed').style.backgroundColor='#ffffff';\" /></div><div id='wtw_menuexpandedmobile' class='wtw-menuexpandedmobile'><img onclick='WTW.toggleBrowseMenu(0);' class='wtw-closeright' src='/content/system/images/menuclose.png' alt='Close' title='Close' onmouseover=\"this.src='/content/system/images/menuclosehover.png';\" onmouseout=\"this.src='/content/system/images/menuclose.png';\"><div class='wtw-menuheading'>Browse Menu</div>".$zmobilemenu.$zmobilemenuright.$zmobilemenucenter."</div><div id='wtw_menuexpanded' class='wtw-menuexpanded'><div class='wtw-indentright'>&nbsp;</div>".$zbrowsemenu."</div></div>";
+		return $zmainmenu;
 	}
 	
 	public function addSettingsMenuItem($zid, $ztitle, $zmenusort, $zmenu, $ziconurl, $zaccessrequired, $zjsfunction) {
@@ -361,9 +407,9 @@ class wtwmenus {
 			$zmenu .= "				<li class='wtw-submenuli'><hr /></li>\r\n";
 			$zmenu .= "				<li class='wtw-menuli' class='wtw-clear' onclick='WTW.editProfile();'><img src='/content/system/images/menueditprofile.png' alt='Edit My Profile' title='Edit My Profile' class='wtw-menulefticon' />".$this->__('Edit My Profile')."</li>\r\n";
 			$zmenu .= "				<li class='wtw-menuli' onclick='WTW.closeMenus();WTW.openAvatarDesigner();'><img src='/content/system/images/menueditavatar.png' alt='Edit My Avatar' title='Edit My Avatar' class='wtw-menulefticon' />".$this->__('Edit My Avatar')."</li>\r\n";
-			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openLocalLogin('Select Avatar',.4,.9);\"><img src='/content/system/images/menueditavatar.png' alt='Select My Avatar' title='Select My Avatar' class='wtw-menulefticon' />".$this->__('Select My Avatar')."</li>\r\n";
-			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openWebpage('https://www.Roomz.com/my-3d-stats/','_blank');\"><img src='/content/system/images/menustats.png' alt='My 3D Stats' title='My 3D Stats' class='wtw-menulefticon' />".$this->__('My 3D Stats')."</li>\r\n";
-			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openWebpage('https://www.Roomz.com/account/password/','_blank');\"><img src='/content/system/images/menupassword.png' alt='Change Password' title='Change Password' class='wtw-menulefticon' />".$this->__('Change Password')."</li>\r\n";
+			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openLoginHUD('Select My Avatar');\"><img src='/content/system/images/menueditavatar.png' alt='Select My Avatar' title='Select My Avatar' class='wtw-menulefticon' />".$this->__('Select My Avatar')."</li>\r\n";
+			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openWebpage('https://www.roomz.com/my-3d-stats/','_blank');\"><img src='/content/system/images/menustats.png' alt='My 3D Stats' title='My 3D Stats' class='wtw-menulefticon' />".$this->__('My 3D Stats')."</li>\r\n";
+			$zmenu .= "				<li class='wtw-menuli' onclick=\"WTW.closeMenus();WTW.openWebpage('https://www.roomz.com/account/password/','_blank');\"><img src='/content/system/images/menupassword.png' alt='Change Password' title='Change Password' class='wtw-menulefticon' />".$this->__('Change Password')."</li>\r\n";
 			$zmenu .= "				<li class='wtw-menuli' onclick='WTW.openLoginMenu();WTW.closeMenus();'><img src='/content/system/images/menulogin.png' alt='Login Menu' title='Login Menu' class='wtw-menulefticon' /><div class='wtw-yellow'>".$this->__('Login Menu')."</div></li>\r\n";
 			$zmenu .= "				<li class='wtw-menuli' onclick='WTW.closeMenus();WTW.logout();'><img src='/content/system/images/menulogout.png' alt='Log Out' title='Log Out' class='wtw-menulefticon' /><div>".$this->__('Log Out')."</div></li>\r\n";
 			$zmenu .= "			</ul>\r\n";
@@ -484,7 +530,7 @@ class wtwmenus {
 			$zmenu .= "	<div id='wtw_menucontrolsscroll' class='wtw-mainmenuscroll'>\r\n";
 			$zmenu .= "		<ul class='wtw-menuli'>\r\n";
 			$zmenu .= "			<li id='wtw_helpglassesdiv' class='wtw-submenublockli'>\r\n";
-			$zmenu .= "				<a href='https://www.Roomz.com/shop/Roomz-3d-glasses/' target='_blank'><img src='/content/system/images/3DGlassesFor5.png' alt='3D Glasses for $5' title='3D Glasses for $5' class='wtw-image95p' /></a /></li>\r\n";
+			$zmenu .= "				<a href='https://www.roomz.com/shop/roomz-3d-glasses/' target='_blank'><img src='/content/system/images/3DGlassesFor5.png' alt='3D Glasses for $5' title='3D Glasses for $5' class='wtw-image95p' /></a /></li>\r\n";
 			$zmenu .= "			<li class='wtw-menuli' onclick=\"WTW.hide('wtw_helpkeyboarddiv');WTW.hide('wtw_helptouchdiv');WTW.hide('wtw_helpcameradiv');WTW.toggle('wtw_helpmousediv');WTW.showSettingsMenu('wtw_menucontrols');\"><img src='/content/system/images/menumouse.png' alt=\"".$this->__("Mouse Controls")."\" title=\"".$this->__('Movement Controls')."\" class='wtw-menulefticon' />".$this->__("Mouse Controls")."</li>\r\n";
 			$zmenu .= "			<li id='wtw_helpmousediv' class='wtw-submenublockli wtw-hide'>\r\n";
 			$zmenu .= "				<div class='wtw-smallcentered'>".$this->__('Mouse must be over 3D Scene to move.')."</div>\r\n";

@@ -1,6 +1,6 @@
 <?php
 class wtw {
-	/* main $wtw class for Roomz Websites */
+	/* main $wtw class for roomz Websites */
 	protected static $_instance = null;
 	
 	public static function instance() {
@@ -21,9 +21,10 @@ class wtw {
 	}	
 	
 	/* declare public $wtw variables */
-	public $version = '3.6.1';
-	public $dbversion = '1.2.20';
-	public $versiondate = '2023-2-28';
+	public $version = '3.6.3';
+	public $dbversion = '1.2.22';
+	public $versiondate = '2023-5-2';
+	public $defaultbabylonversion = 'v5.x.x';
 	public $oldversion = '';
 	public $olddbversion = '';
 	public $serverinstanceid = '';
@@ -220,6 +221,12 @@ class wtw {
 			if (defined('wtw_adminname') == false) {
 				define("wtw_adminname", '');
 			}
+			if (defined('wtw_babylonversion') == false) {
+				define("wtw_babylonversion", $this->defaultbabylonversion);
+			}
+			if (defined('wtw_physicsengine') == false) {
+				define("wtw_physicsengine", '');
+			}
 			if (defined('wtw_ftpuser') == false) {
 				define("wtw_ftpuser", '');
 			}
@@ -397,7 +404,7 @@ class wtw {
 		return $zchecktext;
 	}	
 	
-	public function getRandomString($zlength,$zstringtype) {
+	public function getRandomString($zlength, $zstringtype) {
 		/* creates a random alpha numeric text string ov different lengths and character types */
 		/* note that most id values use type 1 */
 		$zrandomstring = '';
@@ -421,6 +428,86 @@ class wtw {
 			$this->serror("core-functions-class_wtw-initsession.php-getRandomString=".$e->getMessage());
 		}
 		return $zrandomstring;
+	}
+
+	public function mergeFiles($zbasefilepath, $zfileadditionspath) {
+		/* check line per line in the base file for the line additions and add as needed */
+		$zchanged = false;
+		try {
+			/* load array with file addition lines */
+			$zaddlines = array();
+			$zbaselines = array();
+			$zfileadditions = fopen($zfileadditionspath, "r");
+			if ($zfileadditions) {
+				$i = 0;
+				while (($zaddnewline = fgets($zfileadditions, 4096)) !== false) {
+					$zaddlines[$i] = $zaddnewline;
+					$i += 1;
+				}
+				fclose($zfileadditions);
+			}
+			$zbasefile = fopen($zbasefilepath, "r");
+			if ($zbasefile) {
+				$i = 0;
+				while (($zbaseline = fgets($zbasefile, 4096)) !== false) {
+					$zbaselines[$i] = $zbaseline;
+					$i += 1;
+				}
+				fclose($zbasefile);
+			}
+			/* open each line */
+			foreach ($zaddlines as $zaddline) {
+				$zaddline = trim($zaddline);
+				if (strlen($zaddline) > 0) {
+					/* open base file and check line per line */
+					$zbasefile = fopen($zbasefilepath, "r");
+					$zfound = false;
+					if ($zbasefile) {
+						while (($zbaseline = fgets($zbasefile, 4096)) !== false) {
+							$zbaseline = trim($zbaseline);
+							if (strlen($zbaseline) > 0) {
+								if ($zaddline == $zbaseline) {
+									/* add line found in base file */
+									$zfound = true;
+								}
+							}
+						}
+						fclose($zbasefile);
+					}
+					if ($zfound == false) {
+						/* line not found */
+						/* set zchanged to true to allow a page refresh after the new settings are in place */
+						$zchanged = true;
+						/* add line not found in base file, add the line */
+						if ($zbaselines[$i-1] == '# END roomz') {
+							$zbaselines[$i-1] = $zaddline;
+							$zbaselines[$i] = '# END roomz';
+						} else {
+							$zbaselines[$i] = $zaddline;
+						}
+						$i += 1;
+						
+						$zbasefile = fopen($zbasefilepath,'wb');
+						foreach ($zbaselines as $zbaseline) {
+							$zbaseline = preg_replace("/\r\n|\r|\n/", "", $zbaseline);
+							fwrite($zbasefile, $zbaseline."\r\n");
+						}
+						fclose($zbasefile);
+						umask(0);
+						chmod($zbasefilepath, octdec(wtw_chmod));
+						if (defined('wtw_umask')) {
+							/* reset umask */
+							if (wtw_umask != '0') {
+								umask(octdec(wtw_umask));
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception $e) {
+			$this->serror("core-functions-class_wtw-initsession.php-mergeFiles=".$e->getMessage());
+		}
+		return $zchanged;
 	}
 	
 	public function checkDatabase() {
@@ -534,6 +621,15 @@ class wtw {
 					if (wtw_umask != '0') {
 						umask(octdec(wtw_umask));
 					}
+				}
+				/* refresh page with new file in place */
+				header("Location: ".$this->domainurl."/"); 
+				exit();
+			} else {
+				if ($this->mergeFiles(wtw_rootpath.'/.htaccess', wtw_rootpath.'/htaccess')) {
+					/* if change happened, refresh page */
+					header("Location: ".$this->domainurl."/"); 
+					exit();
 				}
 			}
 			/* if using plain text password - convert plain text password to encoded password */
@@ -934,7 +1030,7 @@ class wtw {
 			/* setup process steps - display webpages */
 			switch ($zsetupstep) {
 				case 1: /* Need to set up Database Login */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' /></head>";
 					echo "<body class='wtw-body'><form id='wtw_form1' action='' method='post'>";
 					echo "<div class='wtw-fullwidth'><br /><div class='wtw-narrowpage'>";
@@ -962,7 +1058,7 @@ class wtw {
 					die;
 					break;
 				case 2: /* error in connection to database */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' /></head>";
 					echo "<body class='wtw-body'><form id='wtw_form1' action='' method='post'>";
 					echo "<div class='wtw-fullwidth'><br /><div class='wtw-narrowpage'>";
@@ -984,7 +1080,7 @@ class wtw {
 					die;
 					break;
 				case 3: /* new install - empty database */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' /></head>";
 					echo "<body class='wtw-body'><form id='wtw_form1' action='' method='post'><div class='wtw-fullwidth'><br /><div class='wtw-narrowpage'>";
 					echo "<img src='/content/system/images/wtw-multiverse-logo-1024.png' class='wtw-logoimage' />";
@@ -1021,7 +1117,7 @@ class wtw {
 					die;
 					break;
 				case 4: /* found another install - confirm add new tables */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' />";
 					echo "<script src='/core/scripts/prime/wtw_install.js'></script></head>";
 					echo "<body class='wtw-body'><form id='wtw_form1' action='' method='post'>";
@@ -1040,7 +1136,7 @@ class wtw {
 					die;
 					break;
 				case 5: /* user not logged in - Admin login screen */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' /></head>";
 					echo "<body class='wtw-body'><form id='wtw_form1' action='' method='post'>";
 					echo "<div class='wtw-fullwidth'><br /><div class='wtw-narrowpage'>";
@@ -1059,7 +1155,7 @@ class wtw {
 					die;					
 					break;
 				case 6: /* select Your 3D Building */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' />";
 					echo "<script>var wtw_domainname = '".$this->domainname."';";
 					echo "function WTW_3DINTERNET() {this.install = true;}";
@@ -1098,7 +1194,7 @@ class wtw {
 					die;
 					break;
 				case 7: /* select Your 3D Community */
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' />";
 					echo "<script>var wtw_domainname = '".$this->domainname."';";
 					echo "function WTW_3DINTERNET() {this.install = true;}";
@@ -1143,7 +1239,7 @@ class wtw {
 					/* set setting to only show this page once */
 					$wtwdb->saveSetting('OptionalServicesOffered','1');
 					
-					echo "<!DOCTYPE html><html><head><title>Roomz Setup</title>";
+					echo "<!DOCTYPE html><html><head><title>roomz Setup</title>";
 					echo "<link rel='stylesheet' type='text/css' href='/core/styles/wtw_install.css' />";
 					echo "<script>var wtw_domainname = '".$this->domainname."';</script>";
 					echo "<script src='/core/scripts/prime/wtw_install.js'></script>";
@@ -1160,28 +1256,28 @@ class wtw {
 					echo "<input type='hidden' id='wtw_usertoken' value='".$this->usertoken."' />";
 					echo "<input type='hidden' id='wtw_tcommunityid' value='".$zcommunityid."' />";
 					
-					echo "<h2 class='wtw-login'>Roomz Services Activation</h2>";
+					echo "<h2 class='wtw-login'>roomz Services Activation</h2>";
 					echo "<div id='wtw_selectservicediv' style='display:block;visibility:visible;'>";
 					echo "	<h2 class='wtw-categoryheading'>Optional Paid Services</h2>";
 					echo "	<div id='wtw_business' onclick='WTW.selectMultiplayerPackage(this);' class='wtw-servicelisting-selected'>";
 					echo "		<div class='wtw-servicetitle'>Multiplayer for Small Businesses<div class='wtw-currency'>$20 USD per Month<br /><span class='wtw-smalltext'>*Paid Yearly</span></div></div>";
 					echo "		<div class='wtw-clearspace'></div>";
 					echo "		<div><hr />";
-					echo "		Ideal for 3D Shopping Websites. Show up to <b>50 Simultaneous Multiplayer Users</b> on your Roomz Server instance (All 3D Websites combined).";
+					echo "		Ideal for 3D Shopping Websites. Show up to <b>50 Simultaneous Multiplayer Users</b> on your roomz Server instance (All 3D Websites combined).";
 					echo "		</div>";
 					echo "	</div>";
 					echo "	<div id='wtw_gamer' onclick='WTW.selectMultiplayerPackage(this);' class='wtw-servicelisting'>";
 					echo "		<div class='wtw-servicetitle'>Multiplayer for 3D Game Websites<div class='wtw-currency'>$27 USD per Month<br /><span class='wtw-smalltext'>*Paid Yearly</span></div></div>";
 					echo "		<div class='wtw-clearspace'></div>";
 					echo "		<div><hr />";
-					echo "		Ideal for 3D Gaming Websites. Show up to <b>75 Simultaneous Multiplayer Users</b> on your Roomz Server instance (All 3D Websites combined).";
+					echo "		Ideal for 3D Gaming Websites. Show up to <b>75 Simultaneous Multiplayer Users</b> on your roomz Server instance (All 3D Websites combined).";
 					echo "		</div>";
 					echo "	</div>";
 					echo "	<div id='wtw_developer' onclick='WTW.selectMultiplayerPackage(this);' class='wtw-servicelisting'>";
 					echo "		<div class='wtw-servicetitle'>Multiplayer for Developers<div class='wtw-currency'>$10 USD per Month<br /><span class='wtw-smalltext'>*Paid Yearly</span></div></div>";
 					echo "		<div class='wtw-clearspace'></div>";
 					echo "		<div><hr />";
-					echo "		Ideal balance of capabilities and savings for Developers. Create, test and even operate development or production 3D Websites with up to <b>20 Simultaneous Multiplayer Users</b> on your Roomz Server instance (All 3D Websites combined).";
+					echo "		Ideal balance of capabilities and savings for Developers. Create, test and even operate development or production 3D Websites with up to <b>20 Simultaneous Multiplayer Users</b> on your roomz Server instance (All 3D Websites combined).";
 					echo "		</div>";
 					echo "	</div>";
 					echo "	<h3 class='wtw-categoryheading'>Selected Service</h3>";
@@ -1986,6 +2082,72 @@ class wtw {
 				'skyturbidity' => '10',
 				'skymiedirectionalg' => '.8',
 				'skymiecoefficient' => '.005');
+			
+			$zcommunityinfo = array (
+				'communityid' => $this->communityid,
+				'communityname' => 'roomz',
+				'waterbumpid' => '',
+				'waterbumppath' => '',
+				'waterbumpheight' => .6,
+				'watersubdivisions' => 2,
+				'windforce' => -10,
+				'winddirectionx' => 1,
+				'winddirectiony' => 0,
+				'winddirectionz' => 1,
+				'waterwaveheight' => .2,
+				'waterwavelength' => .02,
+				'watercolorrefraction' => '#23749C',
+				'watercolorreflection' => '#52BCF1',
+				'watercolorblendfactor' => .2,
+				'watercolorblendfactor2' => .2,
+				'wateralpha' => .9,
+				'access' => '',
+				'sceneambientcolor' => '#E5E8E8',
+				'sceneclearcolor' => '#000000',
+				'sceneuseclonedmeshmap' => true,
+				'sceneblockmaterialdirtymechanism' => true,
+				'scenefogenabled' => false,
+				'scenefogmode' => '',
+				'scenefogdensity' => 0.01,
+				'scenefogstart' => 20.0,
+				'scenefogend' => 60.0,
+				'scenefogcolor' => '#c0c0c0',
+				'sundirectionalintensity' => 1,
+				'sundiffusecolor' => '#ffffff',
+				'sunspecularcolor' => '#ffffff',
+				'sungroundcolor' => '#000000',
+				'sundirectionx' => 999,
+				'sundirectiony' => -999,
+				'sundirectionz' => 999,
+				'backlightintensity' => .5,
+				'backlightdirectionx' => -999,
+				'backlightdirectiony' => 999,
+				'backlightdirectionz' => -999,
+				'backlightdiffusecolor' => '#ffffff',
+				'backlightspecularcolor' => '#ffffff',
+				'skytype' => '',
+				'skysize' => 5000,
+				'skyboxfolder' => '',
+				'skyboxfile' => '',
+				'skyboximageleft' => '',
+				'skyboximageup' => '',
+				'skyboximagefront' => '',
+				'skyboximageright' => '',
+				'skyboximagedown' => '',
+				'skyboximageback' => '',
+				'skypositionoffsetx' => 0,
+				'skypositionoffsety' => 0,
+				'skypositionoffsetz' => 0,
+				'skyboxmicrosurface' => 1.0,
+				'skyboxpbr' => true,
+				'skyboxasenvironmenttexture' => true,
+				'skyboxblur' => 0,
+				'skyboxdiffusecolor' => '#000000',
+				'skyboxspecularcolor' => '#000000',
+				'skyboxambientcolor' => '#000000',
+				'skyboxemissivecolor' => '#000000'
+			);
+
 			if (!empty($this->communityid)) {
 				/* get main 3D Community Scene settings */
 				$zresults = $wtwdb->query("
@@ -2037,25 +2199,67 @@ class wtw {
 					$zdomaininfo['skyturbidity'] = $zrow["skyturbidity"];
 					$zdomaininfo['skymiedirectionalg'] = $zrow["skymiedirectionalg"];
 					$zdomaininfo['skymiecoefficient'] = $zrow["skymiecoefficient"];
-					$zcommunityinfo = array(
-						'communityid' => $this->communityid,
-						'communityname' => $zrow["communityname"],
-						'waterbumpid' => $zrow["waterbumpid"],
-						'waterbumppath' => $zrow["waterbumppath"],
-						'waterbumpheight' => $zrow["waterbumpheight"],
-						'watersubdivisions' => $zrow["watersubdivisions"],
-						'windforce' => $zrow["windforce"],
-						'winddirectionx' => $zrow["winddirectionx"],
-						'winddirectiony' => $zrow["winddirectiony"],
-						'winddirectionz' => $zrow["winddirectionz"],
-						'waterwaveheight' => $zrow["waterwaveheight"],
-						'waterwavelength' => $zrow["waterwavelength"],
-						'watercolorrefraction' => $zrow["watercolorrefraction"],
-						'watercolorreflection' => $zrow["watercolorreflection"],
-						'watercolorblendfactor' => $zrow["watercolorblendfactor"],
-						'watercolorblendfactor2' => $zrow["watercolorblendfactor2"],
-						'wateralpha' => $zrow["wateralpha"],
-						'access' => $zcommunityaccess);	
+					$zcommunityinfo['communityname'] = $zrow['communityname'];
+					$zcommunityinfo['waterbumpid'] = $zrow['waterbumpid'];
+					$zcommunityinfo['waterbumppath'] = $zrow['waterbumppath'];
+					$zcommunityinfo['waterbumpheight'] = $zrow['waterbumpheight'];
+					$zcommunityinfo['watersubdivisions'] = $zrow['watersubdivisions'];
+					$zcommunityinfo['windforce'] = $zrow['windforce'];
+					$zcommunityinfo['winddirectionx'] = $zrow['winddirectionx'];
+					$zcommunityinfo['winddirectiony'] = $zrow['winddirectiony'];
+					$zcommunityinfo['winddirectionz'] = $zrow['winddirectionz'];
+					$zcommunityinfo['waterwaveheight'] = $zrow['waterwaveheight'];
+					$zcommunityinfo['waterwavelength'] = $zrow['waterwavelength'];
+					$zcommunityinfo['watercolorrefraction'] = $zrow['watercolorrefraction'];
+					$zcommunityinfo['watercolorreflection'] = $zrow['watercolorreflection'];
+					$zcommunityinfo['watercolorblendfactor'] = $zrow['watercolorblendfactor'];
+					$zcommunityinfo['watercolorblendfactor2'] = $zrow['watercolorblendfactor2'];
+					$zcommunityinfo['wateralpha'] = $zrow['wateralpha'];
+					$zcommunityinfo['access'] = $zcommunityaccess;
+					$zcommunityinfo['sceneambientcolor'] = $zrow['sceneambientcolor'];
+					$zcommunityinfo['sceneclearcolor'] = $zrow['sceneclearcolor'];
+					$zcommunityinfo['sceneuseclonedmeshmap'] = $zrow['sceneuseclonedmeshmap'];
+					$zcommunityinfo['sceneblockmaterialdirtymechanism'] = $zrow['sceneblockmaterialdirtymechanism'];
+					$zcommunityinfo['scenefogenabled'] = $zrow['scenefogenabled'];
+					$zcommunityinfo['scenefogmode'] = $zrow['scenefogmode'];
+					$zcommunityinfo['scenefogdensity'] = $zrow['scenefogdensity'];
+					$zcommunityinfo['scenefogstart'] = $zrow['scenefogstart'];
+					$zcommunityinfo['scenefogend'] = $zrow['scenefogend'];
+					$zcommunityinfo['scenefogcolor'] = $zrow['scenefogcolor'];
+					$zcommunityinfo['sundirectionalintensity'] = $zrow['sundirectionalintensity'];
+					$zcommunityinfo['sundiffusecolor'] = $zrow['sundiffusecolor'];
+					$zcommunityinfo['sunspecularcolor'] = $zrow['sunspecularcolor'];
+					$zcommunityinfo['sungroundcolor'] = $zrow['sungroundcolor'];
+					$zcommunityinfo['sundirectionx'] = $zrow['sundirectionx'];
+					$zcommunityinfo['sundirectiony'] = $zrow['sundirectiony'];
+					$zcommunityinfo['sundirectionz'] = $zrow['sundirectionz'];
+					$zcommunityinfo['backlightintensity'] = $zrow['backlightintensity'];
+					$zcommunityinfo['backlightdirectionx'] = $zrow['backlightdirectionx'];
+					$zcommunityinfo['backlightdirectiony'] = $zrow['backlightdirectiony'];
+					$zcommunityinfo['backlightdirectionz'] = $zrow['backlightdirectionz'];
+					$zcommunityinfo['backlightdiffusecolor'] = $zrow['backlightdiffusecolor'];
+					$zcommunityinfo['backlightspecularcolor'] = $zrow['backlightspecularcolor'];
+					$zcommunityinfo['skytype'] = $zrow['skytype'];
+					$zcommunityinfo['skysize'] = $zrow['skysize'];
+					$zcommunityinfo['skyboxfolder'] = $zrow['skyboxfolder'];
+					$zcommunityinfo['skyboxfile'] = $zrow['skyboxfile'];
+					$zcommunityinfo['skyboximageleft'] = $zrow['skyboximageleft'];
+					$zcommunityinfo['skyboximageup'] = $zrow['skyboximageup'];
+					$zcommunityinfo['skyboximagefront'] = $zrow['skyboximagefront'];
+					$zcommunityinfo['skyboximageright'] = $zrow['skyboximageright'];
+					$zcommunityinfo['skyboximagedown'] = $zrow['skyboximagedown'];
+					$zcommunityinfo['skyboximageback'] = $zrow['skyboximageback'];
+					$zcommunityinfo['skypositionoffsetx'] = $zrow['skypositionoffsetx'];
+					$zcommunityinfo['skypositionoffsety'] = $zrow['skypositionoffsety'];
+					$zcommunityinfo['skypositionoffsetz'] = $zrow['skypositionoffsetz'];
+					$zcommunityinfo['skyboxmicrosurface'] = $zrow['skyboxmicrosurface'];
+					$zcommunityinfo['skyboxpbr'] = $zrow['skyboxpbr'];
+					$zcommunityinfo['skyboxasenvironmenttexture'] = $zrow['skyboxasenvironmenttexture'];
+					$zcommunityinfo['skyboxblur'] = $zrow['skyboxblur'];
+					$zcommunityinfo['skyboxdiffusecolor'] = $zrow['skyboxdiffusecolor'];
+					$zcommunityinfo['skyboxspecularcolor'] = $zrow['skyboxspecularcolor'];
+					$zcommunityinfo['skyboxambientcolor'] = $zrow['skyboxambientcolor'];
+					$zcommunityinfo['skyboxemissivecolor'] = $zrow['skyboxemissivecolor'];
 				}
 			}
 			if (!empty($this->buildingid)) {
@@ -2204,8 +2408,8 @@ class wtw {
 			$zpreviewpath = '';
 			$zpreviewwidth = '512';
 			$zpreviewheight = '300';
-			$zsitename = 'Roomz: 3D Internet Metaverse';
-			$zsitedescription = 'Roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. Roomz (R), http://3d (TM), https://3d (TM), and HTTP3D (TM).';
+			$zsitename = 'roomz: 3D Internet Metaverse';
+			$zsitedescription = 'roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. roomz (R), http://3d (TM), https://3d (TM), and BixmaAB (TM).';
 			$zsiteicon = '/favicon.ico';
 			/* get meta data values based on 3D Community, Building, or Thing */
 			$zresults = $wtwdb->query("
@@ -2340,10 +2544,10 @@ class wtw {
 				}
 			}
 			if (!isset($zsitename) || empty($zsitename)) {
-				$zsitename = "Roomz 3D Internet Metaverse";
+				$zsitename = "roomz 3D Internet Metaverse";
 			}
 			if (!isset($zsitedescription) || empty($zsitedescription)) {
-				$zsitedescription = "Roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. Roomz (R), http://3d (TM), https://3d (TM), and HTTP3D (TM).";
+				$zsitedescription = "roomz: Internationally Patented 3D Internet Browsing and 3D Website hosting. roomz (R), http://3d (TM), https://3d (TM), and BixmaAB (TM).";
 			} 
 			if (!isset($zsiteiconpath) || empty($zsiteiconpath)) {
 				$zsiteiconpath = "/favicon.ico";
@@ -2352,14 +2556,14 @@ class wtw {
 				$zpreviewpath = $this->domainurl."/content/system/stock/wtw-3dinternet.jpg";
 			}
 			if ($this->pagename == 'admin.php') {
-				$zsitename = "Roomz Admin: ".$zsitename;
-				$zsitedescription = "Roomz Admin: Patented 3D Internet Browsing and 3D Website hosting. Roomz (R), http://3d (TM), https://3d (TM), and HTTP3D (TM).";
+				$zsitename = "roomz Admin: ".$zsitename;
+				$zsitedescription = "roomz Admin: Patented 3D Internet Browsing and 3D Website hosting. roomz (R), http://3d (TM), https://3d (TM), and BixmaAB (TM).";
 			}
 
 			/* meta data entries */
 			$zmetadata = "<title>".$zsitename."</title>\r\n";
 			$zmetadata .= "<meta http-equiv='Cache-Control' content='no-cache, no-store, must-revalidate' />\r\n";
-			$zmetadata .= "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>\r\n";
+			$zmetadata .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>\r\n";
 			$zmetadata .= "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />\r\n";
 			$zmetadata .= "<meta http-equiv='Pragma' content='no-cache' />\r\n";
 			$zmetadata .= "<meta http-equiv='Expires' content='-1' />\r\n";
@@ -2376,10 +2580,10 @@ class wtw {
 			$zmetadata .= "<meta property='og:url' content='".$this->protocol.$this->domainname.$this->uri."' />\r\n";
 			$zmetadata .= "<meta property='og:type' content='business.business' />\r\n";
 			$zmetadata .= "<meta property='og:site_name' content=\"".$zsitename."\" />\r\n";
-			$zmetadata .= "<meta property='og:see_also' content='https://www.Roomz.com' />\r\n";
+			$zmetadata .= "<meta property='og:see_also' content='https://www.roomz.com' />\r\n";
 			$zmetadata .= "<meta property='og:title' content=\"".$zsitename."\" />\r\n";
 
-			$zmetadata .= "<meta name='keywords' content=\"Roomz,3D Internet,Metaverse,Multiverse,open-source,http3d,".$zsitedescription."\" />\r\n";
+			$zmetadata .= "<meta name='keywords' content=\"roomz,3D Internet,Metaverse,Multiverse,open-source,BixmaAB,".$zsitedescription."\" />\r\n";
 			$zmetadata .= "<meta property='image' content='".$zpreviewpath."' />\r\n";
 			$zmetadata .= "<meta property='image:width' content='".$zpreviewwidth."' />\r\n";
 			$zmetadata .= "<meta property='image:height' content='".$zpreviewheight."' />\r\n";
@@ -2450,7 +2654,7 @@ class wtw {
 			$zjsdata .= "	var wtw_uploads = [];\r\n";
 			$zjsdata .= "	var wtw_version = \"".$this->version."\";\r\n";
 			$zjsdata .= "	var wtw_versiondate = \"".$this->versiondate."\";\r\n";
-			$zjsdata .= "	var wtw_versiontext = \"Roomz (v".$this->version.") ".date('m-d-Y', strtotime($this->versiondate))."\\r\\nDatabase (v".$this->dbversion.")\\r\\n© Copyright Bixma AB.\";\r\n";
+			$zjsdata .= "	var wtw_versiontext = \"roomz (v".$this->version.") ".date('m-d-Y', strtotime($this->versiondate))."\\r\\nDatabase (v".$this->dbversion.")\\r\\n© Copyright Bixma AB\";\r\n";
 			$zjsdata .= "	var wtw_defaultlanguage = \"".$this->defaultlanguage."\";\r\n";
 			$zjsdata .= "	try {\r\n";
 			$zjsdata .= "		wtw_domain = JSON.stringify(".json_encode($this->getSceneSetting()).");\r\n";
@@ -2472,8 +2676,8 @@ class wtw {
 			$zjsdata .= "		}\r\n";
             $zjsdata .= "	}\r\n";
 			$zjsdata .= "</script>"; 
-			$zjsdata .= "<script src='https://3dnet.Roomz.network/socket.io/socket.io.js'></script>\r\n";
-//			$zjsdata .= "<script src='/core/scripts/engine/socket.io-stream.js'></script>\r\n";
+			$zjsdata .= "<script src='https://3dnet.roomz.network/socket.io/socket.io.js'></script>\r\n";
+//			$zjsdata .= "<script src='/core/scripts/engine/socket.io/socket.io-stream.js'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/prime/wtw_constructor.js?x=".$this->version."'></script>\r\n";
 			$zjsdata .= $wtwplugins->getScriptFunctions();
 		} catch (Exception $e) {
@@ -2488,6 +2692,10 @@ class wtw {
 		$zjsdata = "";
 		try {	
 			$zver = $this->version;
+			$zbabylonversion = $this->defaultbabylonversion;
+			if (defined('wtw_babylonversion')) {
+				$zbabylonversion = wtw_babylonversion;
+			}
 			/* alternative used during development to force reload every time */
 			$zver = date("Y-m-d-H-i-s");
 			/* additional materials library available: https://github.com/BabylonJS/Babylon.js/tree/master/dist/materialsLibrary/ */
@@ -2509,21 +2717,34 @@ class wtw {
 			$zjsdata .= "<script src='/core/scripts/hud/wtw_hud_profile.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/hud/wtw_hud_login.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/prime/wtw_objectdefinitions.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/ammo.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/recast.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/cannon.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/oimo.js?x=".$zver."'></script>\r\n"; 
-			$zjsdata .= "<script src='/core/scripts/engine/earcut.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.loaders.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.postProcess.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.gui.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.proceduralTextures.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.materials.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.accessibility.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/pep.js?x=".$zver."'></script>\r\n";
-//			$zjsdata .= "<script src='/core/scripts/engine/loader.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/meshwriter.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/ammo.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/recast.js?x=".$zver."'></script>\r\n";
+			if (defined('wtw_physicsengine') && $zbabylonversion != 'v5.x.x') {
+				switch (wtw_physicsengine) {
+					case 'havok':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/HavokPhysics_umd.js?x=".$zver."'></script>\r\n";
+						break;
+					case 'cannon':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/cannon.js?x=".$zver."'></script>\r\n";
+						break;
+					case 'oimo':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/oimo.js?x=".$zver."'></script>\r\n"; 
+						break;
+				}
+			} else {
+				$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/cannon.js?x=".$zver."'></script>\r\n";
+				$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/oimo.js?x=".$zver."'></script>\r\n"; 
+			}
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/earcut.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.loaders.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.postProcess.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.gui.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.proceduralTextures.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.materials.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.accessibility.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/pep.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/meshwriter.min.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/prime/wtw_input.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/actionzones/wtw_basicactionzones.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/actionzones/wtw_addactionzonelist.js?x=".$zver."'></script>\r\n";			
@@ -2568,9 +2789,7 @@ class wtw {
 			$zmainelements .= "<div id='wtw_iwalkarrow' class='wtw-hide'></div>\r\n";
 			$zmainelements .= "<div id='wtw_iwalkarrow2' class='wtw-hide'></div>\r\n";
 			$zmainelements .= "<div id='wtw_itooltip'></div>\r\n";
-			$zmainelements .= "<div id='wtw_itouchleft'></div>\r\n";
-			$zmainelements .= "<div id='wtw_itouchright'></div>\r\n";
-			$zmainelements .= "<canvas id='wtw_renderCanvas' touch-action='none' style='cursor:default;'></canvas>\r\n";
+			$zmainelements .= "<canvas id='wtw_renderCanvas' ></canvas>\r\n";
 			$zmainelements .= "<div id='wtw_greyout'></div>\r\n";
 			$zmainelements .= "<div id='wtw_ibrowsediv' class='wtw-browsediv' style='display:none;' onclick='WTW.blockPassThrough();'>\r\n";
 			$zmainelements .= "	<div id='wtw_browseheader' class='wtw-browseheader'>\r\n";
@@ -2626,6 +2845,8 @@ class wtw {
 			$zhiddenfields .= "<input type='hidden' id='wtw_tuseremail' value='".$wtwuser->email."' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tuserimageurl' value='".$wtwuser->userimageurl."' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tuseraccess' value=\"".$wtwuser->useraccess."\" />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbabylonversion' value='".wtw_babylonversion."' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tphysicsengine' value='".wtw_physicsengine."' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_trootpath' value='".wtw_rootpath."' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tcontentpath' value='".$wtwuser->contentpath."' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tuploadpathid' value='".$wtwuser->uploadpathid."' />\r\n";

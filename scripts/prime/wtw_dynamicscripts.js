@@ -1,5 +1,6 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
 
 /* These functions provide many of the common functions for browse and admin modes */
 /* dynamically load and unload script files and execute JavaScript functions from text function names */
@@ -183,18 +184,23 @@ WTWJS.prototype.setFunctionAndExecute = function(zfunctionname, zparameters, zmo
 
 WTWJS.prototype.checkMoldFunctionAndExecute = function(zmoldname) {
 	/* triggered by click event, if the mold has a function (by function name string) assigned to it, this will execute it */
+	var zfound = false;
 	try {
 		if (zmoldname.indexOf('molds') > -1) {
 			var zmoldnameparts = WTW.getMoldnameParts(zmoldname);
 			if (zmoldnameparts.molds[zmoldnameparts.moldind] != null) {
 				if (zmoldnameparts.molds[zmoldnameparts.moldind].jsfunction != undefined) {
-					WTW.setFunctionAndExecute(zmoldnameparts.molds[zmoldnameparts.moldind].jsfunction, zmoldnameparts.molds[zmoldnameparts.moldind].jsparameters);
+					if (zmoldnameparts.molds[zmoldnameparts.moldind].jsfunction != '') {
+						WTW.setFunctionAndExecute(zmoldnameparts.molds[zmoldnameparts.moldind].jsfunction, zmoldnameparts.molds[zmoldnameparts.moldind].jsparameters);
+						zfound = true;
+					}
 				}
 			}
 		}
     } catch (ex) {
 		WTW.log('core-scripts-prime-wtw_dynamicscripts.js-checkMoldFunctionAndExecute=' + ex.message);
     }
+	return zfound;
 }
 
 WTWJS.prototype.executeFunctionByName = function(zjsfunction, zcontext /*, args */) {

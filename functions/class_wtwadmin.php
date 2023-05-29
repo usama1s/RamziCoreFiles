@@ -1,6 +1,6 @@
 <?php
 class wtwadmin {
-	/* main wtwadmin class for Roomz Websites when browsed from admin.php */
+	/* main wtwadmin class for roomz Websites when browsed from admin.php */
 	protected static $_instance = null;
 	
 	public static function instance() {
@@ -31,6 +31,10 @@ class wtwadmin {
 		$zjsdata = "";
 		try {	
 			$zver = $wtw->version;
+			$zbabylonversion = $wtw->defaultbabylonversion;
+			if (defined('wtw_babylonversion')) {
+				$zbabylonversion = wtw_babylonversion;
+			}
 			/* alternative used during development to force reload every time */
 			/* $zver = date("Y-m-d-H-i-s"); */
 			/* additional materials library available: https://github.com/BabylonJS/Babylon.js/tree/master/dist/materialsLibrary/ */
@@ -52,21 +56,34 @@ class wtwadmin {
 			$zjsdata .= "<script src='/core/scripts/hud/wtw_hud_profile.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/hud/wtw_hud_login.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/prime/wtw_objectdefinitions.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/ammo.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/recast.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/cannon.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/oimo.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/earcut.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.loaders.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.postProcess.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.gui.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.proceduralTextures.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylonjs.materials.min.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/babylon.accessibility.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/pep.js?x=".$zver."'></script>\r\n";
-//			$zjsdata .= "<script src='/core/scripts/engine/loader.js?x=".$zver."'></script>\r\n";
-			$zjsdata .= "<script src='/core/scripts/engine/meshwriter.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/ammo.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/recast.js?x=".$zver."'></script>\r\n";
+			if (defined('wtw_physicsengine')) {
+				switch (wtw_physicsengine) {
+					case 'havok':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/HavokPhysics_umd.js?x=".$zver."'></script>\r\n";
+						break;
+					case 'cannon':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/cannon.js?x=".$zver."'></script>\r\n";
+						break;
+					case 'oimo':
+						$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/oimo.js?x=".$zver."'></script>\r\n"; 
+						break;
+				}
+			} else {
+				$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/cannon.js?x=".$zver."'></script>\r\n";
+				$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/oimo.js?x=".$zver."'></script>\r\n"; 
+			}
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/earcut.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.loaders.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.postProcess.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.gui.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.proceduralTextures.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylonjs.materials.min.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/babylon.accessibility.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/pep.js?x=".$zver."'></script>\r\n";
+			$zjsdata .= "<script src='/core/scripts/engine/".$zbabylonversion."/meshwriter.min.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/prime/wtw_input.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/admin/wtw_admininput.js?x=".$zver."'></script>\r\n";
 			$zjsdata .= "<script src='/core/scripts/actionzones/wtw_basicactionzones.js?x=".$zver."'></script>\r\n";
@@ -257,6 +274,62 @@ class wtwadmin {
 			$zhiddenfields .= "<input type='hidden' id=\"wtw_tactionzonejsparameters\" />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_twaterpositiony' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tskydomeid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsceneambientcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsceneclearcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsceneuseclonedmeshmapbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsceneblockmaterialdirtymechanismbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogenabledbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogmodebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogdensitybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogstartbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogendbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tscenefogcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsundirectionalintensitybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsundiffusecolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsunspecularcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsungroundcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsundirectionxbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsundirectionybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tsundirectionzbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightintensitybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightdirectionxbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightdirectionybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightdirectionzbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightdiffusecolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tbacklightspecularcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskytypebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskysizebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxfolderbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxfilebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageleft' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagefront' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageright' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagedown' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageback' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageleftid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageupid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagefrontid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagerightid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagedownid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagebackid' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageleftbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximageupbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagefrontbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagerightbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagedownbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboximagebackbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskypositionoffsetxbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskypositionoffsetybackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskypositionoffsetzbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxmicrosurfacebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxpbrbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxasenvironmenttexturebackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxblurbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxdiffusecolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxspecularcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxambientcolorbackup' />\r\n";
+			$zhiddenfields .= "<input type='hidden' id='wtw_tskyboxemissivecolorbackup' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tskyinclinationbackup' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tskyluminancebackup' />\r\n";
 			$zhiddenfields .= "<input type='hidden' id='wtw_tskyazimuthbackup' />\r\n";
@@ -321,7 +394,7 @@ class wtwadmin {
 			$zpagedata .= "				</div>\r\n";
 
 			$zpagedata .= "				<div id='wtw_wtwactivity' class='wtw-dashboardboxleftfull'>\r\n";
-			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_wtwactivitydiv');\"><div id='wtw_wtwactivitydivarrow' class='wtw-divarrow'>⯅</div>Roomz Global Latest Activity</div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_wtwactivitydiv');\"><div id='wtw_wtwactivitydivarrow' class='wtw-divarrow'>⯅</div>roomz Global Latest Activity</div>\r\n";
 			$zpagedata .= "					<div id='wtw_wtwactivitydiv' class='wtw-dashboardboxmax' style='max-height:550px;'>\r\n";
 			$zpagedata .= "						<div id='wtw_wtwactivitylist'></div>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
@@ -331,20 +404,20 @@ class wtwadmin {
 
 			$zpagedata .= "			<div id='wtw_dashboardcol2' style='width:62%;margin:1%;padding:0px;display:inline-block;vertical-align:top;'>\r\n";
 			$zpagedata .= "				<div id='wtw_videolinks' class='wtw-dashboardboxleftfull wtw-hide'>\r\n";
-			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_videolinksdiv');\"><div id='wtw_videolinksdivarrow' class='wtw-divarrow'>⯅</div>Roomz Videos</div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_videolinksdiv');\"><div id='wtw_videolinksdivarrow' class='wtw-divarrow'>⯅</div>roomz Videos</div>\r\n";
 			$zpagedata .= "					<div id='wtw_videolinksdiv' class='wtw-dashboardboxmax' style='min-height:550px;'>\r\n";
 			$zpagedata .= "						<div id='wtw_latestvideo'></div>\r\n";
-			$zpagedata .= "						<h3 id='wtw_latestvideotitle' class='wtw-black'>Roomz Video</h3>\r\n";
+			$zpagedata .= "						<h3 id='wtw_latestvideotitle' class='wtw-black'>roomz Video</h3>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "						<div id='wtw_latestvideodetails' class='wtw-dashboardlabel'>Latest Video</div>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= "						<h2><a href='https://www.youtube.com/channel/bixma' target='_blank'>View More Bixma Videos</a></h2>\r\n";
+			$zpagedata .= "						<h2><a href='https://www.youtube.com/channel/UCEcaZ947Mv1ylLd_MYS1ivg' target='_blank'>View More roomz Videos</a></h2>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "					</div>\r\n";
 			$zpagedata .= "				</div>\r\n";
 
 			$zpagedata .= "				<div id='wtw_downloadqueue' class='wtw-dashboardboxleftfull wtw-hide'>\r\n";
-			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_downloadqueuediv');\"><div id='wtw_downloadqueuedivarrow' class='wtw-divarrow'>⯅</div>Roomz Pending Downloads (Queue)</div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardboxtitle' onclick=\"WTW.toggleDashboardBox('wtw_downloadqueuediv');\"><div id='wtw_downloadqueuedivarrow' class='wtw-divarrow'>⯅</div>roomz Pending Downloads (Queue)</div>\r\n";
 			$zpagedata .= "					<div id='wtw_downloadqueuediv' class='wtw-dashboardboxmax'>\r\n";
 			$zpagedata .= "						<div id='wtw_downloadingnoticequeue' class='wtw-hide'></div>\r\n";
 			$zpagedata .= "						<div id='wtw_downloadqueuelist'></div>\r\n";
@@ -427,6 +500,7 @@ class wtwadmin {
 			$zpagedata .= "					<option value='video'>Videos</option>\r\n";
 			$zpagedata .= "					<option value='audio'>Sounds</option>\r\n";
 			$zpagedata .= "					<option value='doc'>Documents</option>\r\n";
+			$zpagedata .= "					<option value='file'>Files</option>\r\n";
 			$zpagedata .= "					<option value='object'>3D Models</option>\r\n";
 			$zpagedata .= "				</select>\r\n";
 			$zpagedata .= "			</div>\r\n";
@@ -440,7 +514,7 @@ class wtwadmin {
 			$zpagedata .= "			<div id='wtw_menuimagecommunity' class='wtw-menutabtop' onclick='WTW.setImageMenu(1);'>3D Community Files</div>\r\n";
 			$zpagedata .= "			<div id='wtw_menuimagemy' class='wtw-menutabtop' onclick='WTW.setImageMenu(2);'>My Files</div>\r\n";
 			$zpagedata .= "			<div id='wtw_menuimagestock' class='wtw-menutabtop' onclick='WTW.setImageMenu(3);'>Stock Files</div>\r\n";
-			$zpagedata .= "			<div id='wtw_menuwtwdownloads' class='wtw-menutabtop' onclick=\"WTW.openFullPageForm('importpage','communities');\">Roomz Downloads</div>\r\n";
+			$zpagedata .= "			<div id='wtw_menuwtwdownloads' class='wtw-menutabtop' onclick=\"WTW.openFullPageForm('importpage','communities');\">roomz Downloads</div>\r\n";
 			$zpagedata .= "			<div id='wtw_hiddenimagesoption' class='wtw-hiddenimageoption'>\r\n";
 			$zpagedata .= "				<input type='checkbox' id='wtw_bshowhiddenimages' onchange='WTW.selectFileForm(this);' class='wtw-cursorpointer' /> <div id='wtw_showhiddenimagesdiv' onclick='WTW.selectFileForm(this);' class='wtw-showimageoption'>Show Hidden Images</div>\r\n";
 			$zpagedata .= "			</div>\r\n";
@@ -629,7 +703,7 @@ class wtwadmin {
 			$zpagedata .= "		<div id='wtw_allusers' class='wtw-fullpage'>\r\n";
 			$zpagedata .= "			<div id='wtw_alluserswidth' class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "				<div id='wtw_alluserstitle' class='wtw-dashboardboxtitle'><div id='wtw_adduserbutton' class='wtw-greenbuttonright' onclick='WTW.addUser();'>Add New</div>All Users</div>\r\n";
-			$zpagedata .= "			<div id='wtw_usersnote' class='wtw-roundedbox'><b>All Users</b> provides a list of users including those who have visited using a Roomz Global Login.<br /></div>\r\n";
+			$zpagedata .= "			<div id='wtw_usersnote' class='wtw-roundedbox'><b>All Users</b> provides a list of users including those who have visited using a roomz Global Login.<br /></div>\r\n";
 			$zpagedata .= "			<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardbox'>\r\n";
 			$zpagedata .= "					<div id='wtw_userlist'></div>\r\n";
@@ -658,7 +732,7 @@ class wtwadmin {
 			$zpagedata .= "		<div id='wtw_allplugins' class='wtw-fullpage'>\r\n";
 			$zpagedata .= "			<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "				<div id='wtw_pluginslisttitle' class='wtw-dashboardboxtitle'><div id='wtw_addplugin' class='wtw-greenbuttonright' onclick='WTW.openFullPageForm('importpage','plugins');'>Add New</div>All 3D Plugins</div>\r\n";
-			$zpagedata .= "				<div class='wtw-roundedbox'><b>3D Plugins</b> add 3D Game and 3D Shopping functionality to your 3D Community Scenes, 3D Buildings, 3D Things, and 3D Avatars. Note that the <b>Roomz 3D Internet Plugin</b> must be enabled to have the options to download and add more 3D Plugins.<br /></div>\r\n";
+			$zpagedata .= "				<div class='wtw-roundedbox'><b>3D Plugins</b> add 3D Game and 3D Shopping functionality to your 3D Community Scenes, 3D Buildings, 3D Things, and 3D Avatars. Note that the <b>roomz 3D Internet Plugin</b> must be enabled to have the options to download and add more 3D Plugins.<br /></div>\r\n";
 			$zpagedata .= "				<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardbox'>\r\n";
 			$zpagedata .= "					<div id='wtw_pluginslist'></div>\r\n";
@@ -674,7 +748,7 @@ class wtwadmin {
 			/* settings page - server settings */
 			$zpagedata .= "		<div id='wtw_serversettings' class='wtw-fullpage'>\r\n";
 			$zpagedata .= "			<div class='wtw-dashboardboxlefthalf'>\r\n";
-			$zpagedata .= "				<div class='wtw-dashboardboxtitle'>Roomz Server Settings</div>\r\n";
+			$zpagedata .= "				<div class='wtw-dashboardboxtitle'>roomz Server Settings</div>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardbox'>\r\n";
 			$zpagedata .= "					<div class='wtw-roundedbox'><b>Server Settings</b> are global variables stored in the /config/wtw_config.php file.<br /></div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
@@ -730,6 +804,27 @@ class wtwadmin {
 			$zpagedata .= "					<div class='wtw-dashboardvalue'><input type='text' id='wtw_chmod' maxlength='15' /></div>\r\n";
 
 			$zpagedata .= "					<div class='wtw-clear'></div><hr />\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardlabel'>Select Babylon Version</div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardvalue'>\r\n";
+			$zpagedata .= "						<select id='wtw_babylonversion'>\r\n";
+			$zpagedata .= "							<option value='v5.x.x'>v5.x.x</option>\r\n";
+			$zpagedata .= "							<option value='v6.x.x'>v6.x.x</option>\r\n";
+			$zpagedata .= "						</select></div>\r\n";
+			$zpagedata .= "					<div class='wtw-clear'></div><br />\r\n";
+			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardlabel'>Physics Engine Enabled</div>\r\n";
+			$zpagedata .= "					<div class='wtw-dashboardvalue'>\r\n";
+			$zpagedata .= "						<select id='wtw_physicsengine'>\r\n";
+			$zpagedata .= "							<option value=''>- None -</option>\r\n";
+			$zpagedata .= "							<option value='havok'>Havok</option>\r\n";
+			$zpagedata .= "							<option value='cannon'>Cannon</option>\r\n";
+			$zpagedata .= "							<option value='oimo'>Oimo</option>\r\n";
+			$zpagedata .= "						</select></div>\r\n";
+			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
+			$zpagedata .= "					<div>To load these settings, refresh your browser after saving.</div>\r\n";
+			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
+
+			$zpagedata .= "					<div class='wtw-clear'></div><hr />\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardlabel'>FTP Host (Server:port)</div>\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardvalue'><input type='text' id='wtw_ftphost' maxlength='255' /></div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
@@ -756,7 +851,7 @@ class wtwadmin {
 			$zpagedata .= "			<div class='wtw-dashboardboxleft'>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardboxtitle'>Email Server Settings</div>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardbox'>\r\n";
-			$zpagedata .= "					<div class='wtw-roundedbox'><b>Email Server Settings</b> provide basic connection for sending emails programmatically from Roomz.<br /></div>\r\n";
+			$zpagedata .= "					<div class='wtw-roundedbox'><b>Email Server Settings</b> provide basic connection for sending emails programmatically from roomz.<br /></div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardlabel'>SMTP Email Server</div>\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardvalue'><input type='text' id='wtw_tsmtphost' maxlength='255' /></div>\r\n";
@@ -793,7 +888,7 @@ class wtwadmin {
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "					<div class='wtw-graymenubutton' onclick='WTW.testEmailServerSettings();'>Send Test Email</div>\r\n";
 			$zpagedata .= "					<hr /><label class='wtw-switch'><input id='wtw_emailvalidation' type='checkbox' onclick='WTW.changeEmailSwitch();'><span class='wtw-slider wtw-round'></span></label><div id='wtw_emailvalidationtext' class='wtw-disabledlabel'>User Email Validation Disabled</div> <br />This will send email to the users when they login or create an account, to confirm their email address is active and valid.<br />\r\n";
-			$zpagedata .= "<br /><hr />Email Functions by <a href='https://github.com/swiftmailer/swiftmailer' target='_blank'>SwiftMailer</a><br />without modification by Roomz.";
+			$zpagedata .= "<br /><hr />Email Functions by <a href='https://github.com/swiftmailer/swiftmailer' target='_blank'>SwiftMailer</a><br />without modification by roomz.";
 			$zpagedata .= "				</div>\r\n";
 			$zpagedata .= "			</div>\r\n";
 			$zpagedata .= "		</div>\r\n";
@@ -887,7 +982,7 @@ class wtwadmin {
 			}
 			$zpagedata .= " 				</div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= "					<div class='wtw-roundedbox'><b>Domain Names</b> identify which Domain Names are hosted on this Roomz server.<br />Click <b>Add New</b> to personalize your 3D Website with your own Domain Name (<b>http://3d.<span style='color:blue;'>YourDomainName.com</span></b>).<br /><br /><b>Web Aliases</b> allow you to create URLs for any 3D Community Scene, 3D Building, or 3D Thing using your Domain Names.<br /></div>\r\n";
+			$zpagedata .= "					<div class='wtw-roundedbox'><b>Domain Names</b> identify which Domain Names are hosted on this roomz server.<br />Click <b>Add New</b> to personalize your 3D Website with your own Domain Name (<b>http://3d.<span style='color:blue;'>YourDomainName.com</span></b>).<br /><br /><b>Web Aliases</b> allow you to create URLs for any 3D Community Scene, 3D Building, or 3D Thing using your Domain Names.<br /></div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "						<div class='wtw-dashboardboxtitle'>Web Domains</div>\r\n";
@@ -971,7 +1066,7 @@ class wtwadmin {
 			$zpagedata .= " 						<div id='wtw_aliasfranchisediv' class='wtw-hide'><br /><hr /><br />\r\n";
 			$zpagedata .= "								<div class='wtw-dashboardboxtitle'>Franchise (Increase Web Traffic)</div><br />\r\n";
 			$zpagedata .= "								<label class='wtw-switch'><input id='wtw_aliasfranchise' type='checkbox' onclick='WTW.changeFranchiseSwitch();'><span class='wtw-slider wtw-round'></span></label><div id='wtw_aliasfranchisetext' class='wtw-disabledlabel'>This 3D Website is not Franchised.</div><br /><br />\r\n";
-			$zpagedata .= "								<div style='padding:10px;'>Franchising allows other Roomz Servers on the Internet to add your 3D Building, 3D Store, or 3D Thing to their 3D Community Scenes.<br /><br />3D Community Scenes stay on the original Roomz Server.<br /><br /></div>\r\n";
+			$zpagedata .= "								<div style='padding:10px;'>Franchising allows other roomz Servers on the Internet to add your 3D Building, 3D Store, or 3D Thing to their 3D Community Scenes.<br /><br />3D Community Scenes stay on the original roomz Server.<br /><br /></div>\r\n";
 			$zpagedata .= "								<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= " 						</div>\r\n";
 			$zpagedata .= " 					</div>\r\n";
@@ -981,7 +1076,7 @@ class wtwadmin {
 			$zpagedata .= "						<div class='wtw-yellowbuttonright' onclick='WTW.saveAliasForm(-1);'>Cancel</div>\r\n";
 			$zpagedata .= " 				</div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= "					<div class='wtw-roundedbox'><b>Web Aliases</b> allow you to create URLs for any 3D Community Scene, 3D Building, or 3D Thing using your Domain Names.<br />Click <b>Add New</b> to set a Domain Name and Path to your 3D Websites.<br /><br /><b>Domain Names</b> identify which Domain Names are hosted on this Roomz server.<br /></div>\r\n";
+			$zpagedata .= "					<div class='wtw-roundedbox'><b>Web Aliases</b> allow you to create URLs for any 3D Community Scene, 3D Building, or 3D Thing using your Domain Names.<br />Click <b>Add New</b> to set a Domain Name and Path to your 3D Websites.<br /><br /><b>Domain Names</b> identify which Domain Names are hosted on this roomz server.<br /></div>\r\n";
 			$zpagedata .= "					<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "					<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "						<div class='wtw-dashboardboxtitle'>Web Aliases</div>\r\n";
@@ -999,7 +1094,7 @@ class wtwadmin {
 			$zpagedata .= "			<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardboxtitle'><div id='wtw_addapikey' class='wtw-greenbuttonright' onclick=\"WTW.openAPIKeyForm('');\">Add New</div>API Keys Access</div>\r\n";
 			$zpagedata .= "				<div class='wtw-dashboardbox'>\r\n";
-			$zpagedata .= " 					<div class='wtw-roundedbox'>API Key set is a login and password used to allow outside applications limited access to perform select functions. For example, an API Key set can allow your <b>Roomz WordPress Plugin</b> to create and manage your 3D Community Scenes, 3D Buildings, and 3D Shopping Stores.</div>\r\n";
+			$zpagedata .= " 					<div class='wtw-roundedbox'>API Key set is a login and password used to allow outside applications limited access to perform select functions. For example, an API Key set can allow your <b>roomz WordPress Plugin</b> to create and manage your 3D Community Scenes, 3D Buildings, and 3D Shopping Stores.</div>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "						<div id='wtw_apikeyerror' class='wtw-error'></div>\r\n";
 			
@@ -1016,13 +1111,13 @@ class wtwadmin {
 			$zpagedata .= "							<div class='wtw-dashboardlabel'>App ID (May be Required: Example WordPress App ID)</div>\r\n";
 			$zpagedata .= "							<div class='wtw-dashboardvalue'><input type='text' id='wtw_tapiappid' maxlength='255' /></div>\r\n";
 			$zpagedata .= "							<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= "							<div class='wtw-dashboardlabel'>Roomz Key</div>\r\n";
+			$zpagedata .= "							<div class='wtw-dashboardlabel'>roomz Key</div>\r\n";
 			$zpagedata .= "							<div class='wtw-dashboardvalue'><input type='text' id='wtw_tapiwtwkey' maxlength='255' style='width:360px;' /></div>\r\n";
 			$zpagedata .= "							<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= "							<div class='wtw-dashboardlabel'>Roomz Secret</div>\r\n";
+			$zpagedata .= "							<div class='wtw-dashboardlabel'>roomz Secret</div>\r\n";
 			$zpagedata .= "							<div class='wtw-dashboardvalue'><input type='password' id='wtw_tapiwtwsecret' maxlength='255' style='width:360px;' /></div>\r\n";
 			$zpagedata .= "							<div class='wtw-clear'></div>\r\n";
-			$zpagedata .= " 							<div id='wtw_apicopynote' class='wtw-error'>Make sure you copy the Roomz Key and Secret now. You will not be able to view this information again after Saving.</div>\r\n";
+			$zpagedata .= " 							<div id='wtw_apicopynote' class='wtw-error'>Make sure you copy the roomz Key and Secret now. You will not be able to view this information again after Saving.</div>\r\n";
 
 			$zpagedata .= " 						</div>\r\n";
 			$zpagedata .= "						<div class='wtw-clear'></div>\r\n";
@@ -1047,7 +1142,7 @@ class wtwadmin {
 			$zpagedata .= "	<div id='wtw_optionalpage' class='wtw-fullpage'>\r\n";
 			$zpagedata .= "		<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "			<div id='wtw_optionaltitle' class='wtw-dashboardboxtitle'>My Invoices</div>\r\n";
-			$zpagedata .= "			<div id='wtw_optionalnote' class='wtw-roundedbox'><b>My Invoices</b> provide printable receipts for your Roomz Purchases and Upgrades.<br /></div>\r\n";
+			$zpagedata .= "			<div id='wtw_optionalnote' class='wtw-roundedbox'><b>My Invoices</b> provide printable receipts for your roomz Purchases and Upgrades.<br /></div>\r\n";
 			$zpagedata .= "			<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "			<div class='wtw-dashboardbox'>\r\n";
 			$zpagedata .= "				<div id='wtw_optionallist'></div><br />\r\n";
@@ -1062,7 +1157,7 @@ class wtwadmin {
 			$zpagedata .= "	<div id='wtw_invoicespage' class='wtw-fullpage'>\r\n";
 			$zpagedata .= "		<div class='wtw-dashboardboxleftfull'>\r\n";
 			$zpagedata .= "			<div id='wtw_invoicestitle' class='wtw-dashboardboxtitle'>My Invoices</div>\r\n";
-			$zpagedata .= "			<div id='wtw_invoicesnote' class='wtw-roundedbox'><b>My Invoices</b> provide printable receipts for your Roomz Purchases and Upgrades.<br /></div>\r\n";
+			$zpagedata .= "			<div id='wtw_invoicesnote' class='wtw-roundedbox'><b>My Invoices</b> provide printable receipts for your roomz Purchases and Upgrades.<br /></div>\r\n";
 			$zpagedata .= "			<div class='wtw-clear'></div>\r\n";
 			$zpagedata .= "			<div class='wtw-dashboardbox'>\r\n";
 			$zpagedata .= "				<div id='wtw_invoiceslist'></div><br />\r\n";

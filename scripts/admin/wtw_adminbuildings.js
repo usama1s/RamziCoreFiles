@@ -1,5 +1,7 @@
-/* All code is Copyright 2013-2023 Bixma */
-/* All code is patent */
+/* All code is Copyright 2013-2023 Bixma. - roomz, and the contributors */
+/* Code is Patented  */
+/* Read the included license file for details and additional release information. */
+
 /* these functions are used to administer a website in admin mode only */
 
 /* these functions administer 3D Buildings as a whole (mold functions are in wtw_adminmolds.js) */
@@ -47,12 +49,23 @@ WTWJS.prototype.openBuildingForm = async function(w) {
 					}
 					dGet('wtw_showcommunityname').innerHTML = 'Edit 3D Building';
 					dGet('wtw_showcommunityname').style.cursor = 'default';
+					dGet('wtw_showcommunitynamemobile').innerHTML = 'Edit 3D Building';
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					if (dGet('wtw_tbuildingname').value == '') {
 						dGet('wtw_showbuildingname').innerHTML = '3D Building';
 						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').innerHTML = '3D Building';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
 					} else {
 						dGet('wtw_showbuildingname').innerHTML = WTW.decode(dGet('wtw_tbuildingname').value);
-						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Building: <b>' + WTW.decode(dGet('wtw_tbuildingname').value) + '</b>';
+						if (WTW.adminView == 1) {
+							dGet('wtw_showbuildingname').style.cursor = 'pointer';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+						} else {
+							dGet('wtw_showbuildingname').style.cursor = 'default';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+						}
 					}
 					window.setTimeout(function() {
 						WTW.hide('wtw_loadingbuildingform');
@@ -98,12 +111,23 @@ WTWJS.prototype.loadBuildingForm = async function(w) {
 					}
 					dGet('wtw_showcommunityname').innerHTML = 'Edit 3D Building';
 					dGet('wtw_showcommunityname').style.cursor = 'default';
+					dGet('wtw_showcommunitynamemobile').innerHTML = 'Edit 3D Building';
+					dGet('wtw_showcommunitynamemobile').style.cursor = 'default';
 					if (dGet('wtw_tbuildingname').value == '') {
 						dGet('wtw_showbuildingname').innerHTML = '3D Building';
 						dGet('wtw_showbuildingname').style.cursor = 'default';
+						dGet('wtw_showbuildingnamemobile').innerHTML = '3D Building';
+						dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
 					} else {
 						dGet('wtw_showbuildingname').innerHTML = WTW.decode(dGet('wtw_tbuildingname').value);
-						dGet('wtw_showbuildingname').style.cursor = 'pointer';
+						dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Building: <b>' + WTW.decode(dGet('wtw_tbuildingname').value) + '</b>';
+						if (WTW.adminView == 1) {
+							dGet('wtw_showbuildingname').style.cursor = 'pointer';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'pointer';
+						} else {
+							dGet('wtw_showbuildingname').style.cursor = 'default';
+							dGet('wtw_showbuildingnamemobile').style.cursor = 'default';
+						}
 					}
 				}
 			}
@@ -157,6 +181,7 @@ WTWJS.prototype.submitBuildingForm = async function(w) {
 								WTW.buildings[i].buildinginfo.analyticsid = dGet('wtw_tbuildinganalyticsid').value;
 								WTW.buildings[i].alttag.name = WTW.encode(dGet('wtw_tbuildingalttag').value);
 								dGet('wtw_showbuildingname').innerHTML = dGet('wtw_tbuildingname').value;
+								dGet('wtw_showbuildingnamemobile').innerHTML = 'Closest 3D Building: <b>' + dGet('wtw_tbuildingname').value + '</b>';
 							}
 						}
 					}
@@ -313,7 +338,7 @@ WTWJS.prototype.getSelectBuildingsList = async function(zfilter) {
 			if (zfilter == 'all') {
 				zlistbuildings += "selected";
 			}
-			zlistbuildings += " wtw-rightradius' onclick=\"WTW.setBuildingsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div>\r\n";
+			zlistbuildings += " wtw-rightradius' onclick=\"WTW.setBuildingsListTab('all');\">All</div><div class='wtw-localbuttonrightpad'></div><div class='wtw-clear'></div><div class='wtw-mainmenuvalue'>Admins and Developer Roles can edit <b>All</b> 3D Buildings on this server.</div><hr /><div class='wtw-clear'></div>\r\n";
 		} else {
 			zlistbuildings = '<br /><br />';
 		}

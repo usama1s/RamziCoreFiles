@@ -15,7 +15,7 @@
 					'password':document.getElementById('password').value,
 					'c_password':document.getElementById('c_password').value
 				};
-				postJSON("https://secure.Roomz.com/api/register", zrequest, false,
+				postJSON("https://secure.roomz.com/api/register", zrequest, false,
 					function(zresponse) {
 						zresponse = JSON.parse(zresponse);
 						if (zresponse.success != null) {
@@ -37,7 +37,7 @@
 					'email':document.getElementById('email2').value,
 					'password':document.getElementById('password2').value,
 				};
-				postJSON("https://secure.Roomz.com/api/login", zrequest, false,
+				postJSON("https://secure.roomz.com/api/login", zrequest, false,
 					function(zresponse) {
 						zresponse = JSON.parse(zresponse);
 						if (zresponse.success != null) {
@@ -56,7 +56,7 @@
 		function getUser() {
 			try {
 				var zrequest = {};
-				postJSON("https://secure.Roomz.com/api/details", zrequest, true,
+				postJSON("https://secure.roomz.com/api/details", zrequest, true,
 					function(zresponse) {
 //console.log(zresponse);
 					}
@@ -69,7 +69,7 @@
 		function logout() {
 			try {
 				var zrequest = {};
-				postJSON("https://secure.Roomz.com/api/logout", zrequest, true,
+				postJSON("https://secure.roomz.com/api/logout", zrequest, true,
 					function(zresponse) {
 //console.log(zresponse);
 					}
@@ -140,8 +140,8 @@
 <div style="text-align:center;">
 	<form id="form1">
 		<h2>Register</h2>
-		Name: <input type="text" id="name" value="adishno" /><br />
-		Email: <input type="text" id="email" value="adishno@Roomz.com" /><br />
+		Name: <input type="text" id="name" value="aTan" /><br />
+		Email: <input type="text" id="email" value="aTan@roomz.com" /><br />
 		Password: <input type="password" id="password" value="kjdsh32789jHD#63!8" /><br />
 		Repeat Password: <input type="password" id="c_password" value="kjdsh32789jHD#63!8" /><br />
 		<input type="button" id="bregister" value="Register" onclick="onRegister();" />
@@ -149,7 +149,7 @@
 	<hr /><br />
 	<form id="form2">
 		<h2>Login</h2>
-		Email: <input type="text" id="email2" value="adishno@Roomz.com" /><br />
+		Email: <input type="text" id="email2" value="aTan@roomz.com" /><br />
 		Password: <input type="password" id="password2" value="kjdsh32789jHD#63!8" /><br />
 		<input type="button" id="blogin" value="Login" onclick="onLogin();" />
 	</form>
